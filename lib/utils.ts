@@ -14,7 +14,7 @@ export function cn(...inputs: ClassValue[]) {
 
 /**
  * تنسيق تاريخ مختصر بالعربية (مثال: ١٢ سبتمبر ٢٠٢٦).
- * يُستخدم في بطاقات الفرص، سجل الإشعارات، وتفاصيل التقديم.
+ * يُستخدم في بطاقات الفٌرص، سجل الإشعارات، وتفاصيل التقديم.
  */
 export function formatDateArabic(date: Date | string): string {
   const d = typeof date === "string" ? new Date(date) : date;

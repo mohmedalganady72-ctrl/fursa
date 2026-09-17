@@ -12,7 +12,7 @@ interface DashboardStatCardProps {
 
 /**
  * بطاقة رقم إحصائي واحد — تُستخدم بتكرار في لوحات الباحث/الجهة/المدير الثلاث
- * (مثال: "إجمالي التقديمات"، "الجهات المعتمدة"، "الفرص المفتوحة").
+ * (مثال: "إجمالي التقديمات"، "الجهات المعتمدة"، "الفٌرص المفتوحة").
  */
 export function DashboardStatCard({ icon: Icon, label, value, trend, className }: DashboardStatCardProps) {
   return (

@@ -5,7 +5,7 @@ interface OtherApplicantsListProps {
 }
 
 /**
- * قائمة المتقدمين الآخرين على نفس الفرصة — الاسم والصورة فقط، بدون أي رابط لفتح ملفاتهم
+ * قائمة المتقدمين الآخرين على نفس الفٌرصة — الاسم والصورة فقط، بدون أي رابط لفتح ملفاتهم
  * الشخصية (راجع وثيقة المتطلبات § "لا يستطيع المتقدم فتح ملف البروفايل لمتقدم آخر").
  * لهذا السبب تحديدًا هذه العناصر <div> عادية وليست <Link> — القرار مقصود لمنع أي محاولة
  * توسّع مستقبلية بالخطأ لإضافة رابط تفاصيل هنا.
@@ -15,7 +15,7 @@ export function OtherApplicantsList({ applicants }: OtherApplicantsListProps) {
 
   return (
     <div className="mt-8 border-t border-neutral-200 pt-6">
-      <h3 className="text-h4 text-neutral-800">متقدمون آخرون على هذه الفرصة</h3>
+      <h3 className="text-h4 text-neutral-800">متقدمون آخرون على هذه الفٌرصة</h3>
       <div className="mt-4 flex flex-wrap gap-4">
         {applicants.map((applicant) => (
           <div key={applicant.id} className="flex items-center gap-2">

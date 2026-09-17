@@ -62,7 +62,7 @@ export default async function CoOpDetailsPage({
       </div>
 
       <Card className="mt-6 p-6">
-        <h2 className="text-h4 text-neutral-800">وصف الفرصة</h2>
+        <h2 className="text-h4 text-neutral-800">وصف الفٌرصة</h2>
         <p className="mt-2 whitespace-pre-line text-body text-neutral-700">{opportunity.description}</p>
       </Card>
 

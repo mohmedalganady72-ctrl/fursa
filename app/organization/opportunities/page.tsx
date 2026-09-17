@@ -30,11 +30,11 @@ export default async function OrganizationOpportunitiesPage() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="text-h1 text-neutral-900">فرصي</h1>
+        <h1 className="text-h1 text-neutral-900">فٌرصي</h1>
         <Button asChild>
           <Link href="/organization/opportunities/new">
             <Plus className="h-4 w-4" />
-            فرصة جديدة
+            فٌرصة جديدة
           </Link>
         </Button>
       </div>
@@ -43,9 +43,9 @@ export default async function OrganizationOpportunitiesPage() {
         <div className="mt-6">
           <EmptyState
             icon={Briefcase}
-            title="لم تنشروا أي فرصة حتى الآن"
-            description="ابدؤوا بنشر أول فرصة وظيفية أو تطوعية أو تدريب تعاوني."
-            actionLabel="نشر فرصة جديدة"
+            title="لم تنشروا أي فٌرصة حتى الآن"
+            description="ابدؤوا بنشر أول فٌرصة وظيفية أو تطوعية أو تدريب تعاوني."
+            actionLabel="نشر فٌرصة جديدة"
           />
         </div>
       ) : (

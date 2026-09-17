@@ -19,17 +19,17 @@ interface Field {
 
 interface OpportunityFormProps {
   availableFields: Field[];
-  /** عند إنشاء بديل لفرصة مغلقة: النوع لا يتغيّر، فيُمرَّر ثابتًا ويُعطَّل اختياره */
+  /** عند إنشاء بديل لفٌرصة مغلقة: النوع لا يتغيّر، فيُمرَّر ثابتًا ويُعطَّل اختياره */
   lockedType?: OpportunityType;
-  /** وجوده يعني أن هذا النموذج سيُغلق الفرصة المشار إليها وينشئ فرصة جديدة بدلًا منها */
+  /** وجوده يعني أن هذا النموذج سيُغلق الفٌرصة المشار إليها وينشئ فٌرصة جديدة بدلًا منها */
   replacesOpportunityId?: string;
 }
 
 /**
- * نموذج إعلان الفرصة الموحّد — واجهة واحدة تتغيّر حقولها الإضافية حسب النوع المختار
- * (راجع وثيقة المتطلبات § 5.6). لا يوجد "تعديل" لفرصة منشورة في هذا الإصدار
- * (راجع § 5.7) — هذا النموذج إما (أ) ينشئ فرصة جديدة تمامًا، أو (ب) عند تمرير
- * replacesOpportunityId يُغلق فرصة قائمة وينشئ هذه كبديل لها ضمن معاملة واحدة
+ * نموذج إعلان الفٌرصة الموحّد — واجهة واحدة تتغيّر حقولها الإضافية حسب النوع المختار
+ * (راجع وثيقة المتطلبات § 5.6). لا يوجد "تعديل" لفٌرصة منشورة في هذا الإصدار
+ * (راجع § 5.7) — هذا النموذج إما (أ) ينشئ فٌرصة جديدة تمامًا، أو (ب) عند تمرير
+ * replacesOpportunityId يُغلق فٌرصة قائمة وينشئ هذه كبديل لها ضمن معاملة واحدة
  * (راجع features/opportunities/services/opportunities.service.ts § closeOpportunityAndCreateReplacement).
  */
 export function OpportunityForm({ availableFields, lockedType, replacesOpportunityId }: OpportunityFormProps) {
@@ -46,7 +46,7 @@ export function OpportunityForm({ availableFields, lockedType, replacesOpportuni
   const [applicationDeadline, setApplicationDeadline] = React.useState("");
   const [selectedFieldIds, setSelectedFieldIds] = React.useState<string[]>([]);
 
-  // حقول خاصة بفرص العمل
+  // حقول خاصة بفٌرص العمل
   const [requiredQualification, setRequiredQualification] = React.useState("");
   const [requiredSkillsText, setRequiredSkillsText] = React.useState("");
   const [minimumYearsExperience, setMinimumYearsExperience] = React.useState<number | "">("");
@@ -108,15 +108,15 @@ export function OpportunityForm({ availableFields, lockedType, replacesOpportuni
       if (!response.ok) {
         const message =
           result.error === "OPPORTUNITY_ALREADY_CLOSED"
-            ? "هذه الفرصة مغلقة بالفعل ولا يمكن استبدالها"
+            ? "هذه الفٌرصة مغلقة بالفعل ولا يمكن استبدالها"
             : result.message ?? "تحقق من البيانات المدخلة";
-        toast({ variant: "error", title: "تعذّر حفظ الفرصة", description: message });
+        toast({ variant: "error", title: "تعذّر حفظ الفٌرصة", description: message });
         return;
       }
 
       toast({
         variant: "success",
-        title: replacesOpportunityId ? "أُغلقت الفرصة السابقة ونُشرت البديلة" : "نُشرت الفرصة بنجاح",
+        title: replacesOpportunityId ? "أُغلقت الفٌرصة السابقة ونُشرت البديلة" : "نُشرت الفٌرصة بنجاح",
       });
       router.push("/organization/opportunities");
       router.refresh();
@@ -129,7 +129,7 @@ export function OpportunityForm({ availableFields, lockedType, replacesOpportuni
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
       {!lockedType && (
         <div className="flex flex-col gap-2">
-          <Label>نوع الفرصة</Label>
+          <Label>نوع الفٌرصة</Label>
           <div className="flex gap-2">
             {Object.values(OPPORTUNITY_TYPES).map((t) => (
               <button
@@ -150,12 +150,12 @@ export function OpportunityForm({ availableFields, lockedType, replacesOpportuni
       )}
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="title">عنوان الفرصة</Label>
+        <Label htmlFor="title">عنوان الفٌرصة</Label>
         <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required minLength={5} />
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="description">وصف الفرصة</Label>
+        <Label htmlFor="description">وصف الفٌرصة</Label>
         <Textarea
           id="description"
           value={description}
@@ -229,7 +229,7 @@ export function OpportunityForm({ availableFields, lockedType, replacesOpportuni
         </div>
       </div>
 
-      {/* ===== حقول خاصة بفرص العمل ===== */}
+      {/* ===== حقول خاصة بفٌرص العمل ===== */}
       {type === "job" && (
         <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -296,7 +296,7 @@ export function OpportunityForm({ availableFields, lockedType, replacesOpportuni
       )}
 
       <Button type="submit" size="lg" isLoading={isSubmitting} className="mt-2">
-        {replacesOpportunityId ? "إغلاق الفرصة السابقة ونشر البديلة" : "نشر الفرصة"}
+        {replacesOpportunityId ? "إغلاق الفٌرصة السابقة ونشر البديلة" : "نشر الفٌرصة"}
       </Button>
     </form>
   );

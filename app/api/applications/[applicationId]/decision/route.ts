@@ -6,7 +6,7 @@ import { acceptApplicant, rejectApplicant } from "@/features/applications/servic
 
 /**
  * PATCH /api/applications/:id/decision
- * قرار الجهة بقبول أو رفض متقدم. لا مهلة انتظار — القبول فوري ونهائي، ويُغلق الفرصة
+ * قرار الجهة بقبول أو رفض متقدم. لا مهلة انتظار — القبول فوري ونهائي، ويُغلق الفٌرصة
  * تلقائيًا وذريًا إن اكتمل عدد المقاعد المطلوب (راجع acceptance-lifecycle.ts).
  * كلا المسارين (قبول/رفض) يمرّان عبر خدمة دورة الحياة لضمان تسجيلهما في
  * application_status_history دائمًا — لا تحديث مباشر لعمود status من أي route.
@@ -42,7 +42,7 @@ export async function PATCH(
       FORBIDDEN: { status: 403, userMessage: "لا تملك صلاحية اتخاذ قرار بشأن هذا الطلب" },
       INVALID_STATUS_TRANSITION: { status: 409, userMessage: "اتُخذ قرار بشأن هذا الطلب مسبقًا" },
       NO_SEATS_AVAILABLE: { status: 409, userMessage: "لا توجد مقاعد متاحة؛ اكتمل العدد المطلوب" },
-      OPPORTUNITY_ALREADY_CLOSED: { status: 409, userMessage: "أُغلقت هذه الفرصة بالفعل" },
+      OPPORTUNITY_ALREADY_CLOSED: { status: 409, userMessage: "أُغلقت هذه الفٌرصة بالفعل" },
       ALREADY_ACCEPTED: { status: 409, userMessage: "قُبل هذا المتقدم مسبقًا" },
       APPLICATION_NOT_FOUND: { status: 404, userMessage: "الطلب غير موجود" },
     };

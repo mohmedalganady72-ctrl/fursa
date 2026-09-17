@@ -186,6 +186,12 @@
     text-rendering: optimizeLegibility;
   }
 
+  /* Radix يحجز عرض شريط التمرير عند فتح القوائم؛ إلغاء الهامش يمنع اهتزاز الواجهة. */
+  body[data-scroll-locked] {
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+  }
+
   /* اتجاه ثابت لكل قائمة HTML مستقبلية: النص يمينًا وسهم المتصفح في الجهة المقابلة. */
   select {
     direction: rtl;

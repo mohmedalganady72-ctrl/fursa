@@ -6,9 +6,9 @@ export default async function NewOpportunityPage() {
 
   return (
     <div>
-      <h1 className="text-h1 text-neutral-900">فرصة جديدة</h1>
+      <h1 className="text-h1 text-neutral-900">فٌرصة جديدة</h1>
       <p className="mt-1 text-body text-secondary">
-        اختر نوع الفرصة وأكمل تفاصيلها بعناية؛ لا يمكن تعديلها بعد النشر.
+        اختر نوع الفٌرصة وأكمل تفاصيلها بعناية؛ لا يمكن تعديلها بعد النشر.
       </p>
 
       <div className="mt-6 max-w-2xl">

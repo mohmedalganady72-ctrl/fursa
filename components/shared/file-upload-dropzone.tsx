@@ -46,7 +46,7 @@ export function FileUploadDropzone({
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className={cn("flex flex-col gap-2", compact && "items-start")}>
       <label className="text-body-sm font-medium text-neutral-700">{label}</label>
 
       <label
@@ -62,8 +62,10 @@ export function FileUploadDropzone({
           validateAndSet(e.dataTransfer.files?.[0] ?? null);
         }}
         className={cn(
-          "flex cursor-pointer items-center gap-2 rounded-md border border-dashed px-4 transition-colors duration-fast",
-          compact ? "min-h-12 flex-row py-2 text-start" : "flex-col py-8 text-center",
+          "flex cursor-pointer items-center gap-2 rounded-md border px-4 transition-colors duration-fast",
+          compact
+            ? "min-h-10 w-fit max-w-full flex-row border-solid bg-surface py-2 text-start shadow-xs"
+            : "w-full flex-col border-dashed py-8 text-center",
           isDragging ? "border-primary-500 bg-primary-50" : "border-neutral-300 hover:border-primary-400 hover:bg-primary-50/50"
         )}
       >

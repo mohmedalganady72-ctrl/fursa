@@ -5,7 +5,7 @@ export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextArea
   error?: boolean;
 }
 
-// تُستخدم لحقول النص الحر: "لماذا أنت مناسب لهذه الوظيفة؟"، وصف الفرصة، النبذة الشخصية
+// تُستخدم لحقول النص الحر: "لماذا أنت مناسب لهذه الوظيفة؟"، وصف الفٌرصة، النبذة الشخصية
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, error, ...props }, ref) => {
     return (

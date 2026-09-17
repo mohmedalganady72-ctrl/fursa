@@ -11,7 +11,7 @@ import { requirePageSession } from "@/lib/auth/session";
 import { isApplicant } from "@/features/auth/services/permissions";
 import { OPPORTUNITY_TYPES } from "@/lib/constants";
 
-export const metadata: Metadata = { title: "فرص التطوع" };
+export const metadata: Metadata = { title: "فٌرص التطوع" };
 
 /** بنية مطابقة تمامًا لـ app/(public)/opportunities/jobs/page.tsx — راجع تعليق ذلك الملف */
 export default async function VolunteeringPage({
@@ -39,8 +39,8 @@ export default async function VolunteeringPage({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 lg:px-8">
-      <h1 className="text-h1 text-neutral-900">فرص التطوع</h1>
-      <p className="mt-2 text-body text-secondary">شارك في فرص تطوعية تصنع أثرًا حقيقيًا في مجالك.</p>
+      <h1 className="text-h1 text-neutral-900">فٌرص التطوع</h1>
+      <p className="mt-2 text-body text-secondary">شارك في فٌرص تطوعية تصنع أثرًا حقيقيًا في مجالك.</p>
 
       <div className="mt-6">
         <OpportunityFilters />
@@ -50,7 +50,7 @@ export default async function VolunteeringPage({
         {results.length === 0 ? (
           <EmptyState
             icon={HandHeart}
-            title="لا توجد فرص تطوع تطابق بحثك حاليًا"
+            title="لا توجد فٌرص تطوع تطابق بحثك حاليًا"
             description="جرّب تعديل خيارات التصفية أو استخدام كلمات بحث مختلفة."
           />
         ) : (

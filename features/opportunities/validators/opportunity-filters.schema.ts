@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { OPPORTUNITY_TYPES, WORK_MODES, OPPORTUNITY_SORT_OPTIONS } from "@/lib/constants";
 
-/** فلاتر صفحة تصفح الفرص — تُطبَّق كـ query params (راجع وثيقة المتطلبات § "الفلترة") */
+/** فلاتر صفحة تصفح الفٌرص — تُطبَّق كـ query params (راجع وثيقة المتطلبات § "الفلترة") */
 export const opportunityFiltersSchema = z.object({
   type: z.enum([OPPORTUNITY_TYPES.JOB, OPPORTUNITY_TYPES.VOLUNTEERING, OPPORTUNITY_TYPES.CO_OP]).optional(),
-  searchQuery: z.string().optional(), // بحث نصي: اسم الجهة / عنوان الفرصة / التخصص
+  searchQuery: z.string().optional(), // بحث نصي: اسم الجهة / عنوان الفٌرصة / التخصص
   city: z.string().optional(),
   fieldId: z.string().uuid().optional(),
   workMode: z.enum([WORK_MODES.ON_SITE, WORK_MODES.REMOTE, WORK_MODES.HYBRID]).optional(),

@@ -22,7 +22,7 @@ export async function getDailyApplicationLimitPerType(): Promise<number> {
     return setting.value;
   }
 
-  return MAX_DAILY_APPLICATIONS_PER_TYPE; // القيمة الافتراضية المقترحة في الوثيقة: فرصتان يوميًا
+  return MAX_DAILY_APPLICATIONS_PER_TYPE; // القيمة الافتراضية المقترحة في الوثيقة: فٌرصتان يوميًا
 }
 
 /** تحديث الحد من لوحة المدير (راجع وثيقة المتطلبات § 5.12) */
@@ -36,7 +36,7 @@ export async function setDailyApplicationLimitPerType(newValue: number) {
     .values({
       key: SETTING_KEYS.DAILY_APPLICATION_LIMIT_PER_TYPE,
       value: newValue,
-      description: "الحد الأقصى لعدد التقديمات اليومية لكل نوع فرصة",
+      description: "الحد الأقصى لعدد التقديمات اليومية لكل نوع فٌرصة",
       updatedAt: new Date(),
     })
     .onConflictDoUpdate({

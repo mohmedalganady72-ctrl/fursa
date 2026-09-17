@@ -3,7 +3,7 @@ import { config } from "dotenv";
 
 config({ path: ".env.local" });
 
-const sql = postgres(process.env.DATABASE_URL!, { prepare: false });
+const sql = postgres(process.env.DATABASE_URL!, { prepare: false, ssl: "require" });
 
 async function main() {
   await sql.begin(async (tx) => {

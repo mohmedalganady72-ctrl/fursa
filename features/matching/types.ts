@@ -20,7 +20,7 @@ export interface ApplicantMatchProfile {
   yearsOfExperience: number | null;
 }
 
-/** صورة مبسّطة من متطلبات الفرصة اللازمة للمقارنة */
+/** صورة مبسّطة من متطلبات الفٌرصة اللازمة للمقارنة */
 export interface OpportunityMatchCriteria {
   type: OpportunityType;
   fieldIds: string[];
@@ -30,7 +30,7 @@ export interface OpportunityMatchCriteria {
   requiredSkills: string[];
   requiredUniversity: string | null;
   requiredAcademicLevel: string | null;
-  /** الحد الأدنى لسنوات الخبرة المطلوبة لفرص العمل — null أو 0 يعني "غير مشترط" */
+  /** الحد الأدنى لسنوات الخبرة المطلوبة لفٌرص العمل — null أو 0 يعني "غير مشترط" */
   minimumYearsExperience: number | null;
 }
 

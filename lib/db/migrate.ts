@@ -13,7 +13,7 @@ import { reconcileLegacyDatabase } from "./reconcile-legacy";
  * بخلاف عميل التطبيق العادي الذي يستخدم تجمّع اتصالات (connection pool).
  */
 async function main() {
-  const migrationClient = postgres(env.DATABASE_URL, { max: 1, prepare: false });
+  const migrationClient = postgres(env.DATABASE_URL, { max: 1, prepare: false, ssl: "require" });
   const db = drizzle(migrationClient);
 
   console.log("جارٍ تشغيل الترحيلات...");

@@ -21,6 +21,9 @@ export function AdminLoginForm() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isHydrated, setIsHydrated] = React.useState(false);
+
+  React.useEffect(() => setIsHydrated(true), []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -62,15 +65,15 @@ export function AdminLoginForm() {
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="adminEmail">البريد الإلكتروني</Label>
-        <Input id="adminEmail" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <Input id="adminEmail" type="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={!isHydrated || isSubmitting} required />
       </div>
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="adminPassword">كلمة المرور</Label>
-        <PasswordInput id="adminPassword" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        <PasswordInput id="adminPassword" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} disabled={!isHydrated || isSubmitting} required />
       </div>
 
-      <Button type="submit" size="lg" isLoading={isSubmitting}>
+      <Button type="submit" size="lg" isLoading={isSubmitting} disabled={!isHydrated || isSubmitting}>
         تسجيل الدخول
       </Button>
     </form>

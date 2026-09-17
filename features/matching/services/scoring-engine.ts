@@ -21,7 +21,7 @@ import type {
 
 // ============ دوال مساعدة لكل معيار — كل دالة تُرجع نسبة تحقق بين 0 و1 ============
 
-/** نسبة تقاطع مجالات الباحث مع مجالات الفرصة المطلوبة */
+/** نسبة تقاطع مجالات الباحث مع مجالات الفٌرصة المطلوبة */
 function scoreFieldsOverlap(applicantFieldIds: string[], requiredFieldIds: string[]): number {
   if (requiredFieldIds.length === 0) return 1; // لا شرط مجال = تحقق كامل تلقائيًا
   if (applicantFieldIds.length === 0) return 0;
@@ -36,7 +36,7 @@ function scoreCityMatch(applicantCity: string, requiredCity: string): number {
   return applicantCity.trim().toLowerCase() === requiredCity.trim().toLowerCase() ? 1 : 0;
 }
 
-/** تطابق الجنس فقط عند وجود شرط صريح في الفرصة؛ وإلا يُعامَل كمعيار محقَّق بالكامل */
+/** تطابق الجنس فقط عند وجود شرط صريح في الفٌرصة؛ وإلا يُعامَل كمعيار محقَّق بالكامل */
 function scoreGenderMatch(
   applicantGender: "male" | "female" | null,
   requirement: "male" | "female" | null
@@ -46,7 +46,7 @@ function scoreGenderMatch(
 }
 
 /**
- * تشابه نصي تقريبي بسيط بين نص الباحث (نبذة، تخصص) ونص الفرصة (وصف، مهارات مطلوبة).
+ * تشابه نصي تقريبي بسيط بين نص الباحث (نبذة، تخصص) ونص الفٌرصة (وصف، مهارات مطلوبة).
  * هذه نسخة تطبيقية مبسّطة (تقاطع الكلمات المفتاحية) تعمل في طبقة التطبيق كبديل فوري؛
  * النسخة الإنتاجية تستبدلها باستعلام SQL فعلي عبر pg_trgm (similarity())
  * مباشرة في قاعدة البيانات — راجع features/opportunities/services/opportunities.service.ts
@@ -70,7 +70,7 @@ function scoreTextSimilarity(applicantText: string | null, referenceText: string
   return matched / referenceWords.length;
 }
 
-/** نسبة تقاطع مهارات الباحث (من الملف الشخصي + CV) مع المهارات المطلوبة في الفرصة */
+/** نسبة تقاطع مهارات الباحث (من الملف الشخصي + CV) مع المهارات المطلوبة في الفٌرصة */
 function scoreSkillsOverlap(applicantSkills: string[], requiredSkills: string[]): number {
   if (requiredSkills.length === 0) return 1;
   if (applicantSkills.length === 0) return 0;

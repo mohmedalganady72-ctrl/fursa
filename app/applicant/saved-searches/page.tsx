@@ -15,7 +15,7 @@ const TYPE_ROUTE_SEGMENT: Record<OpportunityType, string> = {
   co_op: "co-op",
 };
 
-/** يبني رابط صفحة تصفح الفرص مع تطبيق فلاتر البحث المحفوظ كـ query params */
+/** يبني رابط صفحة تصفح الفٌرص مع تطبيق فلاتر البحث المحفوظ كـ query params */
 function buildSearchUrl(filters: Record<string, unknown>): string {
   const type = (filters.type as OpportunityType) ?? "job";
   const segment = TYPE_ROUTE_SEGMENT[type] ?? "jobs";
@@ -46,15 +46,15 @@ export default async function SavedSearchesPage() {
   return (
     <div>
       <h1 className="text-h1 text-neutral-900">عمليات البحث المحفوظة</h1>
-      <p className="mt-1 text-body text-secondary">استخدم خيارات بحث حفظتها سابقًا للعثور على الفرص بسرعة.</p>
+      <p className="mt-1 text-body text-secondary">استخدم خيارات بحث حفظتها سابقًا للعثور على الفٌرص بسرعة.</p>
 
       {searches.length === 0 ? (
         <div className="mt-6">
           <EmptyState
             icon={Search}
             title="لا توجد عمليات بحث محفوظة بعد"
-            description="احفظ خيارات البحث من صفحة الفرص لتستخدمها لاحقًا."
-            actionLabel="تصفّح الفرص"
+            description="احفظ خيارات البحث من صفحة الفٌرص لتستخدمها لاحقًا."
+            actionLabel="تصفّح الفٌرص"
           />
         </div>
       ) : (

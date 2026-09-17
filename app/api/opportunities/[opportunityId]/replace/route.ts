@@ -9,8 +9,8 @@ import { organizationProfiles } from "@/lib/db/schema";
 
 /**
  * POST /api/opportunities/:id/replace
- * يُغلق الفرصة المشار إليها وينشئ فرصة جديدة بدلًا منها ضمن معاملة واحدة
- * (راجع وثيقة المتطلبات § 5.7 — لا يوجد تعديل مباشر لفرصة منشورة).
+ * يُغلق الفٌرصة المشار إليها وينشئ فٌرصة جديدة بدلًا منها ضمن معاملة واحدة
+ * (راجع وثيقة المتطلبات § 5.7 — لا يوجد تعديل مباشر لفٌرصة منشورة).
  */
 export async function POST(
   request: Request,
@@ -48,7 +48,7 @@ export async function POST(
 
     if (message === "OPPORTUNITY_ALREADY_CLOSED") {
       return NextResponse.json(
-        { error: "OPPORTUNITY_ALREADY_CLOSED", message: "هذه الفرصة مغلقة بالفعل" },
+        { error: "OPPORTUNITY_ALREADY_CLOSED", message: "هذه الفٌرصة مغلقة بالفعل" },
         { status: 409 }
       );
     }

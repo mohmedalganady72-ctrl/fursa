@@ -13,7 +13,7 @@ alter table applicant_profiles enable row level security;
 alter table applicant_fields enable row level security;
 
 -- كل مستخدم يرى ملفه الشخصي الخاص فقط للتعديل، لكن الجميع يمكنهم القراءة
--- (الملف الشخصي يظهر جزئيًا لجهات تستعرض متقدمين، وبالكامل للجهة صاحبة الفرصة)
+-- (الملف الشخصي يظهر جزئيًا لجهات تستعرض متقدمين، وبالكامل للجهة صاحبة الفٌرصة)
 create policy "applicant_profiles_select_all"
   on applicant_profiles for select
   using (true);

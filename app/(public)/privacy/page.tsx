@@ -1,9 +1,9 @@
 export const metadata = { title: "سياسة الخصوصية" };
 
 const sections = [
-  ["البيانات التي نجمعها", "نجمع بيانات الحساب والتحقق، وبيانات الملف الشخصي والسيرة الذاتية والتخصص والمجالات، وبيانات الفرص والتقديمات والرسائل اللازمة لتشغيل المنصة."],
-  ["كيف نستخدم البيانات", "نستخدم البيانات لإنشاء الحساب، واقتراح الفرص المناسبة للباحث، ومعالجة الطلبات، وتمكين التواصل، وإرسال التنبيهات، وحماية المنصة وتحسين أدائها."],
-  ["مشاركة البيانات", "تظهر بيانات طلب التقديم للجهة صاحبة الفرصة وفق الحاجة المهنية. لا نبيع بياناتك الشخصية، ولا نشاركها خارج نطاق تشغيل الخدمة إلا بموافقتك أو عند وجود التزام نظامي."],
+  ["البيانات التي نجمعها", "نجمع بيانات الحساب والتحقق، وبيانات الملف الشخصي والسيرة الذاتية والتخصص والمجالات، وبيانات الفٌرص والتقديمات والرسائل اللازمة لتشغيل المنصة."],
+  ["كيف نستخدم البيانات", "نستخدم البيانات لإنشاء الحساب، واقتراح الفٌرص المناسبة للباحث، ومعالجة الطلبات، وتمكين التواصل، وإرسال التنبيهات، وحماية المنصة وتحسين أدائها."],
+  ["مشاركة البيانات", "تظهر بيانات طلب التقديم للجهة صاحبة الفٌرصة وفق الحاجة المهنية. لا نبيع بياناتك الشخصية، ولا نشاركها خارج نطاق تشغيل الخدمة إلا بموافقتك أو عند وجود التزام نظامي."],
   ["الحفظ والحماية", "نحتفظ بالبيانات للمدة اللازمة لتقديم الخدمة والوفاء بالمتطلبات النظامية، ونستخدم ضوابط وصول وتقنيات حماية مناسبة لتقليل مخاطر الوصول غير المصرّح به."],
   ["حقوقك", "يمكنك تحديث بيانات ملفك وتصحيحها، وطلب معرفة بياناتك أو حذف الحساب وفق ما تسمح به الالتزامات النظامية والتشغيلية."],
   ["ملفات الارتباط والخدمات الخارجية", "نستخدم ملفات ارتباط ضرورية للجلسة، وقد تعتمد المصادقة والتخزين على خدمات مثل Firebase وSupabase وفق سياساتها وشروطها."],
@@ -11,5 +11,5 @@ const sections = [
 ] as const;
 
 export default function PrivacyPage() {
-  return <main className="mx-auto max-w-4xl px-4 py-14 md:px-6 md:py-20 lg:px-8"><p className="text-body-sm font-semibold text-primary-600">آخر تحديث: 17 سبتمبر 2026</p><h1 className="mt-3 font-heading text-4xl font-bold text-neutral-900 md:text-5xl">سياسة الخصوصية</h1><p className="mt-5 text-body-lg leading-8 text-secondary">توضح هذه السياسة كيف تتعامل منصة فرص مع بيانات الباحثين والجهات عند استخدام الموقع وخدماته.</p><div className="mt-12 divide-y divide-neutral-200 border-y border-neutral-200">{sections.map(([title, body]) => <section key={title} className="py-7"><h2 className="text-h3 text-neutral-900">{title}</h2><p className="mt-3 leading-8 text-neutral-600">{body}</p></section>)}</div></main>;
+  return <main className="mx-auto max-w-4xl px-4 py-14 md:px-6 md:py-20 lg:px-8"><p className="text-body-sm font-semibold text-primary-600">آخر تحديث: 17 سبتمبر 2026</p><h1 className="mt-3 font-heading text-4xl font-bold text-neutral-900 md:text-5xl">سياسة الخصوصية</h1><p className="mt-5 text-body-lg leading-8 text-secondary">توضح هذه السياسة كيف تتعامل منصة فٌرص مع بيانات الباحثين والجهات عند استخدام الموقع وخدماته.</p><div className="mt-12 divide-y divide-neutral-200 border-y border-neutral-200">{sections.map(([title, body]) => <section key={title} className="py-7"><h2 className="text-h3 text-neutral-900">{title}</h2><p className="mt-3 leading-8 text-neutral-600">{body}</p></section>)}</div></main>;
 }

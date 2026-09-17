@@ -4,11 +4,11 @@ import { db } from "../../lib/db";
 import { opportunities, applications, users } from "../../lib/db/schema";
 import { createTestUser, login } from "./fixtures";
 
-test("يستطيع الباحث التقديم على فرصة تدريب تعاوني", async ({ page }) => {
+test("يستطيع الباحث التقديم على فٌرصة تدريب تعاوني", async ({ page }) => {
   const owner = await createTestUser("organization");
   const applicant = await createTestUser("applicant");
   const [opportunity] = await db.insert(opportunities).values({ organizationProfileId: owner.profileId,
-    type: "co_op", title: "تدريب اختبار متكامل", description: "فرصة تدريب لاختبار رحلة التقديم الكاملة.",
+    type: "co_op", title: "تدريب اختبار متكامل", description: "فٌرصة تدريب لاختبار رحلة التقديم الكاملة.",
     city: "الرياض", workMode: "remote", seatsAvailable: 2,
     applicationDeadline: new Date(Date.now() + 86400000), requiredAcademicLevel: "السنة الأخيرة" }).returning();
   try {

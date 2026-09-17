@@ -7,12 +7,12 @@ import type { OpportunityFiltersInput } from "../validators/opportunity-filters.
 import { closePendingApplications, type Transaction } from "@/features/applications/services/status-transitions";
 
 /**
- * طبقة الوصول لبيانات الفرص — كل استعلام Drizzle المتعلق بالفرص يعيش هنا حصريًا.
+ * طبقة الوصول لبيانات الفٌرص — كل استعلام Drizzle المتعلق بالفٌرص يعيش هنا حصريًا.
  * لا صفحة ولا route handler يكتب استعلام Drizzle مباشرة؛ الجميع يستدعي هذه الدوال
  * (راجع README.md § نمط الهيكلة، القاعدة الذهبية).
  */
 
-/** إنشاء فرصة جديدة (تُستدعى من app/api/opportunities/route.ts بعد التحقق من صلاحية الجهة) */
+/** إنشاء فٌرصة جديدة (تُستدعى من app/api/opportunities/route.ts بعد التحقق من صلاحية الجهة) */
 export async function createOpportunity(
   organizationProfileId: string,
   input: OpportunityInput
@@ -63,10 +63,10 @@ async function insertOpportunity(tx: Transaction, organizationProfileId: string,
 }
 
 /**
- * لا يوجد "تحديث" للفرصة بعد نشرها في هذا الإصدار (راجع وثيقة المتطلبات § 5.7:
- * "بعد نشر الفرصة، لا تملك الجهة صلاحية تعديل بياناتها. إذا كانت هناك حاجة لتغيير
- * جوهري، يتم إغلاق الفرصة وإنشاء فرصة جديدة"). الدالة أدناه تُنفِّذ هذا المسار
- * بالضبط: تُغلق الفرصة القديمة (تبقى كسجل تاريخي مقروء) ثم تُنشئ فرصة جديدة
+ * لا يوجد "تحديث" للفٌرصة بعد نشرها في هذا الإصدار (راجع وثيقة المتطلبات § 5.7:
+ * "بعد نشر الفٌرصة، لا تملك الجهة صلاحية تعديل بياناتها. إذا كانت هناك حاجة لتغيير
+ * جوهري، يتم إغلاق الفٌرصة وإنشاء فٌرصة جديدة"). الدالة أدناه تُنفِّذ هذا المسار
+ * بالضبط: تُغلق الفٌرصة القديمة (تبقى كسجل تاريخي مقروء) ثم تُنشئ فٌرصة جديدة
  * بالبيانات المحدَّثة، بدل تعديل الصف الأصلي.
  */
 export async function closeOpportunityAndCreateReplacement(
@@ -95,7 +95,7 @@ export async function closeOpportunityAndCreateReplacement(
 }
 
 /**
- * إغلاق يدوي بسيط بلا فرصة بديلة (مثال: الجهة قررت التراجع عن نشر الفرصة كليًا،
+ * إغلاق يدوي بسيط بلا فٌرصة بديلة (مثال: الجهة قررت التراجع عن نشر الفٌرصة كليًا،
  * أو إجراء إداري استثنائي من المدير — راجع § 5.7: "يمكن لمدير النظام تنفيذ إجراءات
  * إدارية استثنائية وفق صلاحياته").
  */
@@ -123,7 +123,7 @@ export async function closeOpportunity(
 }
 
 /**
- * قائمة الفرص المفلترة والمرتّبة لصفحة التصفح العامة.
+ * قائمة الفٌرص المفلترة والمرتّبة لصفحة التصفح العامة.
  * ملاحظة أداء: الترتيب "الأكثر مناسبة لي" (BEST_MATCH) لا يُحسَب هنا مباشرة عبر SQL
  * لأنه يعتمد على ملف الباحث الشخصي؛ يُطبَّق كترتيب لاحق (post-sort) في طبقة الـ route
  * بعد جلب الصفحة الحالية من النتائج المرتّبة بالأحدث، عبر features/matching.
@@ -168,7 +168,7 @@ export async function listOpportunities(filters: OpportunityFiltersInput) {
   return results;
 }
 
-/** تفاصيل فرصة واحدة (لصفحة العرض والتقديم) */
+/** تفاصيل فٌرصة واحدة (لصفحة العرض والتقديم) */
 export async function getOpportunityById(opportunityId: string) {
   return db.query.opportunities.findFirst({
     where: eq(opportunities.id, opportunityId),
@@ -179,7 +179,7 @@ export async function getOpportunityById(opportunityId: string) {
   });
 }
 
-/** فرص جهة معيّنة (للوحة تحكم الجهة) */
+/** فٌرص جهة معيّنة (للوحة تحكم الجهة) */
 export async function listOrganizationOpportunities(organizationProfileId: string) {
   return db.query.opportunities.findMany({
     where: eq(opportunities.organizationProfileId, organizationProfileId),

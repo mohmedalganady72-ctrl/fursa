@@ -2,7 +2,7 @@ import { z } from "zod";
 
 /**
  * إرسال إشعار موجَّه من المدير (راجع حالات الاستخدام § "إرسال الاشعارات للمستخدم
- * (جهة، الباحثين عن الفرص، أو كلاهما معًا)").
+ * (جهة، الباحثين عن الفٌرص، أو كلاهما معًا)").
  */
 export const broadcastNotificationSchema = z.object({
   audience: z.enum(["applicants", "organizations", "both"]),

@@ -7,7 +7,7 @@ import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { USER_ROLES } from "@/lib/constants";
 
-/** POST /api/reports — تبليغ عن رسالة/مستخدم/فرصة مخالفة (متاح لأي مستخدم مسجَّل دخوله) */
+/** POST /api/reports — تبليغ عن رسالة/مستخدم/فٌرصة مخالفة (متاح لأي مستخدم مسجَّل دخوله) */
 export async function POST(request: Request) {
   const session = await getServerSession();
   if (!session) return NextResponse.json({ error: "UNAUTHENTICATED", message: "سجّل الدخول لإرسال البلاغ" }, { status: 401 });

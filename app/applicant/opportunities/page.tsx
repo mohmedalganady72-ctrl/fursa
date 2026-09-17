@@ -23,7 +23,7 @@ export default async function ApplicantOpportunitiesPage({ searchParams }: { sea
   const savedIds = profile ? await getSavedOpportunityIds(profile.id, results.map((row) => row.opportunities.id)) : new Set<string>();
 
   return <div>
-    <div><h1 className="text-h1 text-neutral-900">البحث عن فرص</h1><p className="mt-1 text-body text-secondary">تظهر جميع الفرص أدناه. حدّد خيارات التصفية، ثم اضغط «بحث» لعرض النتائج.</p></div>
+    <div><h1 className="text-h1 text-neutral-900">البحث عن فٌرص</h1><p className="mt-1 text-body text-secondary">تظهر جميع الفٌرص أدناه. حدّد خيارات التصفية، ثم اضغط «بحث» لعرض النتائج.</p></div>
     <ApplicantOpportunitySearch />
     <div className="mt-6">
       {results.length === 0 ? <EmptyState icon={Briefcase} title="لا توجد نتائج مطابقة" description="جرّب تغيير كلمات البحث أو إزالة بعض خيارات التصفية." /> : <><p className="mb-4 text-body-sm text-secondary">عدد النتائج: {results.length}</p><div className="grid grid-cols-1 gap-4 sm:grid-cols-2">{results.map((row) => <OpportunityCard key={row.opportunities.id} id={row.opportunities.id} type={row.opportunities.type} title={row.opportunities.title} organizationName={row.organization_profiles?.name ?? ""} organizationLogoUrl={row.organization_profiles?.logoUrl} city={row.opportunities.city} workMode={row.opportunities.workMode} applicationDeadline={row.opportunities.applicationDeadline} isSaved={savedIds.has(row.opportunities.id)} href={`/applicant/opportunities/${row.opportunities.id}`} />)}</div></>}

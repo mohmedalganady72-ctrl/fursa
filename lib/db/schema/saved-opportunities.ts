@@ -4,7 +4,7 @@ import { applicantProfiles } from "./applicant-profiles";
 import { opportunities } from "./opportunities";
 
 /**
- * "زر حفظ الفرصة للباحث المسجل" (راجع وثيقة المتطلبات § 5.10) — قائمة اهتمام
+ * "زر حفظ الفٌرصة للباحث المسجل" (راجع وثيقة المتطلبات § 5.10) — قائمة اهتمام
  * بسيطة منفصلة تمامًا عن applications (الحفظ لا يعني التقديم).
  */
 export const savedOpportunities = pgTable(

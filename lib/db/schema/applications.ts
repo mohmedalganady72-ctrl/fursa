@@ -24,12 +24,12 @@ export const applicationStatusEnum = pgEnum("application_status", [
   "accepted", // تم قبول المتقدم نهائيًا
   "rejected", // تم رفض الطلب
   "withdrawn", // سحب الباحث طلبه بنفسه
-  "closed", // أُغلقت الفرصة قبل البتّ في هذا الطلب تحديدًا
+  "closed", // أُغلقت الفٌرصة قبل البتّ في هذا الطلب تحديدًا
 ]);
 
 /**
- * تقديمات الباحثين على الفرص. حقول التقديم الإضافية (لماذا أنت مناسب / الرقم الأكاديمي...)
- * تختلف حسب نوع الفرصة (راجع وثيقة المتطلبات § 5.11) — تُخزَّن هنا كحقول قابلة للـ NULL
+ * تقديمات الباحثين على الفٌرص. حقول التقديم الإضافية (لماذا أنت مناسب / الرقم الأكاديمي...)
+ * تختلف حسب نوع الفٌرصة (راجع وثيقة المتطلبات § 5.11) — تُخزَّن هنا كحقول قابلة للـ NULL
  * بنفس منطق جدول opportunities، بدل جداول تقديم منفصلة لكل نوع.
  */
 export const applications = pgTable(
@@ -45,7 +45,7 @@ export const applications = pgTable(
 
     status: applicationStatusEnum("status").notNull().default("applied"),
 
-    // ===== خاص بفرص العمل =====
+    // ===== خاص بفٌرص العمل =====
     whySuitableText: text("why_suitable_text"), // "لماذا أنت مناسب لهذه الوظيفة؟"
 
     // ===== خاص بالتدريب التعاوني =====
@@ -73,7 +73,7 @@ export const applications = pgTable(
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
-    // يمنع تقديم الباحث نفسه على نفس الفرصة أكثر من مرة (راجع § 3 قاعدة 8)
+    // يمنع تقديم الباحث نفسه على نفس الفٌرصة أكثر من مرة (راجع § 3 قاعدة 8)
     uniqueApplication: uniqueIndex("applications_unique_idx").on(
       table.opportunityId,
       table.applicantProfileId

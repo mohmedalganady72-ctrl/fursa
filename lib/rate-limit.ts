@@ -5,7 +5,7 @@ import type { OpportunityType } from "@/lib/constants";
 import { getDailyApplicationLimitPerType } from "@/features/admin/services/system-settings.service";
 
 /**
- * يتحقق من عدم تجاوز الباحث الحد الأقصى اليومي لكل نوع فرصة قبل قبول تقديم جديد.
+ * يتحقق من عدم تجاوز الباحث الحد الأقصى اليومي لكل نوع فٌرصة قبل قبول تقديم جديد.
  * الحد قابل للتعديل من لوحة المدير دون نشر كود جديد (راجع وثيقة المتطلبات § 5.12
  * و§ 15: "يجب تطبيق الحد على الخادم" — القيمة تُقرأ هنا من system_settings،
  * وهذا الفحص نفسه يُستدعى فقط من features/applications/services/applications.service.ts

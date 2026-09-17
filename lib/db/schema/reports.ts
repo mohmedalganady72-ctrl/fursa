@@ -8,7 +8,7 @@ export const reportStatusEnum = pgEnum("report_status", ["pending", "reviewed", 
 /**
  * آلية تبليغ عن محتوى مخالف (راجع وثيقة المتطلبات § 5.17: "يجب توفير آلية تبليغ
  * عن الرسائل المخالفة"). عامة بما يكفي (targetType) لتغطية الإبلاغ عن رسالة،
- * مستخدم، أو فرصة لاحقًا دون تغيير البنية.
+ * مستخدم، أو فٌرصة لاحقًا دون تغيير البنية.
  */
 export const reports = pgTable(
   "reports",

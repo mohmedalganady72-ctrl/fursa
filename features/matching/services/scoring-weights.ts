@@ -1,7 +1,7 @@
 import { OPPORTUNITY_TYPES, type OpportunityType } from "@/lib/constants";
 
 /**
- * جداول الأوزان لكل نوع فرصة — مفصولة عمدًا عن منطق الحساب (scoring-engine.ts)
+ * جداول الأوزان لكل نوع فٌرصة — مفصولة عمدًا عن منطق الحساب (scoring-engine.ts)
  * حتى يسهل تعديل الأوزان مستقبلًا (تجربة A/B، ملاحظات ميدانية) دون لمس الخوارزمية نفسها.
  * القيم مطابقة حرفيًا لوثيقة المتطلبات § 7.
  */
@@ -11,7 +11,7 @@ export const VOLUNTEERING_WEIGHTS = {
   skillsAndExperience: 0.3,
   city: 0.15,
   bioDescription: 0.1,
-  gender: 0.05, // تُطبَّق فقط إذا كانت الفرصة تشترط جنسًا محددًا، وإلا تُعاد توزيعها (راجع scoring-engine)
+  gender: 0.05, // تُطبَّق فقط إذا كانت الفٌرصة تشترط جنسًا محددًا، وإلا تُعاد توزيعها (راجع scoring-engine)
 } as const;
 
 export const CO_OP_WEIGHTS = {

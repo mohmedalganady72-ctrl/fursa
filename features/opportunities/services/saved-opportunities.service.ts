@@ -3,8 +3,8 @@ import { db } from "@/lib/db";
 import { savedOpportunities } from "@/lib/db/schema";
 
 /**
- * "زر حفظ الفرصة للباحث المسجل" (راجع وثيقة المتطلبات § 5.10). عملية toggle بسيطة —
- * لا validator منفصل لأن المدخلات (معرّفا الباحث والفرصة) تأتي من الجلسة والمسار مباشرة،
+ * "زر حفظ الفٌرصة للباحث المسجل" (راجع وثيقة المتطلبات § 5.10). عملية toggle بسيطة —
+ * لا validator منفصل لأن المدخلات (معرّفا الباحث والفٌرصة) تأتي من الجلسة والمسار مباشرة،
  * وقيد uniqueIndex في قاعدة البيانات يمنع الحفظ المكرر دون حاجة لتحقق إضافي في التطبيق.
  */
 export async function saveOpportunity(applicantProfileId: string, opportunityId: string) {
@@ -39,7 +39,7 @@ export async function isOpportunitySaved(applicantProfileId: string, opportunity
 }
 
 /**
- * مجموعة (Set) بمعرّفات الفرص المحفوظة ضمن قائمة معرّفات معطاة — استعلام واحد فقط،
+ * مجموعة (Set) بمعرّفات الفٌرص المحفوظة ضمن قائمة معرّفات معطاة — استعلام واحد فقط،
  * بدل استدعاء isOpportunitySaved لكل بطاقة على حدة (N+1). تُستدعى فقط من صفحات
  * الباحث المسجَّل (راجع صفحات opportunities/jobs|volunteering|co-op)، وليس من
  * listOpportunities نفسها لأنها تخدم الزوار غير المسجَّلين أيضًا.
@@ -63,7 +63,7 @@ export async function getSavedOpportunityIds(
   return new Set(rows.map((r) => r.opportunityId));
 }
 
-/** قائمة الفرص المحفوظة لباحث معيّن (تُستخدم في Dashboard الباحث — راجع § 5.20) */
+/** قائمة الفٌرص المحفوظة لباحث معيّن (تُستخدم في Dashboard الباحث — راجع § 5.20) */
 export async function listSavedOpportunities(applicantProfileId: string) {
   return db.query.savedOpportunities.findMany({
     where: eq(savedOpportunities.applicantProfileId, applicantProfileId),

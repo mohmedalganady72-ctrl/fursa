@@ -4,7 +4,7 @@
 alter table opportunities enable row level security;
 alter table opportunity_fields enable row level security;
 
--- الفرص المفتوحة تظهر للجميع؛ الجهة صاحبة الفرصة ترى كل فرصها بغضّ النظر عن الحالة
+-- الفٌرص المفتوحة تظهر للجميع؛ الجهة صاحبة الفٌرصة ترى كل فٌرصها بغضّ النظر عن الحالة
 create policy "opportunities_select_open_or_own"
   on opportunities for select
   using (

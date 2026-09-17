@@ -21,7 +21,7 @@ export async function GET(request: Request) {
   return NextResponse.json({ data: results });
 }
 
-/** POST /api/opportunities — إنشاء فرصة جديدة (جهة معتمدة ونشطة فقط) */
+/** POST /api/opportunities — إنشاء فٌرصة جديدة (جهة معتمدة ونشطة فقط) */
 export async function POST(request: Request) {
   const session = await requireSession();
   if (!isActiveOrganization(session)) {
