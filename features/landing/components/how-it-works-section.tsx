@@ -4,13 +4,13 @@ import { ScrollMotion } from "@/components/shared/scroll-motion";
 
 const steps = [
   { number: "01", icon: UserRoundCheck, title: "عرّفنا بطموحك", description: "أنشئ حسابك وأكمل ملفًا يعكس تخصصك ومهاراتك وما تبحث عنه." },
-  { number: "02", icon: Search, title: "اكتشف ما يناسبك", description: "تظهر لك الفرص في لوحة الباحث مع بحث وفلاتر واضحة بعد اكتمال حسابك." },
+  { number: "02", icon: Search, title: "اكتشف ما يناسبك", description: "ابحث في الفرص واستخدم خيارات التصفية للوصول إلى الأنسب لك." },
   { number: "03", icon: Send, title: "قدّم وتابع بثقة", description: "أرسل طلبك مرة واحدة، ثم تابع حالته ورسائل الجهة من مكان واحد." },
 ] as const;
 
 export function HowItWorksSection() {
   return <section id="how-it-works" className="scroll-mt-24 overflow-hidden border-y border-neutral-200 bg-neutral-50 px-4 py-20 md:px-6 md:py-28 lg:px-8"><div className="mx-auto max-w-7xl">
-    <ScrollReveal className="mx-auto max-w-2xl text-center"><h2 className="font-heading text-4xl font-bold text-neutral-900 md:text-5xl">من حسابك إلى فرصتك، بخطوات واضحة</h2><p className="mt-4 text-body-lg text-secondary">صممنا الرحلة لتبقى أنت مركزها، من أول معلومة حتى متابعة طلبك.</p></ScrollReveal>
+    <ScrollReveal className="mx-auto max-w-2xl text-center"><h2 className="font-heading text-4xl font-bold text-neutral-900 md:text-5xl">من إنشاء الحساب إلى متابعة طلبك</h2><p className="mt-4 text-body-lg text-secondary">خطوات واضحة تساعدك على إنشاء ملفك، واكتشاف الفرص، ومتابعة طلباتك.</p></ScrollReveal>
     <div className="relative mt-16 grid gap-8 md:grid-cols-3 md:gap-10">
       <div className="absolute inset-x-[16%] top-9 hidden h-px bg-primary-200 md:block" />
       {steps.map((step, index) => <ScrollReveal key={step.number} delay={index * 120} className="relative text-center"><ScrollMotion speed={16 + index * 7}>

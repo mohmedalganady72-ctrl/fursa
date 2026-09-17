@@ -15,7 +15,7 @@ export default async function AdminOrganizationsPage({ searchParams }: { searchP
   return (
     <div>
       <h1 className="text-h1 text-neutral-900">الجهات</h1>
-      <p className="mt-1 text-body text-secondary">{organizations.length} جهة مسجَّلة</p>
+      <p className="mt-1 text-body text-secondary">عدد الجهات المسجّلة: {organizations.length}</p>
       <AdminSearch defaultValue={query} placeholder="ابحث باسم الجهة أو المدينة أو البريد" />
 
       {organizations.length === 0 ? (

@@ -39,11 +39,11 @@ export async function PATCH(
     const message = error instanceof Error ? error.message : "UNKNOWN_ERROR";
 
     const knownErrors: Record<string, { status: number; userMessage: string }> = {
-      FORBIDDEN: { status: 403, userMessage: "لا تملك صلاحية اتخاذ قرار على هذا الطلب" },
-      INVALID_STATUS_TRANSITION: { status: 409, userMessage: "تم اتخاذ قرار على هذا الطلب مسبقًا" },
-      NO_SEATS_AVAILABLE: { status: 409, userMessage: "لا توجد مقاعد متاحة — اكتمل العدد المطلوب بالفعل" },
+      FORBIDDEN: { status: 403, userMessage: "لا تملك صلاحية اتخاذ قرار بشأن هذا الطلب" },
+      INVALID_STATUS_TRANSITION: { status: 409, userMessage: "اتُخذ قرار بشأن هذا الطلب مسبقًا" },
+      NO_SEATS_AVAILABLE: { status: 409, userMessage: "لا توجد مقاعد متاحة؛ اكتمل العدد المطلوب" },
       OPPORTUNITY_ALREADY_CLOSED: { status: 409, userMessage: "أُغلقت هذه الفرصة بالفعل" },
-      ALREADY_ACCEPTED: { status: 409, userMessage: "تم قبول هذا المتقدم مسبقًا" },
+      ALREADY_ACCEPTED: { status: 409, userMessage: "قُبل هذا المتقدم مسبقًا" },
       APPLICATION_NOT_FOUND: { status: 404, userMessage: "الطلب غير موجود" },
     };
 

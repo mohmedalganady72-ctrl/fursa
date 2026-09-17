@@ -61,8 +61,8 @@ export async function approveOrganization(organizationProfileId: string, adminId
   await createNotification({
     userId: orgProfile.userId,
     type: "account_verified",
-    title: "تم اعتماد حسابكم",
-    body: "تم التحقق من حساب جهتكم بنجاح، ويمكنكم الآن نشر الفرص واستقبال المتقدمين.",
+    title: "اعتُمد حساب جهتكم",
+    body: "يمكنكم الآن نشر الفرص واستقبال طلبات المتقدمين.",
     linkUrl: "/organization/dashboard",
     sendEmail: true,
   }).catch((error) => {
@@ -95,7 +95,7 @@ export async function rejectOrganization(
   await createNotification({
     userId: orgProfile.userId,
     type: "system_announcement",
-    title: "لم تتم الموافقة على طلب الانضمام",
+    title: "لم يُقبل طلب انضمام جهتكم",
     body: rejectionReason ?? "لم يستوفِ الطلب متطلبات الانضمام للمنصة حاليًا.",
     sendEmail: true,
   }).catch((error) => {

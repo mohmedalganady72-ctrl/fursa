@@ -10,7 +10,7 @@ import { ReportButton } from "@/features/reports/components/report-button";
 
 const ORG_TYPE_LABELS: Record<string, string> = {
   company: "شركة",
-  nonprofit: "منظمة تطوعية",
+  nonprofit: "منظمة غير ربحية",
   academic: "مؤسسة أكاديمية",
   government: "جهة حكومية",
 };

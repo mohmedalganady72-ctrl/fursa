@@ -29,8 +29,8 @@ export function ApplicantRowActions({ applicationId, canAccept }: { applicationI
 
       toast({
         variant: "success",
-        title: decision === "accept" ? "تم قبول المتقدم" : "تم رفض المتقدم",
-        description: decision === "accept" ? "تم فتح محادثة للتواصل معه" : undefined,
+        title: decision === "accept" ? "قُبل المتقدم" : "لم يُقبل المتقدم",
+        description: decision === "accept" ? "أُنشئت محادثة للتواصل معه." : undefined,
       });
       router.refresh();
     } finally {

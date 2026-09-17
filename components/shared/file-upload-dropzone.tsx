@@ -38,7 +38,7 @@ export function FileUploadDropzone({
       return;
     }
     if (file.size > maxSizeMb * 1024 * 1024) {
-      setError(`حجم الملف يتجاوز الحد المسموح (${maxSizeMb} ميجابايت)`);
+      setError(`حجم الملف أكبر من الحد المسموح (${maxSizeMb} ميجابايت)`);
       return;
     }
     setError(null);
@@ -85,7 +85,7 @@ export function FileUploadDropzone({
         ) : (
           <>
             <Upload className={cn("shrink-0 text-neutral-400", compact ? "h-5 w-5" : "h-6 w-6")} />
-            <span className="text-body-sm text-secondary">{compact ? "اختيار صورة" : "اضغط أو اسحب الملف هنا للرفع"}</span>
+            <span className="text-body-sm text-secondary">{compact ? "اختيار صورة" : "اختر ملفًا أو اسحبه هنا"}</span>
           </>
         )}
       </label>

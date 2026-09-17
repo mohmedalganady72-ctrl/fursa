@@ -31,7 +31,7 @@ export default function SmartSearchPage() {
       const result = await response.json();
       setMatchedOpportunities(result.data ?? []);
     } catch {
-      toast({ variant: "error", title: "تعذّر تحليل السيرة الذاتية", description: "حاول مرة أخرى" });
+      toast({ variant: "error", title: "تعذّر تحليل السيرة الذاتية", description: "تحقق من الملف وحاول مرة أخرى." });
     } finally {
       setIsAnalyzing(false);
     }
@@ -54,7 +54,7 @@ export default function SmartSearchPage() {
           selectedFile={resumeFile}
           onFileSelected={setResumeFile}
           label="السيرة الذاتية (PDF)"
-          helperText="يمكنك أيضًا الاعتماد على بيانات ملفك الشخصي فقط بدون رفع سيرة ذاتية"
+          helperText="يمكنك الاعتماد على بيانات ملفك الشخصي من دون رفع سيرة ذاتية."
         />
 
         <div className="mt-4 flex gap-3">
@@ -71,7 +71,7 @@ export default function SmartSearchPage() {
         {isAnalyzing ? (
           <OpportunityGridSkeleton count={3} />
         ) : matchedOpportunities === null ? null : matchedOpportunities.length === 0 ? (
-          <EmptyState icon={Sparkles} title="لم نجد فرصًا مطابقة حاليًا" description="جرّب تحديث بيانات ملفك الشخصي" />
+          <EmptyState icon={Sparkles} title="لا توجد فرص مناسبة حاليًا" description="حدّث بيانات ملفك الشخصي لتحسين النتائج." />
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {matchedOpportunities.map((row) => (

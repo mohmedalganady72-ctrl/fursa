@@ -14,7 +14,7 @@ export default async function AdminsPage() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-h1 text-neutral-900">مديرو المنصة</h1>
-          <p className="mt-1 text-body text-secondary">{adminAccounts.length} حساب إداري</p>
+          <p className="mt-1 text-body text-secondary">عدد الحسابات الإدارية: {adminAccounts.length}</p>
         </div>
         <Button asChild><Link href="/admin/admins/new"><Plus className="h-4 w-4" />إضافة مدير</Link></Button>
       </div>

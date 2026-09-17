@@ -55,7 +55,7 @@ export default async function JobsPage({
           <EmptyState
             icon={Briefcase}
             title="لا توجد فرص تطابق بحثك حاليًا"
-            description="جرّب تعديل الفلاتر أو البحث بكلمات مختلفة"
+            description="جرّب تعديل خيارات التصفية أو استخدام كلمات بحث مختلفة."
           />
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

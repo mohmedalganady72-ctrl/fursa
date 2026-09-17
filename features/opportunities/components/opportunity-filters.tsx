@@ -10,8 +10,8 @@ const SORT_LABELS: Record<string, string> = {
   [OPPORTUNITY_SORT_OPTIONS.NEWEST]: "الأحدث",
   [OPPORTUNITY_SORT_OPTIONS.BEST_MATCH]: "الأكثر مناسبة لي",
   [OPPORTUNITY_SORT_OPTIONS.DEADLINE_SOON]: "الأقرب لانتهاء التقديم",
-  [OPPORTUNITY_SORT_OPTIONS.LEAST_APPLIED]: "الأقل تقدمًا",
-  [OPPORTUNITY_SORT_OPTIONS.MOST_APPLIED]: "الأكثر تقدمًا",
+  [OPPORTUNITY_SORT_OPTIONS.LEAST_APPLIED]: "الأقل تقديمًا عليها",
+  [OPPORTUNITY_SORT_OPTIONS.MOST_APPLIED]: "الأكثر تقديمًا عليها",
 };
 
 /**
@@ -48,7 +48,7 @@ export function OpportunityFilters() {
         onValueChange={(value) => updateFilter("workMode", value)}
       >
         <SelectTrigger className="sm:w-40">
-          <SelectValue placeholder="نوع الدوام" />
+          <SelectValue placeholder="نمط العمل" />
         </SelectTrigger>
         <SelectContent>
           {Object.entries(WORK_MODE_LABELS).map(([value, label]) => (

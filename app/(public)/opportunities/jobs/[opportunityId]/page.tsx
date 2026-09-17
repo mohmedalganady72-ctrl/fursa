@@ -54,7 +54,7 @@ export default async function JobDetailsPage({
           <p className="text-body-sm font-medium text-neutral-600">
             {opportunity.organizationProfile?.name}
           </p>
-          <Badge variant="info">عمل</Badge>
+          <Badge variant="info">وظيفة</Badge>
         </div>
       </div>
 

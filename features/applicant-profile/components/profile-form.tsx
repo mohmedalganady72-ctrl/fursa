@@ -94,7 +94,7 @@ export function ProfileForm({ initialProfile, availableFields, selectedFieldIds 
       if (avatarFile) {
         const upload = new FormData(); upload.set("kind", "avatar"); upload.set("file", avatarFile);
         const uploadResponse = await fetch("/api/uploads", { method: "POST", body: upload });
-        const uploadResult = await uploadResponse.json().catch(() => ({ message: "أعاد الخادم استجابة غير صالحة" }));
+        const uploadResult = await uploadResponse.json().catch(() => ({ message: "تعذّر قراءة استجابة الخادم. حاول مرة أخرى." }));
         if (!uploadResponse.ok) {
           toast({ variant: "error", title: "تعذّر رفع الصورة", description: uploadResult.message ?? uploadResult.error });
           return;
@@ -117,7 +117,7 @@ export function ProfileForm({ initialProfile, availableFields, selectedFieldIds 
       });
 
       if (!response.ok) {
-        const result = await response.json().catch(() => ({ message: "أعاد الخادم استجابة غير صالحة" }));
+        const result = await response.json().catch(() => ({ message: "تعذّر قراءة استجابة الخادم. حاول مرة أخرى." }));
         toast({ variant: "error", title: "تعذّر حفظ الملف الشخصي", description: result.message });
         return;
       }
@@ -227,7 +227,7 @@ export function ProfileForm({ initialProfile, availableFields, selectedFieldIds 
               ))}
             </div>
           ) : (
-            <p className="text-body-sm text-neutral-500">لم تختر أي مجال بعد</p>
+            <p className="text-body-sm text-neutral-500">لم تختر أي مجال حتى الآن.</p>
           )}
         </div>
 
@@ -272,7 +272,7 @@ export function ProfileForm({ initialProfile, availableFields, selectedFieldIds 
               })}
             </div>
           ) : (
-            <p className="px-2 py-4 text-center text-body-sm text-neutral-500">لا توجد مجالات مطابقة للبحث</p>
+            <p className="px-2 py-4 text-center text-body-sm text-neutral-500">لا توجد مجالات مطابقة لعبارة البحث.</p>
           )}
         </div>
       </div>

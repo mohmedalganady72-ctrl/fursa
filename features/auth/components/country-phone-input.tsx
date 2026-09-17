@@ -37,6 +37,6 @@ export function CountryPhoneInput({ id, value, onChange }: { id: string; value: 
       </div>
       <Input id={id} type="tel" inputMode="numeric" dir="ltr" autoComplete="tel-national" value={nationalNumber} onChange={(event) => updateNumber(event.target.value)} required placeholder={country.placeholder} className="h-full rounded-none border-0 text-start shadow-none focus-visible:ring-0" />
     </div>
-    <p className="text-caption text-secondary">سيُرسل رمز تحقق برسالة SMS إلى <span dir="ltr">{value || `${country.dial}…`}</span></p>
+    <p className="text-caption text-secondary">سنرسل رمز التحقق في رسالة نصية إلى <span dir="ltr">{value || `${country.dial}…`}</span></p>
   </div>;
 }

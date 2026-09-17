@@ -30,7 +30,7 @@ export default async function SavedOpportunitiesPage() {
           <EmptyState
             icon={Bookmark}
             title="لا توجد فرص محفوظة بعد"
-            description="اضغط أيقونة الحفظ على أي فرصة أثناء التصفّح لإضافتها هنا"
+            description="اضغط أيقونة الحفظ في بطاقة أي فرصة لإضافتها هنا."
             actionLabel="تصفّح الفرص"
           />
         </div>

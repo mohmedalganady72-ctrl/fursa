@@ -36,11 +36,11 @@ export function CreateAdminForm() {
       const result = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        toast({ variant: "error", title: "تعذّر إنشاء الحساب", description: result.message ?? "حاول مرة أخرى" });
+        toast({ variant: "error", title: "تعذّر إنشاء الحساب", description: result.message ?? "تحقق من البيانات وحاول مرة أخرى." });
         return;
       }
 
-      toast({ variant: "success", title: "تم إنشاء حساب المدير الجديد" });
+      toast({ variant: "success", title: "أُنشئ حساب المدير الجديد" });
       setEmail("");
       setPassword("");
       setConfirmPassword("");

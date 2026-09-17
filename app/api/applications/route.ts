@@ -36,7 +36,7 @@ export async function POST(request: Request) {
     const knownErrors: Record<string, { status: number; userMessage: string }> = {
       DAILY_APPLICATION_LIMIT_EXCEEDED: {
         status: 429,
-        userMessage: "لقد وصلت للحد الأقصى من التقديمات المسموح بها لهذا النوع اليوم",
+        userMessage: "وصلت إلى الحد اليومي لطلبات هذا النوع من الفرص",
       },
       OPPORTUNITY_CLOSED: { status: 409, userMessage: "انتهى موعد التقديم على هذه الفرصة" },
       OPPORTUNITY_EXPIRED: { status: 409, userMessage: "انتهى موعد التقديم على هذه الفرصة" },

@@ -38,14 +38,14 @@ export default async function OrganizationApplicantProfilePage({ params }: { par
     <div className="mt-6 grid gap-5 md:grid-cols-[1.4fr_1fr]">
       <div className="space-y-5">
         <Section title="نبذة شخصية"><p className="whitespace-pre-wrap text-body leading-7 text-secondary">{profile.bio || "لم يضف المتقدم نبذة شخصية."}</p></Section>
-        <Section title="المهارات"><TagList values={profile.skills ?? []} empty="لم تُضف مهارات" /></Section>
-        <Section title="الخبرات"><TextList values={profile.experiences ?? []} empty="لم تُضف خبرات" /></Section>
-        <Section title="الدورات والشهادات"><TextList values={profile.certifications ?? []} empty="لم تُضف دورات أو شهادات" /></Section>
+        <Section title="المهارات"><TagList values={profile.skills ?? []} empty="لا توجد مهارات مضافة." /></Section>
+        <Section title="الخبرات"><TextList values={profile.experiences ?? []} empty="لا توجد خبرات مضافة." /></Section>
+        <Section title="الدورات والشهادات"><TextList values={profile.certifications ?? []} empty="لا توجد دورات أو شهادات مضافة." /></Section>
       </div>
       <div className="space-y-5">
         <Section title="التعليم"><Info icon={GraduationCap} value={profile.qualification} /><Info icon={BriefcaseBusiness} value={profile.specialization} /><Info icon={GraduationCap} value={profile.university} /></Section>
-        <Section title="المجالات"><TagList values={profile.applicantFields.map((item) => item.field.nameAr)} empty="لم تُحدد مجالات" /></Section>
-        <Section title="اللغات"><TagList values={profile.languages ?? []} empty="لم تُضف لغات" icon={Languages} /></Section>
+        <Section title="المجالات"><TagList values={profile.applicantFields.map((item) => item.field.nameAr)} empty="لا توجد مجالات محددة." /></Section>
+        <Section title="اللغات"><TagList values={profile.languages ?? []} empty="لا توجد لغات مضافة." icon={Languages} /></Section>
         {(profile.linkedinUrl || profile.githubUrl || profile.portfolioUrl) && <Section title="الروابط"><ProfileLinks profile={profile} /></Section>}
       </div>
     </div>

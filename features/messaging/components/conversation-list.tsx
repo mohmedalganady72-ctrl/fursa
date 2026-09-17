@@ -25,7 +25,7 @@ export function ConversationList({ conversations, emptyDescription, embedded = f
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-3"><p className="truncate text-body-sm font-semibold text-neutral-800">{conversation.participantName}</p><time className="shrink-0 text-caption text-neutral-400">{formatDateArabic(conversation.lastActivityAt)}</time></div>
             <p className="truncate text-caption text-secondary">{conversation.opportunityTitle}</p>
-            <p className="mt-1 truncate text-body-sm text-neutral-600">{conversation.lastMessage ?? "ابدأ المحادثة الآن"}</p>
+            <p className="mt-1 truncate text-body-sm text-neutral-600">{conversation.lastMessage ?? "لا توجد رسائل بعد"}</p>
           </div>
           {conversation.unreadCount > 0 && <span className="flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full bg-primary-600 px-1.5 text-caption font-semibold !text-white dark:bg-primary-300">{conversation.unreadCount > 99 ? "99+" : conversation.unreadCount}</span>}
         </Link>

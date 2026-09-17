@@ -35,8 +35,8 @@ export async function POST(request: Request) {
     await createNotification({
       userId: user.id,
       type: "inactivity_nudge",
-      title: "فرص جديدة بانتظارك",
-      body: "لم تدخل المنصة منذ عدة أيام — تصفّح الفرص الجديدة التي قد تناسب اهتماماتك",
+      title: "فرص جديدة في انتظارك",
+      body: "لم تزر المنصة منذ عدة أيام. تصفّح الفرص الجديدة التي قد تناسب اهتماماتك.",
       linkUrl: "/opportunities/jobs",
       sendEmail: true,
     });

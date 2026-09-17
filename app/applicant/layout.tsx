@@ -21,7 +21,7 @@ import { withDatabaseRetry } from "@/lib/db/retry";
 const APPLICANT_NAV_ITEMS: SidebarNavItem[] = [
   { href: "/applicant/dashboard", label: "الرئيسية", icon: "dashboard" },
   { href: "/applicant/profile", label: "ملفي الشخصي", icon: "profile" },
-  { href: "/applicant/applications", label: "تقديماتي", icon: "applications" },
+  { href: "/applicant/applications", label: "طلباتي", icon: "applications" },
   { href: "/applicant/opportunities", label: "البحث عن فرص", icon: "opportunities" },
   { href: "/applicant/messages", label: "الرسائل", icon: "messages" },
 ];

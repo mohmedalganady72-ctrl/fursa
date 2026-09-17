@@ -9,7 +9,7 @@ import { OPPORTUNITY_TYPES } from "@/lib/constants";
 const jobApplicationSchema = z.object({
   opportunityType: z.literal(OPPORTUNITY_TYPES.JOB),
   opportunityId: z.string().uuid(),
-  whySuitableText: z.string().min(30, "الرجاء كتابة نص لا يقل عن 30 حرفًا").max(1500),
+  whySuitableText: z.string().min(30, "اكتب نصًا لا يقل عن 30 حرفًا").max(1500),
   resumeUrl: z.string().min(1, "السيرة الذاتية مطلوبة لفرص العمل"),
 });
 

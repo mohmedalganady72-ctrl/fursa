@@ -4,7 +4,7 @@ import { MAX_APPLICANT_FIELDS } from "@/lib/constants";
 /** التحقق من بيانات الملف الشخصي — راجع وثيقة المتطلبات § 10.1 لحقول الإدخال الكاملة */
 export const applicantProfileSchema = z.object({
   fullName: z.string().min(2, "الاسم قصير جدًا").max(100),
-  city: z.string().min(2, "الرجاء اختيار المدينة"),
+  city: z.string().min(2, "اختر المدينة"),
   bio: z.string().max(500).optional(),
   gender: z.enum(["male", "female"]).optional(),
   qualification: z.string().max(100).optional(),

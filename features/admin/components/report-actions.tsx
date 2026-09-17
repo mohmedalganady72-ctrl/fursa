@@ -16,7 +16,7 @@ export function ReportActions({ reportId }: { reportId: string }) {
       const response = await fetch(`/api/admin/reports/${reportId}`, { method: "PATCH",
         headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) });
       if (!response.ok) throw new Error();
-      toast({ variant: "success", title: status === "reviewed" ? "تمت معالجة البلاغ" : "تم تجاهل البلاغ" });
+      toast({ variant: "success", title: status === "reviewed" ? "تمت معالجة البلاغ" : "أُغلق البلاغ دون إجراء" });
       router.refresh();
     } catch {
       toast({ variant: "error", title: "تعذّر تحديث البلاغ" });

@@ -17,6 +17,7 @@ export function VerifyEmailForm() {
   const { toast } = useToast();
   const initialEmail = searchParams.get("email") ?? firebaseClientAuth.currentUser?.email ?? "";
   const google = searchParams.get("provider") === "google";
+  const isLogin = searchParams.get("mode") === "login";
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
   const [email, setEmail] = React.useState(initialEmail);
   const [newEmail, setNewEmail] = React.useState(initialEmail);
@@ -43,15 +44,15 @@ export function VerifyEmailForm() {
       if (!user) throw new Error("انتهت جلسة التسجيل. سجّل الدخول بالبريد بعد فتح رابط التحقق.");
       await user.reload();
       if (!user.emailVerified) return false;
-      await createBetterAuthSession("email", await user.getIdToken(true), role);
+      await createBetterAuthSession("email", await user.getIdToken(true), isLogin ? undefined : role);
       verificationComplete.current = true;
       sessionStorage.removeItem("fursa-registration-role");
-      window.location.replace(redirectTo ? await resolvePostAuthPath(redirectTo) : profilePath(role));
+      window.location.replace(isLogin ? await resolvePostAuthPath(redirectTo) : profilePath(role));
       return true;
     } finally {
       verificationInFlight.current = false;
     }
-  }, [google, redirectTo]);
+  }, [google, isLogin, redirectTo]);
 
   React.useEffect(() => {
     if (google) {
@@ -76,7 +77,7 @@ export function VerifyEmailForm() {
     setIsChecking(true);
     try {
       if (!(await finishVerification())) {
-        toast({ variant: "info", title: "لم يتم التحقق بعد", description: "افتح الرابط في بريدك ثم عُد إلى هذه الصفحة" });
+        toast({ variant: "info", title: "لم يكتمل التحقق بعد", description: "افتح رابط التحقق في بريدك الإلكتروني، ثم ارجع إلى هذه الصفحة." });
       }
     } catch (error) {
       toast({ variant: "error", title: "تعذّر إكمال التحقق", description: firebaseErrorMessage(error) });
@@ -88,7 +89,7 @@ export function VerifyEmailForm() {
   async function resend() {
     const user = firebaseClientAuth.currentUser;
     if (!user) {
-      toast({ variant: "error", title: "انتهت جلسة التسجيل", description: "ارجع إلى صفحة التسجيل وحاول مجدداً" });
+      toast({ variant: "error", title: "انتهت جلسة التسجيل", description: "ارجع إلى صفحة التسجيل وحاول مرة أخرى." });
       return;
     }
     setIsResending(true);
@@ -97,7 +98,7 @@ export function VerifyEmailForm() {
       const settings = { url: `${window.location.origin}/verify-email?email=${encodeURIComponent(email)}${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}` };
       if (email !== user.email) await verifyBeforeUpdateEmail(user, email, settings);
       else await sendEmailVerification(user, settings);
-      toast({ variant: "success", title: "أُرسل رابط تحقق جديد" });
+      toast({ variant: "success", title: "أُرسل رابط تحقق جديد", description: "راجع صندوق الوارد والبريد غير المرغوب فيه." });
     } catch (error) {
       toast({ variant: "error", title: "تعذّر إرسال الرابط", description: firebaseErrorMessage(error) });
     } finally {
@@ -110,7 +111,7 @@ export function VerifyEmailForm() {
     const user = firebaseClientAuth.currentUser;
     const normalizedEmail = newEmail.trim().toLowerCase();
     if (!user) {
-      toast({ variant: "error", title: "انتهت جلسة التسجيل", description: "ارجع إلى صفحة التسجيل وحاول مجدداً" });
+      toast({ variant: "error", title: "انتهت جلسة التسجيل", description: "ارجع إلى صفحة التسجيل وحاول مرة أخرى." });
       return;
     }
     if (!normalizedEmail || normalizedEmail === email) {
@@ -126,7 +127,7 @@ export function VerifyEmailForm() {
       setEmail(normalizedEmail);
       setIsEditingEmail(false);
       window.history.replaceState(null, "", `/verify-email?email=${encodeURIComponent(normalizedEmail)}${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`);
-      toast({ variant: "success", title: "أُرسل الرابط إلى البريد الجديد", description: "لن يتغير بريد الحساب حتى تفتح رابط التحقق" });
+      toast({ variant: "success", title: "أُرسل الرابط إلى البريد الجديد", description: "لن يتغير بريد الحساب حتى تفتح رابط التحقق." });
     } catch (error) {
       toast({ variant: "error", title: "تعذّر تغيير البريد", description: firebaseErrorMessage(error) });
     } finally {
@@ -137,10 +138,10 @@ export function VerifyEmailForm() {
   return (
     <div className="flex flex-col gap-5 rounded-lg border border-neutral-200 bg-surface p-6 text-center shadow-sm">
       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary-50 text-primary-700">{google ? <CheckCircle2 className="h-6 w-6" /> : <Mail className="h-6 w-6" />}</div>
-      <div><h1 className="text-h3 text-neutral-900">{google ? "تم التحقق عبر Google" : "تحقق من بريدك الإلكتروني"}</h1><p className="mt-2 text-body-sm text-secondary">{google ? "يتم الآن تجهيز حسابك ونقلك إلى ملفك الشخصي" : <>أرسل فرص رابط تحقق إلى <span dir="ltr" className="font-medium text-neutral-800">{email}</span></>}</p></div>
+      <div><h1 className="text-h3 text-neutral-900">{google ? "اكتمل التحقق عبر Google" : "تحقق من بريدك الإلكتروني"}</h1><p className="mt-2 text-body-sm text-secondary">{google ? "نجهّز حسابك الآن، وستنتقل بعد لحظات إلى ملفك الشخصي." : <>أرسلنا رابط تحقق إلى <span dir="ltr" className="font-medium text-neutral-800">{email}</span></>}</p></div>
       {!google && <>
-        {isEditingEmail ? <form onSubmit={changeEmail} className="rounded-md border border-neutral-200 bg-neutral-50 p-4 text-start"><Label htmlFor="corrected-email">البريد الإلكتروني الصحيح</Label><Input id="corrected-email" type="email" dir="ltr" autoComplete="email" value={newEmail} onChange={(event) => setNewEmail(event.target.value)} required className="mt-2" /><div className="mt-3 flex gap-2"><Button type="submit" size="sm" isLoading={isChangingEmail}>إرسال للرابط الجديد</Button><Button type="button" size="icon" variant="ghost" aria-label="إلغاء" onClick={() => { setNewEmail(email); setIsEditingEmail(false); }}><X className="h-4 w-4" /></Button></div></form> : <Button type="button" variant="outline" onClick={() => setIsEditingEmail(true)}><Pencil className="h-4 w-4" />البريد غير صحيح؟ تغييره</Button>}
-        <Button type="button" size="lg" onClick={checkNow} isLoading={isChecking}>تحققت الآن</Button>
+        {isEditingEmail ? <form onSubmit={changeEmail} className="rounded-md border border-neutral-200 bg-neutral-50 p-4 text-start"><Label htmlFor="corrected-email">البريد الإلكتروني الصحيح</Label><Input id="corrected-email" type="email" dir="ltr" autoComplete="email" value={newEmail} onChange={(event) => setNewEmail(event.target.value)} required className="mt-2" /><div className="mt-3 flex gap-2"><Button type="submit" size="sm" isLoading={isChangingEmail}>إرسال رابط التحقق</Button><Button type="button" size="icon" variant="ghost" aria-label="إلغاء" onClick={() => { setNewEmail(email); setIsEditingEmail(false); }}><X className="h-4 w-4" /></Button></div></form> : <Button type="button" variant="outline" onClick={() => setIsEditingEmail(true)}><Pencil className="h-4 w-4" />هل البريد غير صحيح؟ تعديله</Button>}
+        <Button type="button" size="lg" onClick={checkNow} isLoading={isChecking}>تحققت من بريدي</Button>
         <Button type="button" variant="ghost" onClick={resend} isLoading={isResending}>إعادة إرسال الرابط</Button>
       </>}
     </div>

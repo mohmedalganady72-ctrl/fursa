@@ -43,8 +43,8 @@ export default async function OrganizationOpportunitiesPage() {
         <div className="mt-6">
           <EmptyState
             icon={Briefcase}
-            title="لم تنشروا أي فرصة بعد"
-            description="ابدأوا بنشر أول فرصة عمل أو تطوع أو تدريب تعاوني"
+            title="لم تنشروا أي فرصة حتى الآن"
+            description="ابدؤوا بنشر أول فرصة وظيفية أو تطوعية أو تدريب تعاوني."
             actionLabel="نشر فرصة جديدة"
           />
         </div>
@@ -59,7 +59,7 @@ export default async function OrganizationOpportunitiesPage() {
                 </div>
                 <h3 className="mt-2 text-h4 text-neutral-800">{opp.title}</h3>
                 <p className="mt-1 text-caption text-neutral-400">
-                  نُشرت في {formatDateArabic(opp.publishedAt)} · {opp.seatsFilled}/{opp.seatsAvailable} مقعد
+                  نُشرت في {formatDateArabic(opp.publishedAt)} · المقاعد المشغولة: {opp.seatsFilled} من {opp.seatsAvailable}
                 </p>
               </div>
               <Button variant="outline" size="sm" asChild>

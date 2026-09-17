@@ -11,7 +11,7 @@ import { formatDateArabic } from "@/lib/utils";
 
 const ORG_TYPE_LABELS: Record<string, string> = {
   company: "شركة",
-  nonprofit: "منظمة تطوعية",
+  nonprofit: "منظمة غير ربحية",
   academic: "مؤسسة أكاديمية",
   government: "جهة حكومية",
 };

@@ -18,11 +18,11 @@ export async function POST(request: Request) {
 
   try {
     const admin = await db.query.admins.findFirst({ where: eq(admins.userId, session.user.id) });
-    if (!admin) return NextResponse.json({ error: "FORBIDDEN", message: "الحساب الحالي ليس مديراً مخولاً" }, { status: 403 });
+    if (!admin) return NextResponse.json({ error: "FORBIDDEN", message: "لا يملك الحساب الحالي صلاحيات المدير" }, { status: 403 });
     const result = await broadcastNotification(parsed.data, admin.id);
     return NextResponse.json({ data: result });
   } catch (error) {
     console.error("[admin-broadcast]", error);
-    return NextResponse.json({ error: "BROADCAST_FAILED", message: "تعذّر حفظ الإشعارات. تحقق من اتصال قاعدة البيانات وحاول مجدداً" }, { status: 500 });
+    return NextResponse.json({ error: "BROADCAST_FAILED", message: "تعذّر حفظ الإشعارات. حاول مرة أخرى بعد لحظات." }, { status: 500 });
   }
 }

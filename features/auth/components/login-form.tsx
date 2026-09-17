@@ -24,6 +24,7 @@ export function LoginForm() {
   const [password, setPassword] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const authActionInFlight = React.useRef(false);
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
 
   async function finish(provider: "email" | "google", idToken: string) {
@@ -33,6 +34,8 @@ export function LoginForm() {
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    if (authActionInFlight.current) return;
+    authActionInFlight.current = true;
     setIsSubmitting(true);
     try {
       await firebaseAuthReady;
@@ -40,7 +43,7 @@ export function LoginForm() {
         try {
           const credential = await signInWithEmailAndPassword(firebaseClientAuth, email, password);
           if (!credential.user.emailVerified) {
-            router.push(`/verify-email?email=${encodeURIComponent(email)}${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`);
+            router.push(`/verify-email?mode=login&email=${encodeURIComponent(email)}${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`);
             return;
           }
           await finish("email", await credential.user.getIdToken());
@@ -64,11 +67,14 @@ export function LoginForm() {
     } catch (error) {
       toast({ variant: "error", title: "تعذّر تسجيل الدخول", description: firebaseErrorMessage(error) });
     } finally {
+      authActionInFlight.current = false;
       setIsSubmitting(false);
     }
   }
 
   async function googleLogin() {
+    if (authActionInFlight.current) return;
+    authActionInFlight.current = true;
     setIsSubmitting(true);
     try {
       await firebaseAuthReady;
@@ -77,13 +83,14 @@ export function LoginForm() {
     } catch (error) {
       toast({ variant: "error", title: "تعذّر الدخول عبر Google", description: firebaseErrorMessage(error) });
     } finally {
+      authActionInFlight.current = false;
       setIsSubmitting(false);
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 rounded-lg border border-neutral-200 bg-surface p-6 shadow-sm">
-      <div><h1 className="text-h3 text-neutral-900">تسجيل الدخول</h1><p className="mt-1 text-body-sm text-secondary">مرحباً بعودتك</p></div>
+      <div><h1 className="text-h3 text-neutral-900">تسجيل الدخول</h1><p className="mt-1 text-body-sm text-secondary">مرحبًا بعودتك</p></div>
       <div className="grid grid-cols-2 rounded-md bg-neutral-100 p-1" role="tablist" aria-label="طريقة تسجيل الدخول">
         <MethodButton active={method === "email"} icon={Mail} label="البريد" onClick={() => setMethod("email")} />
         <MethodButton active={method === "phone"} icon={Smartphone} label="الهاتف" onClick={() => setMethod("phone")} />

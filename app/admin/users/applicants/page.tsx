@@ -14,12 +14,12 @@ export default async function AdminApplicantsPage({ searchParams }: { searchPara
   return (
     <div>
       <h1 className="text-h1 text-neutral-900">الباحثون عن فرص</h1>
-      <p className="mt-1 text-body text-secondary">{applicants.length} مستخدم مسجَّل</p>
+      <p className="mt-1 text-body text-secondary">عدد الباحثين المسجّلين: {applicants.length}</p>
       <AdminSearch defaultValue={query} placeholder="ابحث بالاسم أو المدينة أو البريد أو التخصص" />
 
       {applicants.length === 0 ? (
         <div className="mt-6">
-          <EmptyState icon={Users} title="لا يوجد باحثون مسجَّلون بعد" />
+          <EmptyState icon={Users} title="لا يوجد باحثون مسجّلون حتى الآن" />
         </div>
       ) : (
         <div className="mt-6 flex flex-col gap-2">

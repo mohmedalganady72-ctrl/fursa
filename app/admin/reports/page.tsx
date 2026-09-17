@@ -11,7 +11,7 @@ export default async function ReportsPage() {
   const reports = await listPendingReports();
   return <div>
     <h1 className="text-h1 text-neutral-900">البلاغات</h1>
-    <p className="mt-1 text-body text-secondary">راجع البلاغات المعلّقة وسجّل قرار المعالجة</p>
+    <p className="mt-1 text-body text-secondary">راجع البلاغات المعلّقة، ثم حدّد الإجراء المناسب.</p>
     {reports.length === 0 ? <div className="mt-6"><EmptyState icon={ShieldAlert} title="لا توجد بلاغات معلّقة" /></div> :
       <div className="mt-6 flex flex-col gap-3">{reports.map((report) =>
         <Card key={report.id} className="p-4">

@@ -30,6 +30,7 @@ export function RegisterForm() {
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const authActionInFlight = React.useRef(false);
 
   async function registerWithEmail() {
     if (password !== confirmPassword) throw new Error("كلمتا المرور غير متطابقتين");
@@ -60,6 +61,8 @@ export function RegisterForm() {
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    if (authActionInFlight.current) return;
+    authActionInFlight.current = true;
     setIsSubmitting(true);
     try {
       await firebaseAuthReady;
@@ -67,11 +70,14 @@ export function RegisterForm() {
     } catch (error) {
       toast({ variant: "error", title: "تعذّر إنشاء الحساب", description: firebaseErrorMessage(error) });
     } finally {
+      authActionInFlight.current = false;
       setIsSubmitting(false);
     }
   }
 
   async function registerWithGoogle() {
+    if (authActionInFlight.current) return;
+    authActionInFlight.current = true;
     setIsSubmitting(true);
     try {
       await firebaseAuthReady;
@@ -83,6 +89,7 @@ export function RegisterForm() {
     } catch (error) {
       toast({ variant: "error", title: "تعذّر التسجيل عبر Google", description: firebaseErrorMessage(error) });
     } finally {
+      authActionInFlight.current = false;
       setIsSubmitting(false);
     }
   }
@@ -92,7 +99,7 @@ export function RegisterForm() {
       <div><h1 className="text-h3 text-neutral-900">إنشاء حساب جديد</h1><p className="mt-1 text-body-sm text-secondary">اختر نوع الحساب وطريقة التسجيل</p></div>
       <div className="grid grid-cols-2 gap-3">
         <RoleButton active={role === USER_ROLES.APPLICANT} icon={Briefcase} label="باحث عن فرصة" onClick={() => setRole(USER_ROLES.APPLICANT)} />
-        <RoleButton active={role === USER_ROLES.ORGANIZATION} icon={Building2} label="جهة" onClick={() => setRole(USER_ROLES.ORGANIZATION)} />
+        <RoleButton active={role === USER_ROLES.ORGANIZATION} icon={Building2} label="حساب جهة" onClick={() => setRole(USER_ROLES.ORGANIZATION)} />
       </div>
       <div className="grid grid-cols-2 rounded-md bg-neutral-100 p-1" role="tablist" aria-label="طريقة التسجيل">
         <MethodButton active={method === "email"} icon={Mail} label="البريد" onClick={() => setMethod("email")} />

@@ -18,7 +18,7 @@ export function ProfileCompletionGate({ complete, profilePath, children }: {
   }, [canRender, profilePath, router]);
 
   if (!canRender) {
-    return <PlatformLoader message="نفتح لك خطوة إكمال الملف" />;
+    return <PlatformLoader message="جارٍ الانتقال إلى استكمال الملف الشخصي..." />;
   }
   return children;
 }

@@ -39,10 +39,10 @@ export async function PATCH(
   } catch (error) {
     const message = error instanceof Error ? error.message : "UNKNOWN_ERROR";
     const publicMessage = message === "ADMIN_RECORD_NOT_FOUND"
-      ? "حساب المدير غير مربوط بسجل الإدارة"
+      ? "حساب المدير غير مرتبط بسجل إداري"
       : message === "ORGANIZATION_NOT_FOUND"
-        ? "لم يتم العثور على ملف الجهة"
-        : "تعذّر الاتصال بقاعدة البيانات. حاول مرة أخرى بعد لحظات";
+        ? "تعذّر العثور على ملف الجهة"
+        : "تعذّر تنفيذ الإجراء. حاول مرة أخرى بعد لحظات.";
     return NextResponse.json({ error: "APPROVAL_FAILED", message: publicMessage }, { status: message.endsWith("NOT_FOUND") ? 404 : 500 });
   }
 }

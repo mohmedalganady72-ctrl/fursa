@@ -24,7 +24,7 @@ export function VerifyPhoneForm() {
     const verificationId = sessionStorage.getItem("fursa-phone-verification-id");
     const role = (sessionStorage.getItem("fursa-registration-role") ?? USER_ROLES.APPLICANT) as RegistrationRole;
     if (!verificationId) {
-      toast({ variant: "error", title: "انتهت جلسة التحقق", description: "ارجع إلى التسجيل واطلب كوداً جديداً" });
+      toast({ variant: "error", title: "انتهت جلسة التحقق", description: "ارجع إلى صفحة التسجيل واطلب رمزًا جديدًا." });
       return;
     }
     setIsSubmitting(true);
@@ -47,9 +47,9 @@ export function VerifyPhoneForm() {
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-5 rounded-lg border border-neutral-200 bg-surface p-6 shadow-sm">
-      <div><h1 className="text-h3 text-neutral-900">تأكيد رقم الهاتف</h1><p className="mt-1 text-body-sm text-secondary">أدخل الكود المرسل إلى <span dir="ltr" className="font-medium">{phone}</span></p></div>
-      <div className="flex flex-col gap-2"><Label htmlFor="phone-code">كود التحقق</Label><Input id="phone-code" inputMode="numeric" autoComplete="one-time-code" value={code} onChange={(event) => setCode(event.target.value.replace(/\D/g, ""))} minLength={6} maxLength={6} required className="text-center text-h4 tracking-[0.5em] ltr-numerals" placeholder="000000" /></div>
-      <Button type="submit" size="lg" isLoading={isSubmitting}>تأكيد الكود</Button>
+      <div><h1 className="text-h3 text-neutral-900">تأكيد رقم الهاتف</h1><p className="mt-1 text-body-sm text-secondary">أدخل رمز التحقق المرسل إلى <span dir="ltr" className="font-medium">{phone}</span></p></div>
+      <div className="flex flex-col gap-2"><Label htmlFor="phone-code">رمز التحقق</Label><Input id="phone-code" inputMode="numeric" autoComplete="one-time-code" value={code} onChange={(event) => setCode(event.target.value.replace(/\D/g, ""))} minLength={6} maxLength={6} required className="text-center text-h4 tracking-[0.5em] ltr-numerals" placeholder="000000" /></div>
+      <Button type="submit" size="lg" isLoading={isSubmitting}>تأكيد الرمز</Button>
     </form>
   );
 }

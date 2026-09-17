@@ -8,7 +8,7 @@ export default async function NewOpportunityPage() {
     <div>
       <h1 className="text-h1 text-neutral-900">فرصة جديدة</h1>
       <p className="mt-1 text-body text-secondary">
-        اختر نوع الفرصة وعبّئ التفاصيل بعناية — لا يمكن تعديل الفرصة بعد نشرها
+        اختر نوع الفرصة وأكمل تفاصيلها بعناية؛ لا يمكن تعديلها بعد النشر.
       </p>
 
       <div className="mt-6 max-w-2xl">
