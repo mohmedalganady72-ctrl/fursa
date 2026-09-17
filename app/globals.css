@@ -1,0 +1,249 @@
+/*
+ * globals.css — مصدر الحقيقة الوحيد لكل قيم التصميم في المشروع.
+ * كل لون/مسافة/حافة/ظل تُستخدم في أي مكوّن يجب أن تبدأ من هنا.
+ * التوثيق الكامل مع شرح "لماذا" لكل قيمة موجود في docs/design-system.md
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scrollbar-gutter: stable;
+    overflow-x: clip;
+  }
+
+  :root {
+    /* زمرد سعودي معاصر: ثقة مؤسسية بلا الأزرق التقني المعتاد */
+    --color-primary-50: #edf8f4;
+    --color-primary-100: #d4eee5;
+    --color-primary-200: #abdccc;
+    --color-primary-300: #77c2ad;
+    --color-primary-400: #43a58c;
+    --color-primary-500: #21866d;
+    --color-primary-600: #0b6b53;
+    --color-primary-700: #075744;
+    --color-primary-800: #064638;
+    --color-primary-900: #04382e;
+    --brand-deep: #04382e;
+
+    /* ============ اللون الثانوي (Accent — كهرماني) — استخدام محدود جدًا ============ */
+    --color-accent-100: #f6ead1;
+    --color-accent-400: #d7aa59;
+    --color-accent-500: #c6923e;
+    --color-accent-600: #a9742a;
+
+    /* ============ الألوان الدلالية ============ */
+    --color-success-50: #f0fdf4;
+    --color-success-500: #16a34a;
+    --color-warning-50: #fffbeb;
+    --color-warning-500: #f59e0b;
+    --color-danger-50: #fef2f2;
+    --color-danger-500: #dc2626;
+    --color-info-50: #ecfeff;
+    --color-info-500: #0891b2;
+
+    /* ============ المحايدات (Slate) ============ */
+    --color-neutral-0: #ffffff;
+    --color-neutral-50: #f7f8f5;
+    --color-neutral-100: #eff1ec;
+    --color-neutral-200: #dfe3dc;
+    --color-neutral-300: #c8cec5;
+    --color-neutral-400: #969f94;
+    --color-neutral-500: #687268;
+    --color-neutral-600: #4d574f;
+    --color-neutral-700: #374039;
+    --color-neutral-800: #222a25;
+    --color-neutral-900: #121814;
+
+    --font-heading: var(--font-thmanyah, var(--font-ibm-plex-arabic));
+
+    /* ============ الحواف ============ */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+
+    /* ============ الظلال — ناعمة جدًا، تعبّر عن الارتفاع الوظيفي فقط ============ */
+    --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-sm:
+      0 1px 3px rgba(15, 23, 42, 0.08),
+      0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-md:
+      0 4px 8px rgba(15, 23, 42, 0.08),
+      0 2px 4px rgba(15, 23, 42, 0.04);
+    --shadow-lg:
+      0 12px 24px rgba(15, 23, 42, 0.12),
+      0 4px 8px rgba(15, 23, 42, 0.04);
+    --shadow-xl: 0 24px 48px rgba(15, 23, 42, 0.16);
+
+    /* ============ الحركة ============ */
+    --duration-fast: 120ms;
+    --duration-base: 200ms;
+    --duration-slow: 320ms;
+
+    /* ============ أسطح دلالية (تتبدّل بين الوضع الفاتح/الداكن) ============ */
+    --background: var(--color-neutral-50);
+    --surface: var(--color-neutral-0);
+    --border: var(--color-neutral-200);
+    --text-primary: var(--color-neutral-900);
+    --text-secondary: var(--color-neutral-500);
+    --text-on-primary: var(--color-neutral-0);
+  }
+
+  /* الوضع الداكن — يُفعَّل بإضافة كلاس .dark على <html> */
+  .dark {
+    --color-primary-50: #102d26;
+    --color-primary-100: #123a30;
+    --color-primary-200: #17513f;
+    --color-primary-300: #23705a;
+    --color-primary-400: #45a98e;
+    --color-primary-500: #66c4a8;
+    --color-primary-600: #7bd2b8;
+    --color-primary-700: #9ce0cd;
+    --color-primary-800: #c2eee1;
+    --color-primary-900: #e1f7f0;
+    --color-accent-100: #3b3020;
+    --color-accent-400: #d7aa59;
+    --color-accent-500: #e2b766;
+    --color-accent-600: #edcc8f;
+    --color-neutral-0: #ffffff;
+    --color-neutral-50: #1b241f;
+    --color-neutral-100: #222d27;
+    --color-neutral-200: #334139;
+    --color-neutral-300: #536159;
+    --color-neutral-400: #89958d;
+    --color-neutral-500: #aeb8b1;
+    --color-neutral-600: #c7cec9;
+    --color-neutral-700: #dce2dd;
+    --color-neutral-800: #edf1ee;
+    --color-neutral-900: #f8faf8;
+    --background: #111713;
+    --surface: #17201b;
+    --border: #334139;
+    --text-primary: #f8faf8;
+    --text-secondary: #aeb8b1;
+    --text-on-primary: #10251e;
+  }
+
+  /* إعادة ضبط أساسية + خط افتراضي لكل الصفحة */
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-primary font-sans text-body;
+    /* تنعيم عرض الخطوط على الشاشات عالية الدقة */
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  html.theme-transition *,
+  html.theme-transition *::before,
+  html.theme-transition *::after {
+    transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease !important;
+  }
+
+  h1, h2, h3, .font-heading {
+    font-family: var(--font-heading), sans-serif;
+    letter-spacing: 0;
+  }
+
+  /* حلقة تركيز موحّدة لكل عنصر تفاعلي — لا تُحذف أبدًا (إمكانية الوصول) */
+  :focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* احترام تفضيل المستخدم بتقليل الحركة */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  @keyframes landing-hero-enter {
+    from { opacity: 0; transform: translateY(48px); filter: blur(4px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+
+  @keyframes landing-image-breathe {
+    from { transform: scale(1.035); }
+    to { transform: scale(1); }
+  }
+
+  @keyframes landing-cta-breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.035); }
+  }
+
+  .landing-hero-item {
+    opacity: 0;
+    animation: landing-hero-enter 1100ms cubic-bezier(.22, 1, .36, 1) forwards;
+  }
+
+  .landing-hero-image {
+    animation: landing-image-breathe 3.2s cubic-bezier(.22, 1, .36, 1) both;
+  }
+
+  .landing-cta-image {
+    animation: landing-cta-breathe 14s ease-in-out infinite;
+  }
+
+  .scroll-motion {
+    transform: translate3d(var(--scroll-motion-x, 0), var(--scroll-motion-y, 0), 0);
+    will-change: transform;
+  }
+
+  @keyframes loader-orbit {
+    0% { transform: rotate(0deg) scale(0.92); border-color: var(--color-primary-200); }
+    50% { transform: rotate(180deg) scale(1.04); border-color: var(--color-accent-500); }
+    100% { transform: rotate(360deg) scale(0.92); border-color: var(--color-primary-200); }
+  }
+
+  @keyframes loader-pulse {
+    0%, 100% { transform: scaleX(0.55); opacity: 0.35; }
+    50% { transform: scaleX(1); opacity: 1; }
+  }
+
+  @keyframes loader-dot {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+  }
+
+  .loader-orbit { animation: loader-orbit 1.8s ease-in-out infinite; }
+  .loader-pulse { animation: loader-pulse 1s ease-in-out infinite; }
+  .loader-dot { transform-origin: center; animation: loader-dot 1.2s ease-in-out infinite; }
+
+  .chat-surface {
+    background-color: var(--color-neutral-100);
+    background-image: radial-gradient(circle at center, color-mix(in srgb, var(--color-primary-500) 9%, transparent) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /*
+   * أداة مساعدة لعكس الأيقونات الاتجاهية في RTL (سهم التالي/رجوع/إرسال).
+   * تُستخدم هكذا: <ArrowLeft className="rtl-flip" />
+   * لا تُستخدم أبدًا على أيقونات غير اتجاهية (بحث، إشعار، مستخدم).
+   */
+  .rtl-flip {
+    transform: scaleX(-1);
+  }
+
+  /* يبقي الأرقام والتواريخ باتجاه LTR داخل نص RTL (نِسَب التوافق، التواريخ) */
+  .ltr-numerals {
+    direction: ltr;
+    unicode-bidi: isolate;
+    display: inline-block;
+  }
+}
