@@ -15,7 +15,7 @@ export function ScrollMotion({ children, className, speed = 24, axis = "y" }: Sc
 
   React.useEffect(() => {
     const node = ref.current;
-    if (!node || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!node || window.matchMedia("(prefers-reduced-motion: reduce), (max-width: 767px)").matches) return;
 
     let frame = 0;
     const update = () => {
