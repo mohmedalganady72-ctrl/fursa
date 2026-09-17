@@ -9,22 +9,33 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { USER_ROLES } from "@/lib/constants";
 import { firebaseAuthReady, firebaseClientAuth } from "@/lib/firebase/client";
-import { createBetterAuthSession, firebaseErrorMessage, profilePath, resolvePostAuthPath, type RegistrationRole } from "@/lib/firebase/auth-flow";
+import { clearPostProfileRedirect, clearVerificationContext, createBetterAuthSession, firebaseErrorMessage, getVerificationContext, resolvePostAuthPath, type RegistrationRole } from "@/lib/firebase/auth-flow";
 
 export function VerifyPhoneForm() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const phone = searchParams.get("phone") ?? "";
-  const isLogin = searchParams.get("mode") === "login";
+  const [verificationContext, setVerificationContext] = React.useState<ReturnType<typeof getVerificationContext>>(null);
+  const queryMode = searchParams.get("mode");
+  const mode = queryMode === "login" || queryMode === "register" ? queryMode : verificationContext?.mode ?? "register";
+  const queryRole = searchParams.get("role");
+  const role = (queryRole === USER_ROLES.ORGANIZATION || queryRole === USER_ROLES.APPLICANT
+    ? queryRole
+    : verificationContext?.role ?? USER_ROLES.APPLICANT) as RegistrationRole;
+  const redirectTo = searchParams.get("redirectTo") ?? verificationContext?.redirectTo;
+  const isLogin = mode === "login";
   const [code, setCode] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  React.useEffect(() => {
+    setVerificationContext(getVerificationContext());
+  }, []);
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
     const verificationId = sessionStorage.getItem("fursa-phone-verification-id");
-    const role = (sessionStorage.getItem("fursa-registration-role") ?? USER_ROLES.APPLICANT) as RegistrationRole;
     if (!verificationId) {
-      toast({ variant: "error", title: "انتهت جلسة التحقق", description: "ارجع إلى صفحة التسجيل واطلب رمزًا جديدًا." });
+      toast({ variant: "error", title: "انتهت جلسة التحقق", description: `ارجع إلى صفحة ${isLogin ? "تسجيل الدخول" : "إنشاء الحساب"} واطلب رمزًا جديدًا.` });
       return;
     }
     setIsSubmitting(true);
@@ -35,8 +46,10 @@ export function VerifyPhoneForm() {
       await createBetterAuthSession("phone", await result.user.getIdToken(), isLogin ? undefined : role);
       sessionStorage.removeItem("fursa-phone-verification-id");
       sessionStorage.removeItem("fursa-registration-role");
-      const destination = isLogin ? await resolvePostAuthPath(sessionStorage.getItem("fursa-login-redirect") ?? undefined) : profilePath(role);
       sessionStorage.removeItem("fursa-login-redirect");
+      clearVerificationContext();
+      const destination = await resolvePostAuthPath(redirectTo);
+      if (!destination.endsWith("/profile")) clearPostProfileRedirect();
       window.location.replace(destination);
     } catch (error) {
       toast({ variant: "error", title: "تعذّر التحقق", description: firebaseErrorMessage(error) });

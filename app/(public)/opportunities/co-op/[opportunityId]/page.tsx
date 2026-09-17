@@ -8,6 +8,7 @@ import { getOpportunityById } from "@/features/opportunities/services/opportunit
 import { listOpportunityApplicantPreviews } from "@/features/applications/services/applications.service";
 import { WORK_MODE_LABELS } from "@/lib/constants";
 import { getRemainingTimeLabel } from "@/lib/utils";
+import { requirePageSession } from "@/lib/auth/session";
 
 /** بنية مطابقة لـ opportunities/jobs/[opportunityId]/page.tsx — راجع تعليقات ذلك الملف */
 export default async function CoOpDetailsPage({
@@ -15,6 +16,7 @@ export default async function CoOpDetailsPage({
 }: {
   params: Promise<{ opportunityId: string }>;
 }) {
+  await requirePageSession();
   const { opportunityId } = await params;
   const opportunity = await getOpportunityById(opportunityId);
 

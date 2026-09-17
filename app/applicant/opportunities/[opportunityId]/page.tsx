@@ -10,7 +10,7 @@ import { OtherApplicantsList } from "@/features/opportunities/components/other-a
 import { getOpportunityById } from "@/features/opportunities/services/opportunities.service";
 import { OPPORTUNITY_TYPE_LABELS, WORK_MODE_LABELS } from "@/lib/constants";
 import { getRemainingTimeLabel } from "@/lib/utils";
-import { getServerSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { applicantProfiles } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -26,11 +26,11 @@ export default async function ApplicantOpportunityDetailsPage({
 
   if (!opportunity) notFound();
 
-  const session = await getServerSession();
-  const profile = session ? await db.query.applicantProfiles.findFirst({
+  const session = await requirePageSession();
+  const profile = await db.query.applicantProfiles.findFirst({
     columns: { id: true },
     where: eq(applicantProfiles.userId, session.user.id),
-  }) : null;
+  });
   const [applicants, alreadyApplied] = await Promise.all([
     listOpportunityApplicantPreviews(opportunityId),
     profile ? hasApplicantApplied(profile.id, opportunityId) : false,

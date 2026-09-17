@@ -5,7 +5,7 @@ import { ApplicantOpportunitySearch } from "@/features/opportunities/components/
 import { listOpportunities } from "@/features/opportunities/services/opportunities.service";
 import { getSavedOpportunityIds } from "@/features/opportunities/services/saved-opportunities.service";
 import { opportunityFiltersSchema } from "@/features/opportunities/validators/opportunity-filters.schema";
-import { getServerSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { applicantProfiles } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -13,11 +13,11 @@ import { eq } from "drizzle-orm";
 export default async function ApplicantOpportunitiesPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const params = await searchParams;
   const filters = opportunityFiltersSchema.parse({ ...params, pageSize: 50 });
-  const session = await getServerSession();
+  const session = await requirePageSession();
   const [results, profileRows] = await Promise.all([
     listOpportunities(filters),
     db.select({ id: applicantProfiles.id }).from(applicantProfiles)
-      .where(eq(applicantProfiles.userId, session!.user.id)).limit(1),
+      .where(eq(applicantProfiles.userId, session.user.id)).limit(1),
   ]);
   const profile = profileRows[0];
   const savedIds = profile ? await getSavedOpportunityIds(profile.id, results.map((row) => row.opportunities.id)) : new Set<string>();

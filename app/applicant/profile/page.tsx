@@ -1,13 +1,13 @@
 import { ProfileForm } from "@/features/applicant-profile/components/profile-form";
 import { getApplicantProfileByUserId } from "@/features/applicant-profile/services/applicant-profile.service";
-import { getServerSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { fields } from "@/lib/db/schema";
 
 export default async function ApplicantProfilePage() {
-  const session = await getServerSession();
+  const session = await requirePageSession();
   const [profile, availableFields] = await Promise.all([
-    getApplicantProfileByUserId(session!.user.id),
+    getApplicantProfileByUserId(session.user.id),
     db.query.fields.findMany(),
   ]);
 

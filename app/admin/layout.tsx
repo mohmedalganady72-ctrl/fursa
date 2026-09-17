@@ -8,6 +8,7 @@ import { db } from "@/lib/db";
 import { admins } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { withDatabaseRetry } from "@/lib/db/retry";
+import { getPostAuthPath } from "@/lib/auth/destination";
 
 const ADMIN_NAV_ITEMS: SidebarNavItem[] = [
   { href: "/admin/dashboard", label: "الرئيسية", icon: "dashboard" },
@@ -29,9 +30,10 @@ export default async function AdminLayout({
 }) {
   const session = await getServerSession();
 
-  if (!session || !isAdmin(session)) {
+  if (!session) {
     redirect("/admin-login");
   }
+  if (!isAdmin(session)) redirect(await getPostAuthPath(session));
   const admin = await withDatabaseRetry(() => db.query.admins.findFirst({
     columns: { displayName: true },
     where: eq(admins.userId, session.user.id),

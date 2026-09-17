@@ -10,6 +10,8 @@ import {
 } from "@/lib/db/schema";
 import { createNotification } from "@/features/notifications/services/notifications.service";
 import { withDatabaseRetry } from "@/lib/db/retry";
+import { accounts } from "@/lib/db/schema";
+import { hashPassword } from "better-auth/crypto";
 
 /** حسابات مديري المنصة مع بيانات الدخول الأساسية. */
 export async function listAllAdmins() {
@@ -146,18 +148,40 @@ export async function getOrganizationJoinRequestForAdmin(organizationProfileId: 
 /**
  * إنشاء حساب مدير جديد من داخل لوحة التحكم — يتطلب أن يكون الطالب مديرًا حاليًا بالفعل
  * (يُتحقَّق من هذا في الـ route handler عبر middleware/session قبل استدعاء هذه الدالة).
- * الحساب يُنشأ عبر Better Auth (بريد + كلمة مرور) ثم يُربَط بجدول admins.
+ * يُنشأ حساب الاعتماد وسجل المدير في معاملة واحدة بعد تحقق المسار من المدير الحالي.
  */
-export async function createAdminRecord(userId: string, displayName: string, createdByAdminId: string) {
+export async function createAdminAccount(
+  email: string,
+  password: string,
+  displayName: string,
+  createdByAdminId: string,
+) {
+  const passwordHash = await hashPassword(password);
   return withDatabaseRetry(() => db.transaction(async (tx) => {
+    const [user] = await tx.insert(users).values({
+      email,
+      name: displayName,
+      role: "admin",
+      isActive: true,
+      emailVerified: true,
+    }).returning({ id: users.id });
+
+    if (!user) throw new Error("ADMIN_CREATE_FAILED");
+
+    await tx.insert(accounts).values({
+      userId: user.id,
+      accountId: user.id,
+      providerId: "credential",
+      password: passwordHash,
+    });
+
     const [created] = await tx
       .insert(admins)
-      .values({ userId, displayName, createdByAdminId })
+      .values({ userId: user.id, displayName, createdByAdminId })
       .returning();
 
     if (!created) throw new Error("ADMIN_CREATE_FAILED");
 
-    await tx.update(users).set({ isActive: true, emailVerified: true }).where(eq(users.id, userId));
     await tx.insert(adminAuditLog).values({ adminId: createdByAdminId, action: "admin_created",
       targetType: "admin", targetId: created.id });
 

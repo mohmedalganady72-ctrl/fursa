@@ -2,7 +2,7 @@ import { eq, count } from "drizzle-orm";
 import { Briefcase, Users, CheckCircle2 } from "lucide-react";
 import { DashboardStatCard } from "@/components/charts/dashboard-stat-card";
 import { EmptyState } from "@/components/shared/empty-state";
-import { getServerSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { organizationProfiles, applications, opportunities } from "@/lib/db/schema";
 import { listOrganizationOpportunities } from "@/features/opportunities/services/opportunities.service";
@@ -10,9 +10,9 @@ import { OrganizationAnalytics } from "@/components/charts/organization-analytic
 
 /** الصفحة الرئيسية للوحة الجهة — إحصائيات الطلبات والمتقدمين والمقبولين (راجع حالات الاستخدام § 5) */
 export default async function OrganizationDashboardPage() {
-  const session = await getServerSession();
+  const session = await requirePageSession();
   const profile = await db.query.organizationProfiles.findFirst({
-    where: eq(organizationProfiles.userId, session!.user.id),
+    where: eq(organizationProfiles.userId, session.user.id),
   });
 
   if (!profile) {

@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { requireSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { applicantProfiles, applications, opportunities, organizationProfiles } from "@/lib/db/schema";
 import { getSignedUrl, STORAGE_BUCKETS } from "@/lib/supabase/storage";
@@ -14,7 +14,7 @@ import { ReportButton } from "@/features/reports/components/report-button";
 
 export default async function OrganizationApplicantProfilePage({ params }: { params: Promise<{ applicantProfileId: string }> }) {
   const { applicantProfileId } = await params;
-  const session = await requireSession();
+  const session = await requirePageSession();
   const authorized = await db.select({ id: applications.id }).from(applications)
     .innerJoin(opportunities, eq(applications.opportunityId, opportunities.id))
     .innerJoin(organizationProfiles, eq(opportunities.organizationProfileId, organizationProfiles.id))

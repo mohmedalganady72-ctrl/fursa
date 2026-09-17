@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { MAX_APPLICANT_FIELDS } from "@/lib/constants";
 import type { ApplicantProfile } from "@/lib/db/schema";
 import { FileUploadDropzone } from "@/components/shared/file-upload-dropzone";
+import { consumePostProfileRedirect } from "@/lib/firebase/auth-flow";
 
 interface Field {
   id: string;
@@ -123,7 +124,9 @@ export function ProfileForm({ initialProfile, availableFields, selectedFieldIds 
       }
 
       toast({ variant: "success", title: "تم حفظ ملفك الشخصي" });
-      const sharedOpportunityPath = !initialProfile?.id ? sessionStorage.getItem("fursa-post-profile-redirect") : null;
+      const sharedOpportunityPath = !initialProfile?.id
+        ? consumePostProfileRedirect() ?? sessionStorage.getItem("fursa-post-profile-redirect")
+        : null;
       sessionStorage.removeItem("fursa-post-profile-redirect");
       router.push(sharedOpportunityPath?.startsWith("/applicant/opportunities/") ? sharedOpportunityPath : "/applicant/dashboard");
       router.refresh();

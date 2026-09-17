@@ -4,7 +4,7 @@ import { MapPin, Building2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { db } from "@/lib/db";
 import { organizationProfiles } from "@/lib/db/schema";
-import { requireSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/lib/auth/session";
 import { USER_ROLES } from "@/lib/constants";
 import { ReportButton } from "@/features/reports/components/report-button";
 
@@ -25,7 +25,7 @@ export default async function OrganizationPublicProfilePage({
   params: Promise<{ organizationId: string }>;
 }) {
   const { organizationId } = await params;
-  const session = await requireSession();
+  const session = await requirePageSession();
   if (session.user.role !== USER_ROLES.APPLICANT) notFound();
 
   const organization = await db.query.organizationProfiles.findFirst({

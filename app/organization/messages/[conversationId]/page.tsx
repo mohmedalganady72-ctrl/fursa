@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { eq } from "drizzle-orm";
-import { getServerSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/lib/auth/session";
 import { ChatWindow } from "@/features/messaging/components/chat-window";
 import { listConversationMessages, markConversationMessagesAsRead } from "@/features/messaging/services/messages.service";
 import { db } from "@/lib/db";
@@ -13,7 +13,7 @@ export default async function OrganizationConversationPage({
   params: Promise<{ conversationId: string }>;
 }) {
   const { conversationId } = await params;
-  const session = await getServerSession();
+  const session = await requirePageSession();
 
   const conversation = await db.query.conversations.findFirst({
     where: eq(conversations.id, conversationId),
@@ -21,13 +21,13 @@ export default async function OrganizationConversationPage({
   });
   if (!conversation) notFound();
 
-  const messages = await listConversationMessages(conversationId, session!.user.id).catch(() => null);
+  const messages = await listConversationMessages(conversationId, session.user.id).catch(() => null);
   if (!messages) notFound();
-  await markConversationMessagesAsRead(conversationId, session!.user.id);
+  await markConversationMessagesAsRead(conversationId, session.user.id);
 
   return <ChatWindow
         conversationId={conversationId}
-        currentUserId={session!.user.id}
+        currentUserId={session.user.id}
         initialMessages={messages}
         participantName={conversation.application.applicantProfile.fullName}
         opportunityTitle={conversation.application.opportunity.title}

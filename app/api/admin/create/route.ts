@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireSession } from "@/lib/auth/session";
 import { isAdmin } from "@/features/auth/services/permissions";
-import { createAdminRecord } from "@/features/admin/services/admin.service";
-import { auth } from "@/lib/auth/config";
+import { createAdminAccount } from "@/features/admin/services/admin.service";
 import { db } from "@/lib/db";
 import { admins, users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -47,17 +46,9 @@ export async function POST(request: Request) {
   }
 
   try {
-    const signUpResult = await auth.api.signUpEmail({
-      body: {
-        email: parsed.data.email,
-        password: parsed.data.password,
-        name: parsed.data.displayName,
-        role: "admin",
-      },
-    });
-
-    const newAdmin = await createAdminRecord(
-      signUpResult.user.id,
+    const newAdmin = await createAdminAccount(
+      parsed.data.email,
+      parsed.data.password,
       parsed.data.displayName,
       currentAdmin.id
     );

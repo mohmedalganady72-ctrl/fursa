@@ -2,16 +2,16 @@ import { eq } from "drizzle-orm";
 import { Bookmark } from "lucide-react";
 import { OpportunityCard } from "@/components/shared/opportunity-card";
 import { EmptyState } from "@/components/shared/empty-state";
-import { getServerSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { applicantProfiles } from "@/lib/db/schema";
 import { listSavedOpportunities } from "@/features/opportunities/services/saved-opportunities.service";
 
 /** لوحة "الفرص المحفوظة" — كل الفرص التي حفظها الباحث لمراجعتها لاحقًا (راجع § 5.20) */
 export default async function SavedOpportunitiesPage() {
-  const session = await getServerSession();
+  const session = await requirePageSession();
   const profile = await db.query.applicantProfiles.findFirst({
-    where: eq(applicantProfiles.userId, session!.user.id),
+    where: eq(applicantProfiles.userId, session.user.id),
   });
 
   if (!profile) {

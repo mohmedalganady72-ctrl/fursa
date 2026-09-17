@@ -65,7 +65,7 @@ export async function lifecycleFixture(seats = 1) {
   return { owner, outsider, candidates, opportunity, applications: created, field };
 }
 
-async function retryDatabaseOperation(operation: () => Promise<unknown>) {
+export async function retryDatabaseOperation(operation: () => Promise<unknown>) {
   let lastError: unknown;
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {

@@ -6,13 +6,14 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { signIn } from "@/lib/auth/client";
+import { authClient } from "@/lib/auth/client";
+import { resolvePostAuthPath, signInWithPassword } from "@/lib/firebase/auth-flow";
 
 /**
  * نموذج دخول مدير المنصة — منفصل تمامًا عن نموذج الدخول العام (LoginForm)
  * رغم تشابه الحقول، لأن هذه الصفحة على رابط خاص غير معلَن في أي تنقل عام
  * (راجع حالات الاستخدام § "لديه رابط خاص وصفحة دخول خاصة")، ويُعاد التوجيه
- * دائمًا إلى /admin/dashboard مباشرة بغضّ النظر عن أي redirectTo.
+ * ويتحقق بعد إنشاء الجلسة من أن الوجهة الفعلية تخص مديرًا قبل فتح لوحة الإدارة.
  */
 export function AdminLoginForm() {
   const { toast } = useToast();
@@ -26,14 +27,27 @@ export function AdminLoginForm() {
     setIsSubmitting(true);
 
     try {
-      const { error } = await signIn.email({ email, password });
+      const { error } = await signInWithPassword(email, password);
 
       if (error) {
         toast({ variant: "error", title: "بيانات الدخول غير صحيحة" });
         return;
       }
 
-      window.location.replace("/admin/dashboard");
+      const destination = await resolvePostAuthPath();
+      if (!destination.startsWith("/admin/")) {
+        await authClient.signOut();
+        toast({ variant: "error", title: "لا يملك هذا الحساب صلاحية الإدارة" });
+        return;
+      }
+
+      window.location.replace(destination);
+    } catch (error) {
+      toast({
+        variant: "error",
+        title: "تعذّر تسجيل الدخول",
+        description: error instanceof Error ? error.message : "حاول مرة أخرى.",
+      });
     } finally {
       setIsSubmitting(false);
     }

@@ -11,6 +11,7 @@ import { db } from "@/lib/db";
 import { applicantProfiles } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { withDatabaseRetry } from "@/lib/db/retry";
+import { getPostAuthPath } from "@/lib/auth/destination";
 
 /**
  * التنقل السفلي على الهاتف (DashboardBottomNav) يعرض فقط أول 5 عناصر (items.slice(0, 5)
@@ -42,19 +43,27 @@ export default async function ApplicantLayout({
 }) {
   const session = await getServerSession();
 
-  if (!session || !isApplicant(session)) {
+  if (!session) {
     redirect("/login");
   }
+  if (!isApplicant(session)) redirect(await getPostAuthPath(session));
 
-  const [notificationCount, messageCount, profile] = await withDatabaseRetry(() => Promise.all([
+  const profile = await withDatabaseRetry(() =>
+    db.query.applicantProfiles.findFirst({ columns: { id: true, fullName: true, avatarUrl: true }, where: eq(applicantProfiles.userId, session.user.id) }),
+  );
+
+  if (!profile) {
+    return <ProfileCompletionGate complete={false} profilePath="/applicant/profile">{children}</ProfileCompletionGate>;
+  }
+
+  const [notificationCount, messageCount] = await withDatabaseRetry(() => Promise.all([
     getUnreadNotificationCount(session.user.id),
     getUnreadMessageCount(session.user.id),
-    db.query.applicantProfiles.findFirst({ columns: { id: true, fullName: true, avatarUrl: true }, where: eq(applicantProfiles.userId, session.user.id) }),
   ]));
   const applicantItems = APPLICANT_NAV_ITEMS.map((item) => item.icon === "messages" ? { ...item, badge: messageCount } : item);
   const sidebarItems = SIDEBAR_NAV_ITEMS.map((item) => item.icon === "messages" ? { ...item, badge: messageCount } : item);
 
-  return <ProfileCompletionGate complete={!!profile} profilePath="/applicant/profile">
+  return <ProfileCompletionGate complete profilePath="/applicant/profile">
     <div className="dashboard-shell flex min-h-screen bg-background">
       <DashboardSidebar items={sidebarItems} user={{ name: profile?.fullName ?? session.user.name ?? "باحث عن فرصة", image: profile?.avatarUrl ?? session.user.image, roleLabel: "باحث عن فرصة" }} />
       <main className="flex-1 px-4 py-6 pb-20 md:px-6 md:pb-6 lg:px-8">
