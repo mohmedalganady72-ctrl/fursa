@@ -10,6 +10,7 @@ import { requireSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { applicantProfiles, applications, opportunities, organizationProfiles } from "@/lib/db/schema";
 import { getSignedUrl, STORAGE_BUCKETS } from "@/lib/supabase/storage";
+import { ReportButton } from "@/features/reports/components/report-button";
 
 export default async function OrganizationApplicantProfilePage({ params }: { params: Promise<{ applicantProfileId: string }> }) {
   const { applicantProfileId } = await params;
@@ -32,7 +33,7 @@ export default async function OrganizationApplicantProfilePage({ params }: { par
     <Button variant="ghost" asChild className="mb-4"><Link href="/organization/opportunities"><ArrowRight className="h-4 w-4 rtl-flip" />العودة إلى الفرص</Link></Button>
     <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-4"><Avatar size="xl"><AvatarImage src={profile.avatarUrl ?? undefined} /><AvatarFallback className="text-h3">{profile.fullName.charAt(0)}</AvatarFallback></Avatar><div><h1 className="text-h1 text-neutral-900">{profile.fullName}</h1><p className="mt-1 flex items-center gap-1.5 text-body-sm text-secondary"><MapPin className="h-4 w-4" />{profile.city}</p></div></div>
-      {resumeUrl && <Button asChild><a href={resumeUrl} target="_blank" rel="noopener noreferrer"><FileText className="h-4 w-4" />عرض السيرة الذاتية</a></Button>}
+      <div className="flex flex-wrap gap-2"><ReportButton targetId={profile.userId} targetLabel="الباحث" />{resumeUrl && <Button asChild><a href={resumeUrl} target="_blank" rel="noopener noreferrer"><FileText className="h-4 w-4" />عرض السيرة الذاتية</a></Button>}</div>
     </div>
     <div className="mt-6 grid gap-5 md:grid-cols-[1.4fr_1fr]">
       <div className="space-y-5">

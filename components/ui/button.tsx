@@ -10,11 +10,11 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-primary-600 text-on-primary hover:bg-primary-700 active:bg-primary-800",
+        primary: "bg-primary-600 !text-white hover:bg-primary-700 active:bg-primary-800 dark:bg-primary-300 dark:hover:bg-primary-200 dark:active:bg-primary-100",
         secondary: "bg-neutral-100 text-neutral-800 hover:bg-neutral-200",
         outline: "border border-neutral-300 bg-transparent text-neutral-800 hover:bg-neutral-50",
         ghost: "bg-transparent text-neutral-700 hover:bg-neutral-100",
-        danger: "bg-danger-500 text-on-primary hover:bg-red-700",
+        danger: "bg-danger-500 !text-white hover:bg-red-700",
         link: "bg-transparent text-primary-600 underline-offset-4 hover:underline p-0 h-auto",
       },
       size: {

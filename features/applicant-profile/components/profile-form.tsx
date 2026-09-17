@@ -123,7 +123,9 @@ export function ProfileForm({ initialProfile, availableFields, selectedFieldIds 
       }
 
       toast({ variant: "success", title: "تم حفظ ملفك الشخصي" });
-      router.push("/applicant/dashboard");
+      const sharedOpportunityPath = !initialProfile?.id ? sessionStorage.getItem("fursa-post-profile-redirect") : null;
+      sessionStorage.removeItem("fursa-post-profile-redirect");
+      router.push(sharedOpportunityPath?.startsWith("/applicant/opportunities/") ? sharedOpportunityPath : "/applicant/dashboard");
       router.refresh();
     } finally {
       setIsSubmitting(false);

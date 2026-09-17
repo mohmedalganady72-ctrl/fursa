@@ -27,7 +27,7 @@ export function ConversationList({ conversations, emptyDescription, embedded = f
             <p className="truncate text-caption text-secondary">{conversation.opportunityTitle}</p>
             <p className="mt-1 truncate text-body-sm text-neutral-600">{conversation.lastMessage ?? "ابدأ المحادثة الآن"}</p>
           </div>
-          {conversation.unreadCount > 0 && <span className="flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full bg-primary-600 px-1.5 text-caption font-semibold text-white">{conversation.unreadCount > 99 ? "99+" : conversation.unreadCount}</span>}
+          {conversation.unreadCount > 0 && <span className="flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full bg-primary-600 px-1.5 text-caption font-semibold !text-white dark:bg-primary-300">{conversation.unreadCount > 99 ? "99+" : conversation.unreadCount}</span>}
         </Link>
       ))}
     </div>

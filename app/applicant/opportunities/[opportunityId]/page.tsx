@@ -14,6 +14,7 @@ import { getServerSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { applicantProfiles } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { ShareOpportunityButton } from "@/features/opportunities/components/share-opportunity-button";
 
 export default async function ApplicantOpportunityDetailsPage({
   params,
@@ -52,12 +53,10 @@ export default async function ApplicantOpportunityDetailsPage({
 
   return (
     <div className="mx-auto max-w-3xl">
-      <Button variant="ghost" size="sm" asChild className="mb-5">
-        <Link href="/applicant/opportunities">
-          <ArrowRight className="h-4 w-4" />
-          العودة إلى الفرص
-        </Link>
-      </Button>
+      <div className="mb-5 flex items-center justify-between gap-3">
+        <Button variant="ghost" size="sm" asChild><Link href="/applicant/opportunities"><ArrowRight className="h-4 w-4" />العودة إلى الفرص</Link></Button>
+        <ShareOpportunityButton opportunityId={opportunity.id} title={opportunity.title} />
+      </div>
 
       <div className="flex items-center gap-3">
         <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-50 text-h4 font-semibold text-primary-700">

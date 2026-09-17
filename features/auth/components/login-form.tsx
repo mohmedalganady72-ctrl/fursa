@@ -39,7 +39,7 @@ export function LoginForm() {
         try {
           const credential = await signInWithEmailAndPassword(firebaseClientAuth, email, password);
           if (!credential.user.emailVerified) {
-            router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+            router.push(`/verify-email?email=${encodeURIComponent(email)}${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`);
             return;
           }
           await finish("email", await credential.user.getIdToken());
@@ -95,11 +95,11 @@ export function LoginForm() {
       {method === "email" && <Link href="/forgot-password" className="text-center text-body-sm font-medium text-primary-600 hover:underline">نسيت كلمة المرور؟</Link>}
       <div className="flex items-center gap-3 text-caption text-secondary before:h-px before:flex-1 before:bg-neutral-200 after:h-px after:flex-1 after:bg-neutral-200">أو</div>
       <Button type="button" variant="outline" size="lg" onClick={googleLogin} disabled={isSubmitting}><span aria-hidden="true" className="text-base font-bold">G</span>المتابعة باستخدام Google</Button>
-      <p className="text-center text-body-sm text-secondary">ليس لديك حساب؟ <Link href="/register" className="font-medium text-primary-600 hover:underline">إنشاء حساب جديد</Link></p>
+      <p className="text-center text-body-sm text-secondary">ليس لديك حساب؟ <Link href={redirectTo ? `/register?redirectTo=${encodeURIComponent(redirectTo)}` : "/register"} className="font-medium text-primary-600 hover:underline">إنشاء حساب جديد</Link></p>
     </form>
   );
 }
 
 function MethodButton({ active, icon: Icon, label, onClick }: { active: boolean; icon: typeof Mail; label: string; onClick: () => void }) {
-  return <button type="button" role="tab" aria-selected={active} onClick={onClick} className={`flex h-10 items-center justify-center gap-2 rounded px-3 text-body-sm font-medium transition-colors ${active ? "bg-white text-neutral-900 shadow-sm" : "text-secondary"}`}><Icon className="h-4 w-4" />{label}</button>;
+  return <button type="button" role="tab" aria-selected={active} onClick={onClick} className={`flex h-10 items-center justify-center gap-2 rounded px-3 text-body-sm font-medium transition-colors duration-300 ${active ? "bg-surface text-neutral-900 shadow-sm ring-1 ring-neutral-200" : "text-secondary hover:bg-neutral-200/60 hover:text-neutral-800"}`}><Icon className="h-4 w-4" />{label}</button>;
 }

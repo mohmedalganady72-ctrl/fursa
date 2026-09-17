@@ -125,7 +125,53 @@
     --border: #334139;
     --text-primary: #f8faf8;
     --text-secondary: #aeb8b1;
-    --text-on-primary: #10251e;
+    --text-on-primary: #ffffff;
+  }
+
+  /* لوحة ألوان أكثر وضوحًا لأسطح العمل في لوحات المدير والباحث والجهة. */
+  .dashboard-shell {
+    --color-neutral-50: #f2f5f2;
+    --color-neutral-100: #e6ebe7;
+    --color-neutral-200: #c9d2cb;
+    --color-neutral-300: #a9b5ac;
+    --color-neutral-400: #707d73;
+    --color-neutral-500: #526057;
+    --color-neutral-600: #3f4c43;
+    --color-neutral-700: #2e3a32;
+    --color-neutral-800: #1d2921;
+    --color-neutral-900: #101a14;
+    --background: #f2f5f2;
+    --surface: #ffffff;
+    --border: #c9d2cb;
+    --text-primary: #101a14;
+    --text-secondary: #526057;
+    color: var(--text-primary);
+  }
+
+  .dark .dashboard-shell {
+    --color-neutral-50: #1c2721;
+    --color-neutral-100: #24322b;
+    --color-neutral-200: #425349;
+    --color-neutral-300: #617268;
+    --color-neutral-400: #99a79e;
+    --color-neutral-500: #bcc7c0;
+    --color-neutral-600: #d0d8d3;
+    --color-neutral-700: #e0e6e2;
+    --color-neutral-800: #f0f3f1;
+    --color-neutral-900: #fafcfb;
+    --background: #0e1611;
+    --surface: #18231c;
+    --border: #425349;
+    --text-primary: #fafcfb;
+    --text-secondary: #bcc7c0;
+  }
+
+  .dashboard-shell table {
+    background: var(--surface);
+  }
+
+  .dashboard-shell tbody tr {
+    color: var(--color-neutral-700);
   }
 
   /* إعادة ضبط أساسية + خط افتراضي لكل الصفحة */
@@ -138,6 +184,21 @@
     /* تنعيم عرض الخطوط على الشاشات عالية الدقة */
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+  }
+
+  /* اتجاه ثابت لكل قائمة HTML مستقبلية: النص يمينًا وسهم المتصفح في الجهة المقابلة. */
+  select {
+    direction: rtl;
+    text-align: right;
+  }
+
+  /* يضمن وضوح نص أي إجراء أخضر حتى لو لم يستخدم مكوّن Button المشترك. */
+  :is(button, a, [role="button"]).bg-primary-600 {
+    color: #ffffff !important;
+  }
+
+  .dark :is(button, a, [role="button"]).bg-primary-600 {
+    background-color: var(--color-primary-300) !important;
   }
 
   html.theme-transition *,

@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { firebaseClientAuth } from "@/lib/firebase/client";
-import { createBetterAuthSession, firebaseErrorMessage, profilePath, type RegistrationRole } from "@/lib/firebase/auth-flow";
+import { createBetterAuthSession, firebaseErrorMessage, profilePath, resolvePostAuthPath, type RegistrationRole } from "@/lib/firebase/auth-flow";
 import { USER_ROLES } from "@/lib/constants";
 
 export function VerifyEmailForm() {
@@ -17,6 +17,7 @@ export function VerifyEmailForm() {
   const { toast } = useToast();
   const initialEmail = searchParams.get("email") ?? firebaseClientAuth.currentUser?.email ?? "";
   const google = searchParams.get("provider") === "google";
+  const redirectTo = searchParams.get("redirectTo") ?? undefined;
   const [email, setEmail] = React.useState(initialEmail);
   const [newEmail, setNewEmail] = React.useState(initialEmail);
   const [isEditingEmail, setIsEditingEmail] = React.useState(false);
@@ -45,12 +46,12 @@ export function VerifyEmailForm() {
       await createBetterAuthSession("email", await user.getIdToken(true), role);
       verificationComplete.current = true;
       sessionStorage.removeItem("fursa-registration-role");
-      window.location.replace(profilePath(role));
+      window.location.replace(redirectTo ? await resolvePostAuthPath(redirectTo) : profilePath(role));
       return true;
     } finally {
       verificationInFlight.current = false;
     }
-  }, [google]);
+  }, [google, redirectTo]);
 
   React.useEffect(() => {
     if (google) {
@@ -93,7 +94,7 @@ export function VerifyEmailForm() {
     setIsResending(true);
     try {
       firebaseClientAuth.languageCode = "ar";
-      const settings = { url: `${window.location.origin}/verify-email?email=${encodeURIComponent(email)}` };
+      const settings = { url: `${window.location.origin}/verify-email?email=${encodeURIComponent(email)}${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}` };
       if (email !== user.email) await verifyBeforeUpdateEmail(user, email, settings);
       else await sendEmailVerification(user, settings);
       toast({ variant: "success", title: "أُرسل رابط تحقق جديد" });
@@ -120,11 +121,11 @@ export function VerifyEmailForm() {
     try {
       firebaseClientAuth.languageCode = "ar";
       await verifyBeforeUpdateEmail(user, normalizedEmail, {
-        url: `${window.location.origin}/verify-email?email=${encodeURIComponent(normalizedEmail)}`,
+        url: `${window.location.origin}/verify-email?email=${encodeURIComponent(normalizedEmail)}${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`,
       });
       setEmail(normalizedEmail);
       setIsEditingEmail(false);
-      window.history.replaceState(null, "", `/verify-email?email=${encodeURIComponent(normalizedEmail)}`);
+      window.history.replaceState(null, "", `/verify-email?email=${encodeURIComponent(normalizedEmail)}${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`);
       toast({ variant: "success", title: "أُرسل الرابط إلى البريد الجديد", description: "لن يتغير بريد الحساب حتى تفتح رابط التحقق" });
     } catch (error) {
       toast({ variant: "error", title: "تعذّر تغيير البريد", description: firebaseErrorMessage(error) });

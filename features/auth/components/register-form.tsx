@@ -22,6 +22,7 @@ export function RegisterForm() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const initialRole = searchParams.get("role") === USER_ROLES.ORGANIZATION ? USER_ROLES.ORGANIZATION : USER_ROLES.APPLICANT;
+  const redirectTo = searchParams.get("redirectTo") ?? undefined;
   const [role, setRole] = React.useState<RegistrationRole>(initialRole);
   const [method, setMethod] = React.useState<RegistrationMethod>("email");
   const [email, setEmail] = React.useState("");
@@ -35,6 +36,7 @@ export function RegisterForm() {
     const credential = await createUserWithEmailAndPassword(firebaseClientAuth, email, password);
     await updateProfile(credential.user, { displayName: email.split("@")[0] });
     sessionStorage.setItem("fursa-registration-role", role);
+    if (redirectTo) sessionStorage.setItem("fursa-post-profile-redirect", redirectTo);
     firebaseClientAuth.languageCode = "ar";
     await sendEmailVerification(credential.user, {
       url: `${window.location.origin}/verify-email?email=${encodeURIComponent(email)}`,
@@ -49,6 +51,7 @@ export function RegisterForm() {
       const confirmation = await signInWithPhoneNumber(firebaseClientAuth, phone.trim(), verifier);
       sessionStorage.setItem("fursa-phone-verification-id", confirmation.verificationId);
       sessionStorage.setItem("fursa-registration-role", role);
+      if (redirectTo) sessionStorage.setItem("fursa-post-profile-redirect", redirectTo);
       router.push(`/verify-phone?phone=${encodeURIComponent(phone.trim())}`);
     } finally {
       verifier.clear();
@@ -70,6 +73,7 @@ export function RegisterForm() {
   async function registerWithGoogle() {
     setIsSubmitting(true);
     try {
+      if (redirectTo) sessionStorage.setItem("fursa-post-profile-redirect", redirectTo);
       const credential = await signInWithPopup(firebaseClientAuth, new GoogleAuthProvider());
       await createBetterAuthSession("google", await credential.user.getIdToken(), role);
       sessionStorage.removeItem("fursa-registration-role");
@@ -115,5 +119,5 @@ function RoleButton({ active, icon: Icon, label, onClick }: { active: boolean; i
 }
 
 function MethodButton({ active, icon: Icon, label, onClick }: { active: boolean; icon: typeof Mail; label: string; onClick: () => void }) {
-  return <button type="button" role="tab" aria-selected={active} onClick={onClick} className={`flex h-10 items-center justify-center gap-2 rounded px-3 text-body-sm font-medium transition-colors ${active ? "bg-white text-neutral-900 shadow-sm" : "text-secondary"}`}><Icon className="h-4 w-4" />{label}</button>;
+  return <button type="button" role="tab" aria-selected={active} onClick={onClick} className={`flex h-10 items-center justify-center gap-2 rounded px-3 text-body-sm font-medium transition-colors duration-300 ${active ? "bg-surface text-neutral-900 shadow-sm ring-1 ring-neutral-200" : "text-secondary hover:bg-neutral-200/60 hover:text-neutral-800"}`}><Icon className="h-4 w-4" />{label}</button>;
 }

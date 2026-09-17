@@ -17,5 +17,5 @@ export function ScrollReveal({ children, className, delay = 0, variant = "up" }:
   const ref = React.useRef<HTMLDivElement>(null);
   const [visible, setVisible] = React.useState(false);
   React.useEffect(() => { const node = ref.current; if (!node) return; const observer = new IntersectionObserver(([entry]) => { if (entry?.isIntersecting) { setVisible(true); observer.disconnect(); } }, { threshold: 0.12 }); observer.observe(node); return () => observer.disconnect(); }, []);
-  return <div ref={ref} style={{ transitionDelay: `${delay}ms` }} className={cn("transition-[opacity,transform,filter] duration-1000 ease-[cubic-bezier(.22,1,.36,1)] motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:scale-100 motion-reduce:opacity-100 motion-reduce:blur-0", hiddenVariants[variant], visible && "translate-x-0 translate-y-0 scale-100 opacity-100 blur-0", className)}>{children}</div>;
+  return <div ref={ref} style={{ transitionDelay: `${delay}ms`, transitionTimingFunction: "cubic-bezier(.22, 1, .36, 1)" }} className={cn("transition-[opacity,transform,filter] duration-1000 motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:scale-100 motion-reduce:opacity-100 motion-reduce:blur-0", hiddenVariants[variant], visible && "translate-x-0 translate-y-0 scale-100 opacity-100 blur-0", className)}>{children}</div>;
 }
