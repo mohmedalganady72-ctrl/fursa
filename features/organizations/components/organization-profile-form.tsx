@@ -11,6 +11,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import type { OrganizationProfile } from "@/lib/db/schema";
 import { FileUploadDropzone } from "@/components/shared/file-upload-dropzone";
+import { clearPostProfileRedirect } from "@/lib/firebase/auth-flow";
 
 const ORG_TYPE_OPTIONS = [
   { value: "company", label: "شركة" },
@@ -67,6 +68,8 @@ export function OrganizationProfileForm({ initialProfile }: { initialProfile?: P
       }
 
       toast({ variant: "success", title: "تم حفظ ملف الجهة" });
+      clearPostProfileRedirect();
+      sessionStorage.removeItem("fursa-post-profile-redirect");
       router.push("/organization/dashboard");
       router.refresh();
     } finally {

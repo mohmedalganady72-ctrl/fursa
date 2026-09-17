@@ -20,7 +20,7 @@ const ROUTE_ROLE_MAP: Array<{ prefix: string; role: string }> = [
   { prefix: "/admin", role: USER_ROLES.ADMIN },
 ];
 
-const SESSION_COOKIE_NAME = "better-auth.session_token";
+const SESSION_COOKIE_NAMES = ["better-auth.session_token", "__Secure-better-auth.session_token"] as const;
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -34,12 +34,12 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME);
+  const sessionCookie = SESSION_COOKIE_NAMES.some((name) => request.cookies.has(name));
 
   if (!sessionCookie) {
     const loginPath = matchedRoute.role === USER_ROLES.ADMIN ? "/admin-login" : "/login";
     const loginUrl = new URL(loginPath, request.url);
-    loginUrl.searchParams.set("redirectTo", pathname);
+    loginUrl.searchParams.set("redirectTo", `${pathname}${request.nextUrl.search}`);
     return NextResponse.redirect(loginUrl);
   }
 

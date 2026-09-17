@@ -11,9 +11,8 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { firebaseAuthReady, firebaseClientAuth } from "@/lib/firebase/client";
-import { createBetterAuthSession, firebaseErrorMessage, resolvePostAuthPath } from "@/lib/firebase/auth-flow";
+import { clearPostProfileRedirect, clearVerificationContext, createBetterAuthSession, firebaseErrorMessage, rememberLoginVerification, resolvePostAuthPath, signInWithPassword } from "@/lib/firebase/auth-flow";
 import { CountryPhoneInput } from "@/features/auth/components/country-phone-input";
-import { authClient } from "@/lib/auth/client";
 
 export function LoginForm() {
   const router = useRouter();
@@ -28,6 +27,8 @@ export function LoginForm() {
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
 
   async function finish(provider: "email" | "google", idToken: string) {
+    clearVerificationContext();
+    clearPostProfileRedirect();
     await createBetterAuthSession(provider, idToken);
     window.location.replace(await resolvePostAuthPath(redirectTo));
   }
@@ -43,14 +44,18 @@ export function LoginForm() {
         try {
           const credential = await signInWithEmailAndPassword(firebaseClientAuth, email, password);
           if (!credential.user.emailVerified) {
+            rememberLoginVerification(redirectTo);
             router.push(`/verify-email?mode=login&email=${encodeURIComponent(email)}${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`);
             return;
           }
           await finish("email", await credential.user.getIdToken());
         } catch (firebaseError) {
           // يسمح للحسابات المنشأة قبل نقل المصادقة إلى Firebase بتسجيل الدخول ثم ترحيلها تدريجياً.
-          const legacy = await authClient.signIn.email({ email, password });
+          if (!canTryLegacyLogin(firebaseError)) throw firebaseError;
+          const legacy = await signInWithPassword(email, password);
           if (legacy.error) throw firebaseError;
+          clearVerificationContext();
+          clearPostProfileRedirect();
           window.location.replace(await resolvePostAuthPath(redirectTo));
         }
       } else {
@@ -58,8 +63,8 @@ export function LoginForm() {
         try {
           const confirmation = await signInWithPhoneNumber(firebaseClientAuth, phone.trim(), verifier);
           sessionStorage.setItem("fursa-phone-verification-id", confirmation.verificationId);
-          if (redirectTo) sessionStorage.setItem("fursa-login-redirect", redirectTo);
-          router.push(`/verify-phone?mode=login&phone=${encodeURIComponent(phone.trim())}`);
+          rememberLoginVerification(redirectTo);
+          router.push(`/verify-phone?mode=login&phone=${encodeURIComponent(phone.trim())}${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`);
         } finally {
           verifier.clear();
         }
@@ -107,6 +112,11 @@ export function LoginForm() {
       <p className="text-center text-body-sm text-secondary">ليس لديك حساب؟ <Link href={redirectTo ? `/register?redirectTo=${encodeURIComponent(redirectTo)}` : "/register"} className="font-medium text-primary-600 hover:underline">إنشاء حساب جديد</Link></p>
     </form>
   );
+}
+
+function canTryLegacyLogin(error: unknown) {
+  if (!error || typeof error !== "object" || !("code" in error)) return false;
+  return new Set(["auth/invalid-credential", "auth/user-not-found", "auth/wrong-password"]).has(String(error.code));
 }
 
 function MethodButton({ active, icon: Icon, label, onClick }: { active: boolean; icon: typeof Mail; label: string; onClick: () => void }) {

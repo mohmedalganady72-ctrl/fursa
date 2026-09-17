@@ -12,6 +12,8 @@ import { getUnreadMessageCount } from "@/features/messaging/services/messages.se
 import { getUnreadNotificationCount } from "@/features/notifications/services/notifications.service";
 import { ProfileCompletionGate } from "@/components/layout/profile-completion-gate";
 import { LogoutButton } from "@/components/shared/logout-button";
+import { withDatabaseRetry } from "@/lib/db/retry";
+import { getPostAuthPath } from "@/lib/auth/destination";
 
 const ORGANIZATION_NAV_ITEMS: SidebarNavItem[] = [
   { href: "/organization/dashboard", label: "الرئيسية", icon: "dashboard" },
@@ -34,13 +36,18 @@ export default async function OrganizationLayout({
 }) {
   const session = await getServerSession();
 
-  if (!session || !isOrganization(session)) {
+  if (!session) {
     redirect("/login");
   }
+  if (!isOrganization(session)) redirect(await getPostAuthPath(session));
 
-  const profile = await db.query.organizationProfiles.findFirst({
+  const profile = await withDatabaseRetry(() => db.query.organizationProfiles.findFirst({
     where: eq(organizationProfiles.userId, session.user.id),
-  });
+  }));
+
+  if (!profile) {
+    return <ProfileCompletionGate complete={false} profilePath="/organization/profile">{children}</ProfileCompletionGate>;
+  }
 
   if (profile && !profile.isApproved) {
     return (
@@ -66,7 +73,7 @@ export default async function OrganizationLayout({
   ]);
   const navItems = ORGANIZATION_NAV_ITEMS.map((item) => item.icon === "messages" ? { ...item, badge: messageCount } : item);
 
-  return <ProfileCompletionGate complete={!!profile} profilePath="/organization/profile">
+  return <ProfileCompletionGate complete profilePath="/organization/profile">
     <div className="dashboard-shell flex min-h-screen bg-background">
       <DashboardSidebar items={navItems} user={{ name: profile?.name ?? session.user.name ?? "جهة", image: profile?.logoUrl ?? session.user.image, roleLabel: "حساب جهة" }} />
       <main className="flex-1 px-4 py-6 pb-20 md:px-6 md:pb-6 lg:px-8">

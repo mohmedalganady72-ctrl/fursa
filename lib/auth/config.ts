@@ -6,6 +6,7 @@ import { env } from "@/lib/env";
 import { firebaseAdminAuth } from "@/lib/firebase/admin";
 import { eq } from "drizzle-orm";
 import { users } from "@/lib/db/schema";
+import { withDatabaseRetry } from "@/lib/db/retry";
 
 function getAuthBaseUrl() {
   const vercelHost = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
@@ -49,6 +50,7 @@ export const auth = betterAuth({
   // البريد وكلمة المرور فقط في الإصدار الأول — لا مصادقة اجتماعية (Google/Facebook) حاليًا
   emailAndPassword: {
     enabled: true,
+    disableSignUp: true,
     requireEmailVerification: false,
   },
 
@@ -77,7 +79,7 @@ export const auth = betterAuth({
       type: "string",
       required: false,
       defaultValue: "applicant",
-      input: true,
+      input: false,
     },
 
     isActive: {
@@ -102,8 +104,9 @@ export const auth = betterAuth({
     session: {
       create: {
         after: async (session) => {
-          await db.update(users).set({ lastLoginAt: new Date(), updatedAt: new Date() })
-            .where(eq(users.id, session.userId));
+          await withDatabaseRetry(() => db.update(users)
+            .set({ lastLoginAt: new Date(), updatedAt: new Date() })
+            .where(eq(users.id, session.userId)));
         },
       },
     },
@@ -112,6 +115,7 @@ export const auth = betterAuth({
   plugins: [
     firebaseAuthPlugin({
       useClientSideTokens: true,
+      sessionExpiresInDays: 30,
       firebaseAdminAuth,
       firebaseConfig: {
         apiKey: env.NEXT_PUBLIC_FIREBASE_API_KEY,

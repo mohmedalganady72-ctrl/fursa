@@ -8,6 +8,7 @@ import { getOpportunityById } from "@/features/opportunities/services/opportunit
 import { listOpportunityApplicantPreviews } from "@/features/applications/services/applications.service";
 import { WORK_MODE_LABELS } from "@/lib/constants";
 import { getRemainingTimeLabel } from "@/lib/utils";
+import { requirePageSession } from "@/lib/auth/session";
 
 /**
  * صفحة تفاصيل فرصة العمل + التقديم عليها. نفس البنية (بفروقات حقول التقديم فقط)
@@ -18,6 +19,7 @@ export default async function JobDetailsPage({
 }: {
   params: Promise<{ opportunityId: string }>;
 }) {
+  await requirePageSession();
   const { opportunityId } = await params;
   const opportunity = await getOpportunityById(opportunityId);
 

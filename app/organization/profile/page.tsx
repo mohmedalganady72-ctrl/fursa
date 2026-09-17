@@ -1,10 +1,10 @@
-import { getServerSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/lib/auth/session";
 import { getOrganizationProfileByUserId } from "@/features/organizations/services/organization-profile.service";
 import { OrganizationProfileForm } from "@/features/organizations/components/organization-profile-form";
 
 export default async function OrganizationProfilePage() {
-  const session = await getServerSession();
-  const profile = await getOrganizationProfileByUserId(session!.user.id);
+  const session = await requirePageSession();
+  const profile = await getOrganizationProfileByUserId(session.user.id);
 
   return (
     <div>

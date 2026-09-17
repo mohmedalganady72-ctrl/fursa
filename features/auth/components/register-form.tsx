@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { USER_ROLES } from "@/lib/constants";
 import { firebaseAuthReady, firebaseClientAuth } from "@/lib/firebase/client";
-import { createBetterAuthSession, firebaseErrorMessage, resolvePostAuthPath, type RegistrationRole } from "@/lib/firebase/auth-flow";
+import { clearPostProfileRedirect, clearVerificationContext, createBetterAuthSession, firebaseErrorMessage, rememberPostProfileRedirect, rememberRegistrationVerification, resolvePostAuthPath, type RegistrationRole } from "@/lib/firebase/auth-flow";
 import { CountryPhoneInput } from "@/features/auth/components/country-phone-input";
 
 type RegistrationMethod = "email" | "phone";
@@ -32,18 +32,29 @@ export function RegisterForm() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const authActionInFlight = React.useRef(false);
 
+  function emailVerificationPath(targetEmail: string) {
+    return `/verify-email?mode=register&role=${role}&email=${encodeURIComponent(targetEmail)}${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`;
+  }
+
   async function registerWithEmail() {
     if (password !== confirmPassword) throw new Error("كلمتا المرور غير متطابقتين");
     const credential = await createUserWithEmailAndPassword(firebaseClientAuth, email, password);
-    await updateProfile(credential.user, { displayName: email.split("@")[0] });
-    sessionStorage.setItem("fursa-registration-role", role);
-    if (redirectTo) sessionStorage.setItem("fursa-post-profile-redirect", redirectTo);
+    await updateProfile(credential.user, { displayName: email.split("@")[0] }).catch(() => undefined);
+    rememberRegistrationVerification(role, redirectTo);
     firebaseClientAuth.languageCode = "ar";
-    await sendEmailVerification(credential.user, {
-      url: `${window.location.origin}/verify-email?email=${encodeURIComponent(email)}`,
-      handleCodeInApp: false,
-    });
-    router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+    try {
+      await sendEmailVerification(credential.user, {
+        url: `${window.location.origin}${emailVerificationPath(email)}`,
+        handleCodeInApp: false,
+      });
+    } catch (error) {
+      toast({
+        variant: "warning",
+        title: "أُنشئ الحساب، لكن تعذّر إرسال رابط التحقق",
+        description: `${firebaseErrorMessage(error)} يمكنك إعادة الإرسال من الصفحة التالية.`,
+      });
+    }
+    router.push(emailVerificationPath(email));
   }
 
   async function registerWithPhone() {
@@ -51,9 +62,8 @@ export function RegisterForm() {
     try {
       const confirmation = await signInWithPhoneNumber(firebaseClientAuth, phone.trim(), verifier);
       sessionStorage.setItem("fursa-phone-verification-id", confirmation.verificationId);
-      sessionStorage.setItem("fursa-registration-role", role);
-      if (redirectTo) sessionStorage.setItem("fursa-post-profile-redirect", redirectTo);
-      router.push(`/verify-phone?phone=${encodeURIComponent(phone.trim())}`);
+      rememberRegistrationVerification(role, redirectTo);
+      router.push(`/verify-phone?mode=register&role=${role}&phone=${encodeURIComponent(phone.trim())}${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`);
     } finally {
       verifier.clear();
     }
@@ -66,6 +76,7 @@ export function RegisterForm() {
     setIsSubmitting(true);
     try {
       await firebaseAuthReady;
+      clearVerificationContext();
       await (method === "email" ? registerWithEmail() : registerWithPhone());
     } catch (error) {
       toast({ variant: "error", title: "تعذّر إنشاء الحساب", description: firebaseErrorMessage(error) });
@@ -81,11 +92,13 @@ export function RegisterForm() {
     setIsSubmitting(true);
     try {
       await firebaseAuthReady;
-      if (redirectTo) sessionStorage.setItem("fursa-post-profile-redirect", redirectTo);
+      clearVerificationContext();
+      rememberPostProfileRedirect(redirectTo);
       const credential = await signInWithPopup(firebaseClientAuth, new GoogleAuthProvider());
       await createBetterAuthSession("google", await credential.user.getIdToken(), role);
-      sessionStorage.removeItem("fursa-registration-role");
-      window.location.replace(await resolvePostAuthPath());
+      const destination = await resolvePostAuthPath(redirectTo);
+      if (!destination.endsWith("/profile")) clearPostProfileRedirect();
+      window.location.replace(destination);
     } catch (error) {
       toast({ variant: "error", title: "تعذّر التسجيل عبر Google", description: firebaseErrorMessage(error) });
     } finally {

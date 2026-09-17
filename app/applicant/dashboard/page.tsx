@@ -5,7 +5,7 @@ import { DashboardStatCard } from "@/components/charts/dashboard-stat-card";
 import { OpportunityCard } from "@/components/shared/opportunity-card";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
-import { getServerSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { applicantProfiles } from "@/lib/db/schema";
 import { listApplicantApplications } from "@/features/applications/services/applications.service";
@@ -16,9 +16,9 @@ import { listApplicantApplications } from "@/features/applications/services/appl
  * عبر features/matching بمجرد ربط هذه الصفحة بخدمة البحث الذكي الكاملة).
  */
 export default async function ApplicantDashboardPage() {
-  const session = await getServerSession();
+  const session = await requirePageSession();
   const profile = await db.query.applicantProfiles.findFirst({
-    where: eq(applicantProfiles.userId, session!.user.id),
+    where: eq(applicantProfiles.userId, session.user.id),
   });
 
   if (!profile) {

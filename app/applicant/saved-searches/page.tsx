@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/shared/empty-state";
 import { DeleteSavedSearchButton } from "@/features/opportunities/components/delete-saved-search-button";
-import { getServerSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { applicantProfiles } from "@/lib/db/schema";
 import { listSavedSearches } from "@/features/opportunities/services/saved-searches.service";
@@ -32,9 +32,9 @@ function buildSearchUrl(filters: Record<string, unknown>): string {
 
 /** لوحة "عمليات البحث المحفوظة" — تُتيح للباحث استعادة فلاتر بحث سبق أن حفظها (P2) */
 export default async function SavedSearchesPage() {
-  const session = await getServerSession();
+  const session = await requirePageSession();
   const profile = await db.query.applicantProfiles.findFirst({
-    where: eq(applicantProfiles.userId, session!.user.id),
+    where: eq(applicantProfiles.userId, session.user.id),
   });
 
   if (!profile) {

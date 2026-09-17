@@ -7,7 +7,7 @@ import { listOpportunities } from "@/features/opportunities/services/opportuniti
 import { getSavedOpportunityIds } from "@/features/opportunities/services/saved-opportunities.service";
 import { getApplicantProfileByUserId } from "@/features/applicant-profile/services/applicant-profile.service";
 import { opportunityFiltersSchema } from "@/features/opportunities/validators/opportunity-filters.schema";
-import { getServerSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/lib/auth/session";
 import { isApplicant } from "@/features/auth/services/permissions";
 import { OPPORTUNITY_TYPES } from "@/lib/constants";
 
@@ -26,7 +26,7 @@ export default async function VolunteeringPage({
 
   // حالة الحفظ تُجلب فقط للباحث المسجَّل — الزائر وغير الباحث لا يريان زر الحفظ إطلاقًا
   let savedIds: Set<string> | null = null;
-  const session = await getServerSession();
+  const session = await requirePageSession();
   if (session && isApplicant(session)) {
     const profile = await getApplicantProfileByUserId(session.user.id);
     if (profile) {

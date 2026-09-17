@@ -4,7 +4,7 @@ import { FileText } from "lucide-react";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Card } from "@/components/ui/card";
-import { getServerSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { applicantProfiles } from "@/lib/db/schema";
 import { listApplicantApplications } from "@/features/applications/services/applications.service";
@@ -13,9 +13,9 @@ import { formatDateArabic } from "@/lib/utils";
 
 /** لوحة "تقديماتي" — كل تقديمات الباحث مع حالتها الحالية (راجع حالات الاستخدام § "عرض حالات تقديماته") */
 export default async function ApplicantApplicationsPage() {
-  const session = await getServerSession();
+  const session = await requirePageSession();
   const profile = await db.query.applicantProfiles.findFirst({
-    where: eq(applicantProfiles.userId, session!.user.id),
+    where: eq(applicantProfiles.userId, session.user.id),
   });
 
   if (!profile) {

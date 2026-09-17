@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/shared/empty-state";
-import { getServerSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { organizationProfiles } from "@/lib/db/schema";
 import { listOrganizationOpportunities } from "@/features/opportunities/services/opportunities.service";
@@ -20,9 +20,9 @@ const STATUS_VARIANTS: Record<string, "success" | "neutral" | "info" | "warning"
 };
 
 export default async function OrganizationOpportunitiesPage() {
-  const session = await getServerSession();
+  const session = await requirePageSession();
   const profile = await db.query.organizationProfiles.findFirst({
-    where: eq(organizationProfiles.userId, session!.user.id),
+    where: eq(organizationProfiles.userId, session.user.id),
   });
 
   const opportunities = profile ? await listOrganizationOpportunities(profile.id) : [];

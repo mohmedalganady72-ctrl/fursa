@@ -2,7 +2,7 @@ import { config } from "dotenv";
 config({ path: ".env.local" }); // تحميل صريح — راجع نفس الملاحظة في lib/db/migrate.ts
 
 import { db } from "./index";
-import { auth } from "@/lib/auth/config";
+import { hashPassword } from "better-auth/crypto";
 import {
   fields,
   users,
@@ -15,6 +15,7 @@ import {
   opportunityFields,
   applications,
   applicationStatusHistory,
+  accounts,
 } from "./schema";
 import { eq } from "drizzle-orm";
 
@@ -73,16 +74,27 @@ async function createSeedUser(email: string, role: "applicant" | "organization" 
     return existing;
   }
 
-  const result = await auth.api.signUpEmail({
-    body: { email, password: TEST_PASSWORD, name: email.split("@")[0], role } as any,
+  const password = await hashPassword(TEST_PASSWORD);
+  const [created] = await db.transaction(async (tx) => {
+    const inserted = await tx.insert(users).values({
+      email,
+      name: email.split("@")[0],
+      role,
+      emailVerified: true,
+      isActive: true,
+    }).returning();
+    const user = inserted[0];
+    if (!user) throw new Error("فشل إنشاء مستخدم البيانات الأولية");
+    await tx.insert(accounts).values({
+      userId: user.id,
+      accountId: user.id,
+      providerId: "credential",
+      password,
+    });
+    return inserted;
   });
 
-  await db
-    .update(users)
-    .set({ emailVerified: true, isActive: true })
-    .where(eq(users.id, result.user.id));
-
-  return db.query.users.findFirst({ where: eq(users.id, result.user.id) });
+  return created;
 }
 
 async function seedApplicant(fieldIds: string[]) {

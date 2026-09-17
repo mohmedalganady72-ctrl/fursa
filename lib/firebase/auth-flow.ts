@@ -1,12 +1,120 @@
 "use client";
 
 import { authClient } from "@/lib/auth/client";
+import { normalizeRedirectPath } from "@/lib/auth/redirects";
 import { USER_ROLES } from "@/lib/constants";
 
 export type RegistrationRole = typeof USER_ROLES.APPLICANT | typeof USER_ROLES.ORGANIZATION;
 export type FirebaseProvider = "email" | "google" | "phone";
 
+const VERIFICATION_CONTEXT_COOKIE = "fursa.verification_context";
+const POST_PROFILE_REDIRECT_COOKIE = "fursa.post_profile_redirect";
+const VERIFICATION_CONTEXT_MAX_AGE = 60 * 60 * 24 * 2;
+const POST_PROFILE_REDIRECT_MAX_AGE = 60 * 60 * 24 * 7;
+
+export type VerificationContext = {
+  mode: "login" | "register";
+  role?: RegistrationRole;
+  redirectTo?: string;
+};
+
 let activeSessionRequest: Promise<unknown> | null = null;
+
+function isTransientAuthError(error: unknown) {
+  if (!error || typeof error !== "object") return false;
+  const candidate = error as { status?: number; statusCode?: number; code?: string };
+  return [500, 502, 503, 504].includes(candidate.status ?? candidate.statusCode ?? 0)
+    || candidate.code === "INTERNAL_SERVER_ERROR";
+}
+
+async function waitForRetry(attempt: number) {
+  await new Promise((resolve) => window.setTimeout(resolve, 400 * (attempt + 1)));
+}
+
+export async function signInWithPassword(email: string, password: string) {
+  let lastResponse: Awaited<ReturnType<typeof authClient.signIn.email>> | undefined;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      lastResponse = await authClient.signIn.email({ email, password, rememberMe: true });
+      if (!lastResponse.error || !isTransientAuthError(lastResponse.error)) return lastResponse;
+      if (attempt === 2) throw new Error("تعذّر الاتصال بخدمة تسجيل الدخول. حاول مرة أخرى بعد قليل.");
+    } catch (error) {
+      if (attempt === 2) throw error;
+    }
+    await waitForRetry(attempt);
+  }
+  return lastResponse!;
+}
+
+function setClientCookie(name: string, value: string, maxAge: number) {
+  const secure = window.location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${maxAge}; SameSite=Lax${secure}`;
+}
+
+function getClientCookie(name: string) {
+  if (typeof document === "undefined") return undefined;
+  const prefix = `${name}=`;
+  const value = document.cookie.split("; ").find((cookie) => cookie.startsWith(prefix))?.slice(prefix.length);
+  if (!value) return undefined;
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return undefined;
+  }
+}
+
+function deleteClientCookie(name: string) {
+  if (typeof window === "undefined") return;
+  const secure = window.location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${name}=; Path=/; Max-Age=0; SameSite=Lax${secure}`;
+}
+
+export function rememberLoginVerification(redirectTo?: string) {
+  const context: VerificationContext = { mode: "login", redirectTo: normalizeRedirectPath(redirectTo) };
+  setClientCookie(VERIFICATION_CONTEXT_COOKIE, JSON.stringify(context), VERIFICATION_CONTEXT_MAX_AGE);
+}
+
+export function rememberRegistrationVerification(role: RegistrationRole, redirectTo?: string) {
+  const context: VerificationContext = { mode: "register", role, redirectTo: normalizeRedirectPath(redirectTo) };
+  setClientCookie(VERIFICATION_CONTEXT_COOKIE, JSON.stringify(context), VERIFICATION_CONTEXT_MAX_AGE);
+  rememberPostProfileRedirect(redirectTo);
+}
+
+export function getVerificationContext(): VerificationContext | null {
+  const value = getClientCookie(VERIFICATION_CONTEXT_COOKIE);
+  if (!value) return null;
+
+  try {
+    const context = JSON.parse(value) as Partial<VerificationContext>;
+    if (context.mode !== "login" && context.mode !== "register") return null;
+    const role = context.role === USER_ROLES.APPLICANT || context.role === USER_ROLES.ORGANIZATION
+      ? context.role
+      : undefined;
+    return { mode: context.mode, role, redirectTo: normalizeRedirectPath(context.redirectTo) };
+  } catch {
+    return null;
+  }
+}
+
+export function clearVerificationContext() {
+  deleteClientCookie(VERIFICATION_CONTEXT_COOKIE);
+}
+
+export function rememberPostProfileRedirect(redirectTo?: string) {
+  const path = normalizeRedirectPath(redirectTo);
+  if (path) setClientCookie(POST_PROFILE_REDIRECT_COOKIE, path, POST_PROFILE_REDIRECT_MAX_AGE);
+  else clearPostProfileRedirect();
+}
+
+export function consumePostProfileRedirect() {
+  const path = normalizeRedirectPath(getClientCookie(POST_PROFILE_REDIRECT_COOKIE));
+  clearPostProfileRedirect();
+  return path;
+}
+
+export function clearPostProfileRedirect() {
+  deleteClientCookie(POST_PROFILE_REDIRECT_COOKIE);
+}
 
 export async function createBetterAuthSession(
   provider: FirebaseProvider,
@@ -15,21 +123,36 @@ export async function createBetterAuthSession(
 ) {
   if (activeSessionRequest) return activeSessionRequest;
   activeSessionRequest = (async () => {
-    const response = provider === "google"
-      ? await authClient.signInWithGoogle({ idToken })
-      : provider === "phone"
-        ? await authClient.signInWithPhone({ idToken })
-        : await authClient.signInWithEmail({ idToken });
+    let response: Awaited<ReturnType<typeof authClient.signInWithEmail>> | undefined;
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      response = provider === "google"
+        ? await authClient.signInWithGoogle({ idToken })
+        : provider === "phone"
+          ? await authClient.signInWithPhone({ idToken })
+          : await authClient.signInWithEmail({ idToken });
+      if (!response.error || !isTransientAuthError(response.error) || attempt === 2) break;
+      await waitForRetry(attempt);
+    }
 
-    if (response.error) throw new Error(response.error.message ?? "تعذّر تسجيل الدخول. حاول مرة أخرى.");
+    if (!response || response.error) throw new Error(response?.error?.message ?? "تعذّر تسجيل الدخول. حاول مرة أخرى.");
 
     if (role) {
-      const roleResponse = await fetch("/api/auth/initialize-role", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role }),
-      });
-      if (!roleResponse.ok) throw new Error("تعذّر إعداد الحساب. حاول مرة أخرى.");
+      let roleResponse: Response | undefined;
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        roleResponse = await fetch("/api/auth/initialize-role", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ role }),
+        });
+        if (roleResponse.status < 500 || attempt === 2) break;
+        await waitForRetry(attempt);
+      }
+      if (!roleResponse) throw new Error("تعذّر إعداد الحساب. حاول مرة أخرى.");
+      if (!roleResponse.ok) {
+        const result = await roleResponse.json().catch(() => null);
+        throw new Error(result?.message ?? "تعذّر إعداد الحساب. حاول مرة أخرى.");
+      }
     }
 
     return response.data;
@@ -42,14 +165,10 @@ export async function createBetterAuthSession(
   }
 }
 
-export function profilePath(role: RegistrationRole) {
-  return role === USER_ROLES.ORGANIZATION ? "/organization/profile" : "/applicant/profile";
-}
-
 export async function resolvePostAuthPath(requestedPath?: string) {
-  if (requestedPath?.startsWith("/") && !requestedPath.startsWith("//") && requestedPath !== "/") return requestedPath;
+  const query = requestedPath ? `?redirectTo=${encodeURIComponent(requestedPath)}` : "";
   for (let attempt = 0; attempt < 3; attempt += 1) {
-    const response = await fetch("/api/auth/destination", { cache: "no-store", credentials: "include" });
+    const response = await fetch(`/api/auth/destination${query}`, { cache: "no-store", credentials: "include" });
     if (response.ok) {
       const result = await response.json();
       return result.data.path as string;

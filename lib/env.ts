@@ -40,6 +40,13 @@ import { z } from "zod";
 // تحميل متغيرات البيئة قبل التحقق منها
 config({ path: ".env.local", quiet: true });
 
+const optionalEmail = z.preprocess((value) => {
+  if (typeof value !== "string") return value;
+  const normalized = value.trim().replace(/^["']|["']$/g, "");
+  if (!normalized || /your|replace|changeme|placeholder|example|xxx|[<>]/i.test(normalized)) return undefined;
+  return normalized;
+}, z.string().email().optional());
+
 /**
  * التحقق من متغيرات البيئة عند بدء تشغيل التطبيق بدل اكتشاف غيابها لاحقًا
  * في منتصف طلب مستخدم حقيقي. أي متغير ناقص يوقف البناء فورًا برسالة واضحة.
@@ -62,7 +69,7 @@ const envSchema = z.object({
   NEXT_PUBLIC_FIREBASE_APP_ID: z.string().min(1),
   NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: z.string().optional(),
   NEXT_PUBLIC_CONTACT_EMAIL: z.string().email().optional(),
-  FIREBASE_CLIENT_EMAIL: z.string().email().optional(),
+  FIREBASE_CLIENT_EMAIL: optionalEmail,
   FIREBASE_PRIVATE_KEY: z.string().optional(),
 
   // المصادقة
@@ -73,7 +80,7 @@ const envSchema = z.object({
   NYLAS_API_KEY: z.string().min(1),
   NYLAS_API_URI: z.string().url().default("https://api.us.nylas.com"),
   NYLAS_SENDER_DOMAIN: z.string().min(1),
-  NYLAS_FROM_EMAIL: z.string().email().optional(),
+  NYLAS_FROM_EMAIL: optionalEmail,
 
   // تحليل السيرة الذاتية عبر LLM
   LLM_API_KEY: z.string().min(1),

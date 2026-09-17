@@ -8,7 +8,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { ApplicantRowActions } from "@/features/applications/components/applicant-row-actions";
 import { getOpportunityById } from "@/features/opportunities/services/opportunities.service";
 import { listOpportunityApplicants } from "@/features/applications/services/applications.service";
-import { requireSession } from "@/lib/auth/session";
+import { requirePageSession } from "@/lib/auth/session";
 import { getSignedUrl, STORAGE_BUCKETS } from "@/lib/supabase/storage";
 import { StartConversationButton } from "@/features/messaging/components/start-conversation-button";
 
@@ -25,7 +25,7 @@ export default async function OpportunityApplicantsPage({
 }) {
   const { opportunityId } = await params;
   const opportunity = await getOpportunityById(opportunityId);
-  const session = await requireSession();
+  const session = await requirePageSession();
   if (!opportunity || opportunity.organizationProfile.userId !== session.user.id) notFound();
 
   const applicants = await listOpportunityApplicants(opportunityId, session.user.id);
