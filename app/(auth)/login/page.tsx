@@ -1,6 +1,10 @@
 import { LoginForm } from "@/features/auth/components/login-form";
-import { SessionRedirect } from "@/components/shared/session-redirect";
+import { redirect } from "next/navigation";
+import { getServerSession } from "@/lib/auth/session";
+import { getPostAuthPath } from "@/lib/auth/destination";
 
-export default function LoginPage() {
-  return <><SessionRedirect /><LoginForm /></>;
+export default async function LoginPage() {
+  const session = await getServerSession().catch(() => null);
+  if (session) redirect(await getPostAuthPath(session));
+  return <LoginForm />;
 }

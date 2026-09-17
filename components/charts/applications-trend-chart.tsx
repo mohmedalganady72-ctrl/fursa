@@ -36,7 +36,7 @@ export function ApplicationsTrendChart({ data }: ApplicationsTrendChartProps) {
         <Line
           type="monotone"
           dataKey="value"
-          name="عدد التقديمات"
+          name="عدد الطلبات"
           stroke="#4F46E5"
           strokeWidth={2}
           dot={{ r: 3, fill: "#4F46E5" }}

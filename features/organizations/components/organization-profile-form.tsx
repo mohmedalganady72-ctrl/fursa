@@ -14,7 +14,7 @@ import { FileUploadDropzone } from "@/components/shared/file-upload-dropzone";
 
 const ORG_TYPE_OPTIONS = [
   { value: "company", label: "شركة" },
-  { value: "nonprofit", label: "منظمة تطوعية" },
+  { value: "nonprofit", label: "منظمة غير ربحية" },
   { value: "academic", label: "مؤسسة أكاديمية" },
   { value: "government", label: "جهة حكومية" },
 ];
@@ -47,7 +47,7 @@ export function OrganizationProfileForm({ initialProfile }: { initialProfile?: P
       if (logoFile) {
         const upload = new FormData(); upload.set("kind", "logo"); upload.set("file", logoFile);
         const uploadResponse = await fetch("/api/uploads", { method: "POST", body: upload });
-        const uploadResult = await uploadResponse.json().catch(() => ({ message: "أعاد الخادم استجابة غير صالحة" }));
+        const uploadResult = await uploadResponse.json().catch(() => ({ message: "تعذّر قراءة استجابة الخادم. حاول مرة أخرى." }));
         if (!uploadResponse.ok) {
           toast({ variant: "error", title: "تعذّر رفع الشعار", description: uploadResult.message ?? uploadResult.error });
           return;
@@ -61,7 +61,7 @@ export function OrganizationProfileForm({ initialProfile }: { initialProfile?: P
       });
 
       if (!response.ok) {
-        const result = await response.json().catch(() => ({ message: "أعاد الخادم استجابة غير صالحة" }));
+        const result = await response.json().catch(() => ({ message: "تعذّر قراءة استجابة الخادم. حاول مرة أخرى." }));
         toast({ variant: "error", title: "تعذّر حفظ الملف", description: result.message });
         return;
       }

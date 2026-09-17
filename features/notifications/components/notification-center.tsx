@@ -42,10 +42,10 @@ export function NotificationCenter({ initialNotifications }: { initialNotificati
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div><h1 className="text-h1 text-neutral-900">الإشعارات</h1><p className="mt-1 text-body-sm text-secondary">{unreadCount ? `${unreadCount} إشعارات غير مقروءة` : "اطلعت على جميع الإشعارات"}</p></div>
-        <Button type="button" variant="outline" size="sm" onClick={markAll} isLoading={isMarkingAll} disabled={!unreadCount}><CheckCheck className="h-4 w-4" />قراءة الكل</Button>
+        <div><h1 className="text-h1 text-neutral-900">الإشعارات</h1><p className="mt-1 text-body-sm text-secondary">{unreadCount ? `الإشعارات غير المقروءة: ${unreadCount}` : "اطلعت على جميع الإشعارات"}</p></div>
+        <Button type="button" variant="outline" size="sm" onClick={markAll} isLoading={isMarkingAll} disabled={!unreadCount}><CheckCheck className="h-4 w-4" />تحديد الكل كمقروء</Button>
       </div>
-      <div className="mt-5 inline-flex rounded-md bg-neutral-100 p-1" role="tablist" aria-label="فلترة الإشعارات">
+      <div className="mt-5 inline-flex rounded-md bg-neutral-100 p-1" role="tablist" aria-label="تصفية الإشعارات">
         <FilterButton active={filter === "all"} onClick={() => setFilter("all")}>الكل</FilterButton>
         <FilterButton active={filter === "unread"} onClick={() => setFilter("unread")}>غير المقروءة</FilterButton>
       </div>

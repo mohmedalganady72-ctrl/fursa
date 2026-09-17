@@ -14,7 +14,7 @@ export type OpportunityType =
   (typeof OPPORTUNITY_TYPES)[keyof typeof OPPORTUNITY_TYPES];
 
 export const OPPORTUNITY_TYPE_LABELS: Record<OpportunityType, string> = {
-  job: "عمل",
+  job: "وظيفة",
   volunteering: "تطوع",
   co_op: "تدريب تعاوني",
 };
@@ -52,7 +52,7 @@ export type ApplicationStatus =
   (typeof APPLICATION_STATUS)[keyof typeof APPLICATION_STATUS];
 
 export const APPLICATION_STATUS_LABELS: Record<ApplicationStatus, string> = {
-  applied: "تم الإرسال",
+  applied: "تم التقديم",
   under_review: "قيد المراجعة",
   shortlisted: "مُرشَّح مبدئيًا",
   accepted: "مقبول",

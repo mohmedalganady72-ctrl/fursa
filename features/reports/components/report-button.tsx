@@ -35,7 +35,7 @@ export function ReportButton({ targetId, targetLabel }: { targetId: string; targ
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.message ?? "تعذّر إرسال البلاغ");
-      toast({ variant: "success", title: "تم إرسال البلاغ", description: "سيراجعه فريق إدارة المنصة." });
+      toast({ variant: "success", title: "أُرسل البلاغ", description: "سيراجعه فريق إدارة المنصة." });
       setOpen(false);
       setDetails("");
     } catch (error) {
@@ -48,10 +48,10 @@ export function ReportButton({ targetId, targetLabel }: { targetId: string; targ
   return <Dialog open={open} onOpenChange={setOpen}>
     <DialogTrigger asChild><Button type="button" variant="outline" size="sm"><ShieldAlert className="h-4 w-4" />إبلاغ</Button></DialogTrigger>
     <DialogContent>
-      <DialogHeader><DialogTitle>إبلاغ عن {targetLabel}</DialogTitle><DialogDescription>لن يعرف الطرف الآخر هويتك، وسيصل البلاغ إلى إدارة المنصة للمراجعة.</DialogDescription></DialogHeader>
+      <DialogHeader><DialogTitle>إبلاغ عن {targetLabel}</DialogTitle><DialogDescription>سيصل البلاغ إلى إدارة المنصة بسرية لمراجعته.</DialogDescription></DialogHeader>
       <div className="space-y-4">
         <div className="space-y-2"><Label>سبب البلاغ</Label><Select value={reason} onValueChange={(value) => setReason(value as keyof typeof REASONS)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{Object.entries(REASONS).map(([value, label]) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectContent></Select></div>
-        <div className="space-y-2"><Label htmlFor="report-details">تفاصيل إضافية (اختياري)</Label><Textarea id="report-details" value={details} onChange={(event) => setDetails(event.target.value)} maxLength={400} placeholder="أضف معلومات تساعد الإدارة على مراجعة البلاغ" /></div>
+        <div className="space-y-2"><Label htmlFor="report-details">تفاصيل إضافية (اختياري)</Label><Textarea id="report-details" value={details} onChange={(event) => setDetails(event.target.value)} maxLength={400} placeholder="أضف معلومات تساعد فريق الإدارة على مراجعة البلاغ." /></div>
       </div>
       <DialogFooter><Button type="button" variant="ghost" onClick={() => setOpen(false)}>إلغاء</Button><Button type="button" variant="danger" onClick={submit} isLoading={pending}>إرسال البلاغ</Button></DialogFooter>
     </DialogContent>

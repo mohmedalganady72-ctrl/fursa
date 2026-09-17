@@ -46,14 +46,14 @@ export default async function SavedSearchesPage() {
   return (
     <div>
       <h1 className="text-h1 text-neutral-900">عمليات البحث المحفوظة</h1>
-      <p className="mt-1 text-body text-secondary">استعد فلاتر بحث سبق أن حفظتها بضغطة واحدة</p>
+      <p className="mt-1 text-body text-secondary">استخدم خيارات بحث حفظتها سابقًا للعثور على الفرص بسرعة.</p>
 
       {searches.length === 0 ? (
         <div className="mt-6">
           <EmptyState
             icon={Search}
             title="لا توجد عمليات بحث محفوظة بعد"
-            description="احفظ فلاتر بحثك من صفحات تصفح الفرص لاستعادتها لاحقًا"
+            description="احفظ خيارات البحث من صفحة الفرص لتستخدمها لاحقًا."
             actionLabel="تصفّح الفرص"
           />
         </div>

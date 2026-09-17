@@ -116,7 +116,7 @@ export function OpportunityForm({ availableFields, lockedType, replacesOpportuni
 
       toast({
         variant: "success",
-        title: replacesOpportunityId ? "تم إغلاق الفرصة السابقة ونشر البديلة" : "تم نشر الفرصة بنجاح",
+        title: replacesOpportunityId ? "أُغلقت الفرصة السابقة ونُشرت البديلة" : "نُشرت الفرصة بنجاح",
       });
       router.push("/organization/opportunities");
       router.refresh();
@@ -168,7 +168,7 @@ export function OpportunityForm({ availableFields, lockedType, replacesOpportuni
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="flex flex-col gap-2">
-          <Label htmlFor="workMode">نوع الدوام</Label>
+          <Label htmlFor="workMode">نمط العمل</Label>
           <Select value={workMode} onValueChange={setWorkMode}>
             <SelectTrigger id="workMode"><SelectValue /></SelectTrigger>
             <SelectContent>
@@ -179,7 +179,7 @@ export function OpportunityForm({ availableFields, lockedType, replacesOpportuni
           </Select>
         </div>
         <div className="flex flex-col gap-2">
-          <Label htmlFor="city">المكان</Label>
+          <Label htmlFor="city">المدينة</Label>
           <Input id="city" value={city} onChange={(e) => setCity(e.target.value)} required />
         </div>
         <div className="flex flex-col gap-2">
@@ -269,7 +269,7 @@ export function OpportunityForm({ availableFields, lockedType, replacesOpportuni
             <Label htmlFor="requiresResume">يتطلب إرفاق سيرة ذاتية عند التقديم</Label>
           </div>
           <div className="flex flex-col gap-2 sm:w-48">
-            <Label htmlFor="genderReq">شرط الجنس (اختياري)</Label>
+            <Label htmlFor="genderReq">الفئة المطلوبة (اختياري)</Label>
             <Select value={genderRequirement} onValueChange={setGenderRequirement}>
               <SelectTrigger id="genderReq"><SelectValue placeholder="بلا شرط" /></SelectTrigger>
               <SelectContent>
@@ -289,7 +289,7 @@ export function OpportunityForm({ availableFields, lockedType, replacesOpportuni
             <Input id="academicLevel" value={requiredAcademicLevel} onChange={(e) => setRequiredAcademicLevel(e.target.value)} required />
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="university">جامعة محددة (اختياري)</Label>
+            <Label htmlFor="university">الجامعة المطلوبة (اختياري)</Label>
             <Input id="university" value={requiredUniversity} onChange={(e) => setRequiredUniversity(e.target.value)} placeholder="اتركه فارغًا لقبول أي جامعة" />
           </div>
         </div>

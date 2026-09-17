@@ -62,7 +62,7 @@ export default async function OrganizationDashboardPage() {
   return (
     <div>
       <h1 className="text-h1 text-neutral-900">مرحبًا، {profile.name}</h1>
-      <p className="mt-1 text-body text-secondary">نظرة سريعة على فرصكم ومتقدميكم</p>
+      <p className="mt-1 text-body text-secondary">نظرة سريعة على فرصكم وطلبات المتقدمين.</p>
 
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
         <DashboardStatCard icon={Briefcase} label="إجمالي الفرص" value={stats.totalOpportunities} />

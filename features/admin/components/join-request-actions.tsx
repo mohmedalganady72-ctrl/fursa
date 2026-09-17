@@ -35,7 +35,7 @@ export function JoinRequestActions({ organizationProfileId }: { organizationProf
 
       const result = await response.json().catch(() => null);
       if (!response.ok) {
-        toast({ variant: "error", title: "تعذّر تنفيذ الإجراء", description: result?.message ?? result?.error ?? "تعذّر الاتصال بالخادم" });
+        toast({ variant: "error", title: "تعذّر تنفيذ الإجراء", description: result?.message ?? result?.error ?? "تحقق من اتصالك بالإنترنت وحاول مرة أخرى." });
         return;
       }
 
@@ -43,7 +43,7 @@ export function JoinRequestActions({ organizationProfileId }: { organizationProf
       setIsRejectDialogOpen(false);
       router.refresh();
     } catch (error) {
-      toast({ variant: "error", title: "تعذّر تنفيذ الإجراء", description: error instanceof Error ? error.message : "تحقق من الاتصال وحاول مجدداً" });
+      toast({ variant: "error", title: "تعذّر تنفيذ الإجراء", description: error instanceof Error ? error.message : "تحقق من اتصالك وحاول مرة أخرى." });
     } finally {
       setIsProcessing(false);
     }

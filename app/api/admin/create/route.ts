@@ -30,12 +30,12 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const parsed = createAdminSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: "INVALID_INPUT", message: "تحقق من الاسم والبريد وكلمة المرور" }, { status: 400 });
+    return NextResponse.json({ error: "INVALID_INPUT", message: "تحقق من الاسم والبريد الإلكتروني وكلمة المرور." }, { status: 400 });
   }
 
   const currentAdmin = await withDatabaseRetry(() => db.query.admins.findFirst({ where: eq(admins.userId, session.user.id) }));
   if (!currentAdmin) {
-    return NextResponse.json({ error: "ADMIN_RECORD_NOT_FOUND", message: "تعذّر التحقق من حساب المدير الحالي" }, { status: 404 });
+    return NextResponse.json({ error: "ADMIN_RECORD_NOT_FOUND", message: "تعذّر التحقق من حساب المدير الحالي." }, { status: 404 });
   }
 
   const existingUser = await withDatabaseRetry(() => db.query.users.findFirst({
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     where: eq(users.email, parsed.data.email),
   }));
   if (existingUser) {
-    return NextResponse.json({ error: "EMAIL_ALREADY_EXISTS", message: "البريد الإلكتروني مستخدم في حساب آخر" }, { status: 409 });
+    return NextResponse.json({ error: "EMAIL_ALREADY_EXISTS", message: "البريد الإلكتروني مستخدم في حساب آخر." }, { status: 409 });
   }
 
   try {
@@ -65,6 +65,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ data: newAdmin }, { status: 201 });
   } catch (error) {
     console.error("[admin/create] Failed to create admin:", error);
-    return NextResponse.json({ error: "ADMIN_CREATE_FAILED", message: "تعذّر إنشاء حساب المدير، حاول مرة أخرى" }, { status: 500 });
+    return NextResponse.json({ error: "ADMIN_CREATE_FAILED", message: "تعذّر إنشاء حساب المدير. حاول مرة أخرى." }, { status: 500 });
   }
 }

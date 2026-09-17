@@ -32,19 +32,19 @@ export function BroadcastForm() {
       const result = await response.json().catch(() => null);
 
       if (!response.ok) {
-        toast({ variant: "error", title: "تعذّر إرسال الإشعار", description: result?.message ?? result?.error ?? "تعذّر الاتصال بالخادم" });
+        toast({ variant: "error", title: "تعذّر إرسال الإشعار", description: result?.message ?? result?.error ?? "تحقق من اتصالك وحاول مرة أخرى." });
         return;
       }
 
       toast({
         variant: result.data.emailFailureCount ? "info" : "success",
-        title: `تم إرسال الإشعار إلى ${result.data.recipientCount} مستخدم`,
-        description: result.data.emailFailureCount ? `تعذّر إرسال البريد إلى ${result.data.emailFailureCount} مستخدم، لكن الإشعارات داخل المنصة وصلت` : undefined,
+        title: "أُرسل الإشعار بنجاح",
+        description: result.data.emailFailureCount ? `عدد المستلمين: ${result.data.recipientCount}. تعذّر إرسال نسخة البريد إلى ${result.data.emailFailureCount} من المستخدمين.` : `عدد المستلمين: ${result.data.recipientCount}.`,
       });
       setTitle("");
       setBody("");
     } catch (error) {
-      toast({ variant: "error", title: "تعذّر إرسال الإشعار", description: error instanceof Error ? error.message : "تحقق من الاتصال وحاول مجدداً" });
+      toast({ variant: "error", title: "تعذّر إرسال الإشعار", description: error instanceof Error ? error.message : "تحقق من اتصالك وحاول مرة أخرى." });
     } finally {
       setIsSubmitting(false);
     }
@@ -76,7 +76,7 @@ export function BroadcastForm() {
 
       <div className="flex items-center gap-2">
         <Checkbox id="sendEmail" checked={sendEmail} onCheckedChange={(v) => setSendEmail(!!v)} />
-        <Label htmlFor="sendEmail">إرسال بريد إلكتروني بالتوازي مع الإشعار داخل النظام</Label>
+        <Label htmlFor="sendEmail">إرسال نسخة عبر البريد الإلكتروني أيضًا</Label>
       </div>
 
       <Button type="submit" size="lg" isLoading={isSubmitting} className="mt-2">

@@ -39,15 +39,15 @@ export default async function OpportunityApplicantsPage({
     <div>
       <h1 className="text-h1 text-neutral-900">المتقدمون على: {opportunity.title}</h1>
       <p className="mt-1 text-body-sm text-secondary">
-        {opportunity.seatsFilled} من {opportunity.seatsAvailable} مقعد مُكتمَل ·{" "}
+        تم شغل {opportunity.seatsFilled} من أصل {opportunity.seatsAvailable} مقعدًا ·{" "}
         <span className="text-neutral-400">
-          الترتيب حسب درجة التوافق إرشادي فقط، والقرار النهائي بيدكم
+          الترتيب حسب درجة التوافق إرشادي، والقرار النهائي لجهتكم.
         </span>
       </p>
 
       {applicants.length === 0 ? (
         <div className="mt-6">
-          <EmptyState icon={Users} title="لا يوجد متقدمون على هذه الفرصة بعد" />
+          <EmptyState icon={Users} title="لا يوجد متقدمون على هذه الفرصة حتى الآن" />
         </div>
       ) : (
         <div className="mt-6 overflow-x-auto rounded-lg border border-neutral-200 bg-surface shadow-sm">

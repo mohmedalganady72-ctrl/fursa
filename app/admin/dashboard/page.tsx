@@ -17,8 +17,8 @@ export default async function AdminDashboardPage() {
         <DashboardStatCard icon={Building2} label="الجهات المعتمدة" value={`${stats.approvedOrganizations}/${stats.totalOrganizations}`} />
         <DashboardStatCard icon={Clock} label="طلبات انضمام معلَّقة" value={stats.pendingJoinRequests} />
         <DashboardStatCard icon={Briefcase} label="فرص مفتوحة" value={`${stats.openOpportunities}/${stats.totalOpportunities}`} />
-        <DashboardStatCard icon={FileText} label="إجمالي التقديمات" value={stats.totalApplications} />
-        <DashboardStatCard icon={CheckCircle2} label="تقديمات مقبولة" value={stats.acceptedApplications} />
+        <DashboardStatCard icon={FileText} label="إجمالي الطلبات" value={stats.totalApplications} />
+        <DashboardStatCard icon={CheckCircle2} label="طلبات مقبولة" value={stats.acceptedApplications} />
       </div>
 
       <AdminAnalytics trend={trend} opportunityTypes={breakdowns.opportunityTypes} applicationStatuses={breakdowns.applicationStatuses} approved={stats.approvedOrganizations} totalOrganizations={stats.totalOrganizations} />

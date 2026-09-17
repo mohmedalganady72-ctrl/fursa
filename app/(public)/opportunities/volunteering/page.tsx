@@ -40,7 +40,7 @@ export default async function VolunteeringPage({
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 lg:px-8">
       <h1 className="text-h1 text-neutral-900">فرص التطوع</h1>
-      <p className="mt-2 text-body text-secondary">انضم لأعمال تطوعية ذات أثر حقيقي في مجالك</p>
+      <p className="mt-2 text-body text-secondary">شارك في فرص تطوعية تصنع أثرًا حقيقيًا في مجالك.</p>
 
       <div className="mt-6">
         <OpportunityFilters />
@@ -51,7 +51,7 @@ export default async function VolunteeringPage({
           <EmptyState
             icon={HandHeart}
             title="لا توجد فرص تطوع تطابق بحثك حاليًا"
-            description="جرّب تعديل الفلاتر أو البحث بكلمات مختلفة"
+            description="جرّب تعديل خيارات التصفية أو استخدام كلمات بحث مختلفة."
           />
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

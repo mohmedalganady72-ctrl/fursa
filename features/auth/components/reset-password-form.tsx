@@ -19,11 +19,11 @@ export function ResetPasswordForm() {
   async function submit(event: React.FormEvent) {
     event.preventDefault(); setPending(true);
     try {
-      if (!oobCode) { toast({ variant: "error", title: "رابط الاستعادة غير صالح" }); return; }
+      if (!oobCode) { toast({ variant: "error", title: "رابط الاستعادة غير صالح", description: "اطلب رابطًا جديدًا وحاول مرة أخرى." }); return; }
       if (password !== confirmPassword) { toast({ variant: "error", title: "كلمتا المرور غير متطابقتين" }); return; }
       const { error } = await authClient.confirmPasswordReset({ oobCode, newPassword: password });
       if (error) throw new Error(error.message);
-      toast({ variant: "success", title: "تم تغيير كلمة المرور" }); router.push("/login");
+      toast({ variant: "success", title: "تغيّرت كلمة المرور بنجاح" }); router.push("/login");
     } catch (error) {
       toast({ variant: "error", title: "تعذّر تغيير كلمة المرور", description: firebaseErrorMessage(error) });
     } finally { setPending(false); }

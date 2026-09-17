@@ -40,7 +40,7 @@ export async function POST(request: Request) {
 
     if (message === "PDF_TEXT_LAYER_TOO_SHORT") {
       return NextResponse.json(
-        { error: "PDF_TEXT_LAYER_TOO_SHORT", message: "تعذّر قراءة نص من الملف — تأكد أنه ليس صورة ممسوحة ضوئيًا" },
+        { error: "PDF_TEXT_LAYER_TOO_SHORT", message: "تعذّر قراءة النص من الملف. تأكد من أن الملف ليس صورة ممسوحة ضوئيًا." },
         { status: 422 }
       );
     }

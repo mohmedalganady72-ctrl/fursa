@@ -5,10 +5,10 @@ import { closePendingApplications, PENDING_STATUSES, type Transaction } from "./
 import { createNotification } from "@/features/notifications/services/notifications.service";
 
 const STATUS_LABELS = {
-  accepted: "تم قبولك",
-  rejected: "تم رفض الطلب",
+  accepted: "قُبل طلبك",
+  rejected: "لم يُقبل طلبك",
   under_review: "طلبك قيد المراجعة",
-  shortlisted: "تم ترشيحك مبدئياً",
+  shortlisted: "رُشّحت مبدئيًا",
 } as const;
 
 async function notifyApplicant(applicationId: string, status: keyof typeof STATUS_LABELS) {
@@ -24,7 +24,7 @@ async function notifyApplicant(applicationId: string, status: keyof typeof STATU
     userId: application.userId,
     type: "application_status_changed",
     title: STATUS_LABELS[status],
-    body: `تم تحديث حالة تقديمك على فرصة ${application.opportunityTitle}`,
+    body: `تحدّثت حالة طلبك على فرصة «${application.opportunityTitle}».`,
     linkUrl: status === "accepted" ? "/applicant/messages" : "/applicant/applications",
   });
 }

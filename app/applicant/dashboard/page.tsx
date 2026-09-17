@@ -26,7 +26,7 @@ export default async function ApplicantDashboardPage() {
       <EmptyState
         icon={FileText}
         title="أكمل ملفك الشخصي أولًا"
-        description="لاستخدام كل ميزات المنصة، يرجى إكمال بيانات ملفك الشخصي"
+        description="أكمل بيانات ملفك الشخصي للاستفادة من جميع ميزات المنصة."
         actionLabel="إكمال الملف الشخصي"
       />
     );
@@ -52,10 +52,10 @@ export default async function ApplicantDashboardPage() {
       <p className="mt-1 text-body text-secondary">نظرة سريعة على تقديماتك</p>
 
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <DashboardStatCard icon={FileText} label="إجمالي التقديمات" value={stats.total} />
-        <DashboardStatCard icon={CheckCircle2} label="مقبولة" value={stats.accepted} />
+        <DashboardStatCard icon={FileText} label="إجمالي الطلبات" value={stats.total} />
+        <DashboardStatCard icon={CheckCircle2} label="طلبات مقبولة" value={stats.accepted} />
         <DashboardStatCard icon={Clock} label="قيد المراجعة" value={stats.pending} />
-        <DashboardStatCard icon={XCircle} label="غير مقبولة" value={stats.rejected} />
+        <DashboardStatCard icon={XCircle} label="طلبات غير مقبولة" value={stats.rejected} />
       </div>
 
       <div className="mt-8 flex items-center justify-between">
@@ -68,7 +68,7 @@ export default async function ApplicantDashboardPage() {
       {applications.length === 0 ? (
         <EmptyState
           icon={FileText}
-          title="لم تقدّم على أي فرصة بعد"
+          title="لم تتقدّم إلى أي فرصة حتى الآن"
           description="تصفّح الفرص المتاحة وقدّم على ما يناسبك"
           actionLabel="تصفّح الفرص"
         />

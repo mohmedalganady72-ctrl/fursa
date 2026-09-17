@@ -40,7 +40,7 @@ export default async function CoOpPage({
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 lg:px-8">
       <h1 className="text-h1 text-neutral-900">التدريب التعاوني</h1>
-      <p className="mt-2 text-body text-secondary">فرص تدريب تعاوني تطابق تخصصك الجامعي ومستواك الدراسي</p>
+      <p className="mt-2 text-body text-secondary">استكشف فرص تدريب تعاوني تناسب تخصصك ومستواك الدراسي.</p>
 
       <div className="mt-6">
         <OpportunityFilters />
@@ -51,7 +51,7 @@ export default async function CoOpPage({
           <EmptyState
             icon={GraduationCap}
             title="لا توجد فرص تدريب تعاوني تطابق بحثك حاليًا"
-            description="جرّب تعديل الفلاتر أو البحث بكلمات مختلفة"
+            description="جرّب تعديل خيارات التصفية أو استخدام كلمات بحث مختلفة."
           />
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

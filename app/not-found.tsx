@@ -14,13 +14,13 @@ export default function NotFound() {
       */}
       <h1 className="text-h1 text-neutral-800">٤٠٤</h1>
       <p className="max-w-md text-body text-secondary">
-        الصفحة التي تبحث عنها غير موجودة، أو ربما تم نقلها.
+        الصفحة التي تبحث عنها غير موجودة أو نُقلت إلى عنوان آخر.
       </p>
       <Link
         href="/"
         className="rounded-md bg-primary-600 px-6 py-2.5 text-body font-medium !text-white transition-colors duration-300 hover:bg-primary-700 dark:bg-primary-300 dark:hover:bg-primary-200"
       >
-        العودة للصفحة الرئيسية
+        العودة إلى الصفحة الرئيسية
       </Link>
     </div>
   );

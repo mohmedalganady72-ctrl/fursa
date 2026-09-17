@@ -26,7 +26,7 @@ export function DeleteSavedSearchButton({ savedSearchId }: DeleteSavedSearchButt
       }
       router.refresh();
     } catch {
-      toast({ variant: "error", title: "تعذّر الاتصال بالخادم" });
+      toast({ variant: "error", title: "تعذّر حذف البحث المحفوظ", description: "تحقق من اتصالك وحاول مرة أخرى." });
     } finally {
       setIsDeleting(false);
     }

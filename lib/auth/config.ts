@@ -7,6 +7,27 @@ import { firebaseAdminAuth } from "@/lib/firebase/admin";
 import { eq } from "drizzle-orm";
 import { users } from "@/lib/db/schema";
 
+function getAuthBaseUrl() {
+  const vercelHost = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+  if (!vercelHost) return env.BETTER_AUTH_URL;
+  return vercelHost.startsWith("http") ? vercelHost : `https://${vercelHost}`;
+}
+
+const authBaseUrl = getAuthBaseUrl();
+const productionHost = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+const previewHostPattern = productionHost?.endsWith(".vercel.app")
+  ? `${productionHost.slice(0, -".vercel.app".length)}-*.vercel.app`
+  : undefined;
+const authBaseUrlConfig = process.env.VERCEL
+  ? {
+      allowedHosts: [productionHost, process.env.VERCEL_URL, previewHostPattern].filter(
+        (host): host is string => Boolean(host),
+      ),
+      fallback: authBaseUrl,
+      protocol: "https" as const,
+    }
+  : env.BETTER_AUTH_URL;
+
 /**
  * إعداد Better Auth المركزي — نقطة التعريف الوحيدة لسلوك المصادقة في المشروع.
  * يُستورد هذا الملف في:
@@ -71,6 +92,11 @@ export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 30, // 30 يومًا
     updateAge: 60 * 60 * 24, // تحديث الجلسة كل يوم عند النشاط
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 5,
+      strategy: "jwe",
+    },
   },
   databaseHooks: {
     session: {
@@ -92,12 +118,12 @@ export const auth = betterAuth({
         authDomain: env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
         projectId: env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
       },
-      passwordResetUrl: `${env.BETTER_AUTH_URL}/reset-password`,
+      passwordResetUrl: `${authBaseUrl}/reset-password`,
       getPhoneUserFallbackEmail: ({ uid }) => `${uid}@phone.fursa.local`,
     }),
   ],
 
-  baseURL: env.BETTER_AUTH_URL,
+  baseURL: authBaseUrlConfig,
   secret: env.BETTER_AUTH_SECRET,
 });
 

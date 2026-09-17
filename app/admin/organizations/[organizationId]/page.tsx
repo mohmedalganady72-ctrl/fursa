@@ -37,7 +37,7 @@ export default async function AdminOrganizationProfilePage({ params }: { params:
         <Info icon={Building2} label="نوع الجهة" value={TYPE_LABELS[organization.organizationType] ?? organization.organizationType} />
         <Info icon={CalendarDays} label="تاريخ التسجيل" value={formatDateArabic(organization.createdAt)} />
       </dl>
-      <div className="mt-6 border-t border-neutral-200 pt-5"><dt className="text-body-sm font-semibold text-neutral-700">وصف النشاط</dt><dd className="mt-2 whitespace-pre-wrap text-body leading-7 text-secondary">{organization.activityDescription || "لم تضف الجهة وصفاً لنشاطها."}</dd></div>
+      <div className="mt-6 border-t border-neutral-200 pt-5"><dt className="text-body-sm font-semibold text-neutral-700">وصف النشاط</dt><dd className="mt-2 whitespace-pre-wrap text-body leading-7 text-secondary">{organization.activityDescription || "لم تضف الجهة وصفًا لنشاطها."}</dd></div>
       {request?.rejectionReason && <div className="mt-5 rounded-md border border-danger-200 bg-danger-50 p-4"><p className="text-body-sm font-semibold text-danger-700">سبب الرفض</p><p className="mt-1 text-body-sm text-danger-700">{request.rejectionReason}</p></div>}
     </Card>
   </div>;

@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     const rawMessage = error instanceof Error ? error.message : "UNKNOWN_UPLOAD_ERROR";
     if (rawMessage === "UNAUTHENTICATED") {
       return NextResponse.json(
-        { error: "UNAUTHENTICATED", message: "يجب تسجيل الدخول أولاً" },
+        { error: "UNAUTHENTICATED", message: "يجب تسجيل الدخول أولًا" },
         { status: 401 },
       );
     }
@@ -56,8 +56,8 @@ export async function POST(request: Request) {
     return NextResponse.json({
       error: configurationError ? "STORAGE_CONFIGURATION_ERROR" : "UPLOAD_FAILED",
       message: configurationError
-        ? "تعذّر الاتصال بالتخزين. يجب ضبط SUPABASE_SERVICE_ROLE_KEY بالمفتاح الصحيح."
-        : "تعذّر رفع الملف، حاول مرة أخرى.",
+        ? "خدمة رفع الملفات غير متاحة حاليًا. حاول مرة أخرى لاحقًا."
+        : "تعذّر رفع الملف. حاول مرة أخرى.",
     }, { status: configurationError ? 503 : 500 });
   }
 }

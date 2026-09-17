@@ -17,13 +17,13 @@ export function ForgotPasswordForm() {
     try {
       const { error } = await authClient.sendPasswordReset({ email });
       if (error) throw new Error(error.message);
-      toast({ variant: "success", title: "تحقق من بريدك", description: "إن كان البريد مسجّلًا فسيصلك رابط إعادة التعيين" });
+      toast({ variant: "success", title: "راجع بريدك الإلكتروني", description: "إذا كان البريد مرتبطًا بحساب، فستصلك رسالة لإعادة تعيين كلمة المرور." });
     } catch (error) {
       toast({ variant: "error", title: "تعذّر إرسال الرابط", description: firebaseErrorMessage(error) });
     } finally { setPending(false); }
   }
   return <form onSubmit={submit} className="flex flex-col gap-5 rounded-lg border border-neutral-200 bg-surface p-6 shadow-sm">
-    <h1 className="text-h3 text-neutral-900">استعادة كلمة المرور</h1>
+    <div><h1 className="text-h3 text-neutral-900">استعادة كلمة المرور</h1><p className="mt-1 text-body-sm text-secondary">أدخل بريدك الإلكتروني لنرسل إليك رابط إعادة التعيين.</p></div>
     <div className="flex flex-col gap-2"><Label htmlFor="resetEmail">البريد الإلكتروني</Label>
       <Input id="resetEmail" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} /></div>
     <Button type="submit" size="lg" isLoading={pending}>إرسال رابط الاستعادة</Button>

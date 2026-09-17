@@ -59,7 +59,7 @@ export function ChatWindow({
       appendOptimisticMessage(result.data);
     } catch (error) {
       setDraft(content);
-      toast({ variant: "error", title: "لم تُرسل الرسالة", description: error instanceof Error ? error.message : "حاول مرة أخرى" });
+      toast({ variant: "error", title: "لم تُرسل الرسالة", description: error instanceof Error ? error.message : "تحقق من اتصالك وحاول مرة أخرى." });
     } finally {
       setIsSending(false);
     }
@@ -69,7 +69,7 @@ export function ChatWindow({
     <div className="flex h-[620px] flex-col overflow-hidden bg-surface">
       {(participantName || opportunityTitle) && <div className="flex items-center gap-3 border-b border-neutral-200 bg-surface px-4 py-3"><Link href={messagesPath} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-neutral-600 hover:bg-neutral-100 md:hidden" aria-label="العودة إلى المحادثات"><ArrowRight className="h-4 w-4 rtl-flip" /></Link><div><p className="text-body-sm font-semibold text-neutral-900">{participantName}</p><p className="text-caption text-secondary">{opportunityTitle}</p></div></div>}
       <div className="chat-surface flex-1 space-y-3 overflow-y-auto p-4 md:p-6">
-        {messages.length === 0 && <p className="py-12 text-center text-body-sm text-secondary">ابدأ المحادثة بإرسال أول رسالة</p>}
+        {messages.length === 0 && <p className="py-12 text-center text-body-sm text-secondary">ابدأ المحادثة بإرسال أول رسالة.</p>}
         {messages.map((message) => {
           const isOwnMessage = message.senderId === currentUserId;
           return (

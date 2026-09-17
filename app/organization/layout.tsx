@@ -52,8 +52,8 @@ export default async function OrganizationLayout({
           </div>
           <h1 className="mt-4 text-h3 text-neutral-800">حسابك قيد المراجعة</h1>
           <p className="mt-2 text-body-sm text-secondary">
-            يقوم فريق المنصة بمراجعة بيانات جهتكم حاليًا. سيصلكم إشعار فور اعتماد الحساب،
-            وعندها يمكنكم البدء بنشر الفرص واستقبال المتقدمين.
+            يراجع فريق المنصة بيانات جهتكم حاليًا. سيصلكم إشعار عند اعتماد الحساب،
+            وبعدها يمكنكم نشر الفرص واستقبال طلبات المتقدمين.
           </p>
         </div>
       </div></ProfileCompletionGate>

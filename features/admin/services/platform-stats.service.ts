@@ -1,4 +1,4 @@
-import { count, eq, gte, sql } from "drizzle-orm";
+import { count, gte, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import {
   users,
@@ -12,44 +12,45 @@ import { withDatabaseRetry } from "@/lib/db/retry";
 
 const retryQuery = <T>(query: () => Promise<T>) => withDatabaseRetry(query, 3);
 
+interface PlatformOverviewRow {
+  [key: string]: unknown;
+  totalApplicants: number;
+  totalOrganizations: number;
+  approvedOrganizations: number;
+  pendingJoinRequests: number;
+  totalOpportunities: number;
+  openOpportunities: number;
+  totalApplications: number;
+  acceptedApplications: number;
+}
+
 /**
  * الإحصائيات العامة المعروضة في app/(admin)/dashboard/page.tsx.
  * كل رقم يُحسَب عبر count() مباشرة في قاعدة البيانات بدل سحب الصفوف كاملة للعدّ في التطبيق
  * — فرق أداء كبير مع نمو حجم البيانات.
  */
 export async function getPlatformOverviewStats() {
-  const [
-    totalApplicantsRows,
-    organizationsRows,
-    pendingJoinRequestsRows,
-    opportunitiesRows,
-    applicationsRows,
-  ] = await Promise.all([
-    retryQuery(async () => db.select({ value: count() }).from(users).where(eq(users.role, USER_ROLES.APPLICANT))),
-    retryQuery(async () => db.select({
-      total: count(),
-      approved: sql<number>`count(*) filter (where ${organizationProfiles.isApproved} = true)`,
-    }).from(organizationProfiles)),
-    retryQuery(async () => db.select({ value: count() }).from(organizationJoinRequests).where(eq(organizationJoinRequests.status, "pending"))),
-    retryQuery(async () => db.select({
-      total: count(),
-      open: sql<number>`count(*) filter (where ${opportunities.status} = 'published')`,
-    }).from(opportunities)),
-    retryQuery(async () => db.select({
-      total: count(),
-      accepted: sql<number>`count(*) filter (where ${applications.status} = 'accepted')`,
-    }).from(applications)),
-  ]);
+  const [summary] = await retryQuery(async () => db.execute<PlatformOverviewRow>(sql`
+    select
+      (select count(*)::int from ${users} where ${users.role} = ${USER_ROLES.APPLICANT}) as "totalApplicants",
+      (select count(*)::int from ${organizationProfiles}) as "totalOrganizations",
+      (select count(*)::int from ${organizationProfiles} where ${organizationProfiles.isApproved} = true) as "approvedOrganizations",
+      (select count(*)::int from ${organizationJoinRequests} where ${organizationJoinRequests.status} = 'pending') as "pendingJoinRequests",
+      (select count(*)::int from ${opportunities}) as "totalOpportunities",
+      (select count(*)::int from ${opportunities} where ${opportunities.status} = 'published') as "openOpportunities",
+      (select count(*)::int from ${applications}) as "totalApplications",
+      (select count(*)::int from ${applications} where ${applications.status} = 'accepted') as "acceptedApplications"
+  `));
 
   return {
-    totalApplicants: totalApplicantsRows[0]?.value ?? 0,
-    totalOrganizations: organizationsRows[0]?.total ?? 0,
-    approvedOrganizations: Number(organizationsRows[0]?.approved ?? 0),
-    pendingJoinRequests: pendingJoinRequestsRows[0]?.value ?? 0,
-    totalOpportunities: opportunitiesRows[0]?.total ?? 0,
-    openOpportunities: Number(opportunitiesRows[0]?.open ?? 0),
-    totalApplications: applicationsRows[0]?.total ?? 0,
-    acceptedApplications: Number(applicationsRows[0]?.accepted ?? 0),
+    totalApplicants: Number(summary?.totalApplicants ?? 0),
+    totalOrganizations: Number(summary?.totalOrganizations ?? 0),
+    approvedOrganizations: Number(summary?.approvedOrganizations ?? 0),
+    pendingJoinRequests: Number(summary?.pendingJoinRequests ?? 0),
+    totalOpportunities: Number(summary?.totalOpportunities ?? 0),
+    openOpportunities: Number(summary?.openOpportunities ?? 0),
+    totalApplications: Number(summary?.totalApplications ?? 0),
+    acceptedApplications: Number(summary?.acceptedApplications ?? 0),
   };
 }
 

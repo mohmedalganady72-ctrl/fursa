@@ -13,9 +13,9 @@ export default function Error({
 }) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background px-4 text-center">
-      <h1 className="text-h2 text-neutral-800">حدث خطأ غير متوقع</h1>
+      <h1 className="text-h2 text-neutral-800">تعذّر تحميل الصفحة</h1>
       <p className="max-w-md text-body text-secondary">
-        نعتذر عن الإزعاج. حاول تحديث الصفحة، وإذا استمرت المشكلة تواصل معنا.
+        حاول إعادة تحميل الصفحة. إذا استمرت المشكلة، تواصل معنا لمساعدتك.
       </p>
       <button
         onClick={reset}

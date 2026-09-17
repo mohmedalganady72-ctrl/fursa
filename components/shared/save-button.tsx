@@ -50,7 +50,7 @@ export function SaveButton({ opportunityId, initialSaved, className }: SaveButto
       router.refresh(); // يُحدّث أي قائمة فرص محفوظة معروضة في نفس الصفحة
     } catch {
       setIsSaved(!nextSaved);
-      toast({ variant: "error", title: "تعذّر الاتصال بالخادم" });
+      toast({ variant: "error", title: "تعذّر تحديث الحفظ", description: "تحقق من اتصالك وحاول مرة أخرى." });
     } finally {
       setIsPending(false);
     }

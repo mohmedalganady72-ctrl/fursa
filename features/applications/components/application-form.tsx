@@ -47,7 +47,7 @@ export function ApplicationForm({ opportunityId, opportunityType, requiresResume
         upload.set("kind", "resume");
         upload.set("file", resumeFile);
         const uploadResponse = await fetch("/api/uploads", { method: "POST", body: upload });
-        const uploadResult = await uploadResponse.json().catch(() => ({ message: "أعاد الخادم استجابة غير صالحة" }));
+        const uploadResult = await uploadResponse.json().catch(() => ({ message: "تعذّر قراءة استجابة الخادم. حاول مرة أخرى." }));
         if (!uploadResponse.ok) {
           toast({ variant: "error", title: "تعذّر رفع السيرة الذاتية", description: uploadResult.message ?? uploadResult.error });
           return;
@@ -67,14 +67,14 @@ export function ApplicationForm({ opportunityId, opportunityType, requiresResume
         body: JSON.stringify(body),
       });
 
-      const result = await response.json().catch(() => ({ message: "أعاد الخادم استجابة غير صالحة" }));
+      const result = await response.json().catch(() => ({ message: "تعذّر قراءة استجابة الخادم. حاول مرة أخرى." }));
 
       if (!response.ok) {
-        toast({ variant: "error", title: "تعذّر إرسال التقديم", description: result.message ?? result.error });
+        toast({ variant: "error", title: "تعذّر إرسال الطلب", description: result.message ?? result.error });
         return;
       }
 
-      toast({ variant: "success", title: "تم إرسال تقديمك بنجاح" });
+      toast({ variant: "success", title: "أُرسل طلبك بنجاح" });
       router.push("/applicant/applications");
     } finally {
       setIsSubmitting(false);
@@ -90,7 +90,7 @@ export function ApplicationForm({ opportunityId, opportunityType, requiresResume
             id="whySuitable"
             value={whySuitableText}
             onChange={(e) => setWhySuitableText(e.target.value)}
-            placeholder="اكتب عن اهتمامك بالوظيفة وشغفك بالمجال وما يمكنك إضافته... (بدون تكرار ما هو موجود في سيرتك الذاتية)"
+            placeholder="اشرح اهتمامك بهذه الفرصة وما يمكنك تقديمه، من دون تكرار محتوى سيرتك الذاتية."
             required
             minLength={30}
             className="min-h-32"
@@ -140,7 +140,7 @@ export function ApplicationForm({ opportunityId, opportunityType, requiresResume
             ) : (
               <>
                 <Upload className="h-6 w-6 text-neutral-400" />
-                <span className="text-body-sm text-secondary">اضغط لرفع ملف PDF</span>
+                <span className="text-body-sm text-secondary">اختر ملفًا بصيغة PDF</span>
               </>
             )}
           </label>
@@ -156,7 +156,7 @@ export function ApplicationForm({ opportunityId, opportunityType, requiresResume
       )}
 
       <Button type="submit" size="lg" isLoading={isSubmitting} className="mt-2">
-        إرسال التقديم
+        إرسال الطلب
       </Button>
     </form>
   );

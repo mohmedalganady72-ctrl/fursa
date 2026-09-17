@@ -6,6 +6,12 @@ const TRANSIENT_DATABASE_CODES = new Set([
   "ECONNREFUSED",
   "ENOTFOUND",
   "EAI_AGAIN",
+  "CONNECTION_CLOSED",
+  "CONNECTION_DESTROYED",
+  "08000",
+  "08003",
+  "08006",
+  "53300",
   "57P01",
   "57P02",
   "57P03",
@@ -31,7 +37,9 @@ export async function withDatabaseRetry<T>(operation: () => Promise<T>, attempts
     } catch (error) {
       lastError = error;
       if (!isTransientDatabaseError(error) || attempt === attempts - 1) throw error;
-      await wait(250 * (attempt + 1));
+      const backoff = 200 * 2 ** attempt;
+      const jitter = Math.floor(Math.random() * 100);
+      await wait(backoff + jitter);
     }
   }
   throw lastError;

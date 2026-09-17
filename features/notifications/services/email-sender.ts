@@ -36,15 +36,15 @@ export async function sendNotificationEmail(params: {
   });
 }
 
-/** قالب مخصص لكود التحقق من البريد عند إنشاء الحساب (راجع lib/auth/config.ts) */
+/** قالب مخصص لرمز التحقق من البريد عند إنشاء الحساب (راجع lib/auth/config.ts) */
 export async function sendVerificationCodeEmail(to: string, code: string) {
   await sendTransactionalEmail({
     from: FROM_ADDRESS,
     to: [{ email: to }],
-    subject: "كود التحقق من البريد الإلكتروني",
+    subject: "رمز التحقق من البريد الإلكتروني",
     body: `
       <div dir="rtl" style="font-family: Arial, sans-serif; text-align: center; padding: 32px;">
-        <h2>كود التحقق الخاص بك</h2>
+        <h2>رمز التحقق الخاص بك</h2>
         <p style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #4F46E5;">${code}</p>
         <p style="color: #64748B;">صالح لمدة 10 دقائق.</p>
       </div>

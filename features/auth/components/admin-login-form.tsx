@@ -42,8 +42,8 @@ export function AdminLoginForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 rounded-lg border border-neutral-200 bg-surface p-6 shadow-sm">
       <div>
-        <h1 className="text-h3 text-neutral-900">دخول مدير المنصة</h1>
-        <p className="mt-1 text-body-sm text-secondary">هذه الصفحة مخصصة لفريق إدارة المنصة فقط</p>
+        <h1 className="text-h3 text-neutral-900">تسجيل دخول مدير المنصة</h1>
+        <p className="mt-1 text-body-sm text-secondary">هذه الصفحة مخصّصة لفريق إدارة المنصة فقط.</p>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -57,7 +57,7 @@ export function AdminLoginForm() {
       </div>
 
       <Button type="submit" size="lg" isLoading={isSubmitting}>
-        دخول
+        تسجيل الدخول
       </Button>
     </form>
   );

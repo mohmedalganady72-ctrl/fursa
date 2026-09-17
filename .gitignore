@@ -12,10 +12,8 @@ build/
 .env
 .env.local
 .env.production
-!.env.example
-!.env.local.example
-.env.local.example
 .env.example
+.env.local.example
 # Drizzle
 lib/db/migrations/*.sql
 !lib/db/migrations/.gitkeep

@@ -4,7 +4,7 @@ import { z } from "zod";
 export const reportSchema = z.object({
   targetType: z.enum(["message", "user", "opportunity"]),
   targetId: z.string().uuid(),
-  reason: z.string().min(10, "الرجاء توضيح سبب التبليغ").max(500),
+  reason: z.string().min(10, "وضّح سبب البلاغ في 10 أحرف على الأقل").max(500),
 });
 
 export type ReportInput = z.infer<typeof reportSchema>;

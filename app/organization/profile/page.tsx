@@ -9,7 +9,7 @@ export default async function OrganizationProfilePage() {
   return (
     <div>
       <h1 className="text-h1 text-neutral-900">ملف الجهة</h1>
-      <p className="mt-1 text-body text-secondary">هذه البيانات تظهر للباحثين عند تصفّح فرصكم</p>
+      <p className="mt-1 text-body text-secondary">ستظهر هذه البيانات للباحثين عند تصفّح فرصكم.</p>
 
       <div className="mt-6 max-w-2xl">
         <OrganizationProfileForm initialProfile={profile ?? undefined} />
