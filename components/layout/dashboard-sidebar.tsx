@@ -77,7 +77,7 @@ export function DashboardSidebar({ items, user }: DashboardSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-64 shrink-0 border-e border-neutral-200 bg-surface md:block">
+    <aside className="hidden w-64 shrink-0 border-e border-neutral-200 bg-surface shadow-sm md:block">
       <nav className="sticky top-0 flex flex-col gap-1 p-4">
         <div className="mb-5 flex h-10 items-center justify-between px-2"><BrandLogo /><ThemeToggle /></div>
         <div className="mb-5 flex items-center gap-3 border-y border-neutral-200 px-2 py-4">
@@ -100,8 +100,8 @@ export function DashboardSidebar({ items, user }: DashboardSidebarProps) {
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2.5 text-body-sm font-medium transition-colors duration-fast",
                 isActive
-                  ? "bg-primary-50 text-primary-700"
-                  : "text-neutral-600 hover:bg-neutral-100"
+                  ? "bg-primary-100 text-primary-800 shadow-xs"
+                  : "text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
               )}
             >
               <Icon className="h-4.5 w-4.5" aria-hidden="true" />

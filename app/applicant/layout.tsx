@@ -55,7 +55,7 @@ export default async function ApplicantLayout({
   const sidebarItems = SIDEBAR_NAV_ITEMS.map((item) => item.icon === "messages" ? { ...item, badge: messageCount } : item);
 
   return <ProfileCompletionGate complete={!!profile} profilePath="/applicant/profile">
-    <div className="flex min-h-screen bg-background">
+    <div className="dashboard-shell flex min-h-screen bg-background">
       <DashboardSidebar items={sidebarItems} user={{ name: profile?.fullName ?? session.user.name ?? "باحث عن فرصة", image: profile?.avatarUrl ?? session.user.image, roleLabel: "باحث عن فرصة" }} />
       <main className="flex-1 px-4 py-6 pb-20 md:px-6 md:pb-6 lg:px-8">
         <div className="mx-auto max-w-4xl"><DashboardHeader basePath="/applicant" initialNotifications={notificationCount} initialMessages={messageCount} />{children}</div>

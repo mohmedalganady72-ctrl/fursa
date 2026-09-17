@@ -50,9 +50,9 @@ export default async function OpportunityApplicantsPage({
           <EmptyState icon={Users} title="لا يوجد متقدمون على هذه الفرصة بعد" />
         </div>
       ) : (
-        <div className="mt-6 overflow-x-auto rounded-lg border border-neutral-200">
+        <div className="mt-6 overflow-x-auto rounded-lg border border-neutral-200 bg-surface shadow-sm">
           <table className="w-full text-start text-body-sm">
-            <thead className="bg-neutral-50 text-caption font-semibold text-neutral-500">
+            <thead className="bg-neutral-100 text-caption font-semibold text-neutral-700">
               <tr>
                 <th className="px-4 py-3 text-start">المتقدم</th>
                 <th className="px-4 py-3 text-start">المدينة</th>
@@ -76,7 +76,7 @@ export default async function OpportunityApplicantsPage({
             </thead>
             <tbody>
               {applicants.map((app) => (
-                <tr key={app.id} className="border-t border-neutral-100">
+                <tr key={app.id} className="border-t border-neutral-200 transition-colors hover:bg-primary-50/50">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <Avatar size="sm">

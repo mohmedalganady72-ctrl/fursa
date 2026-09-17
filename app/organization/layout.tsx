@@ -67,7 +67,7 @@ export default async function OrganizationLayout({
   const navItems = ORGANIZATION_NAV_ITEMS.map((item) => item.icon === "messages" ? { ...item, badge: messageCount } : item);
 
   return <ProfileCompletionGate complete={!!profile} profilePath="/organization/profile">
-    <div className="flex min-h-screen bg-background">
+    <div className="dashboard-shell flex min-h-screen bg-background">
       <DashboardSidebar items={navItems} user={{ name: profile?.name ?? session.user.name ?? "جهة", image: profile?.logoUrl ?? session.user.image, roleLabel: "حساب جهة" }} />
       <main className="flex-1 px-4 py-6 pb-20 md:px-6 md:pb-6 lg:px-8">
         <div className="mx-auto max-w-5xl"><DashboardHeader basePath="/organization" initialNotifications={notificationCount} initialMessages={messageCount} />{children}</div>

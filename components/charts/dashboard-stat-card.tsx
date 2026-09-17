@@ -16,13 +16,13 @@ interface DashboardStatCardProps {
  */
 export function DashboardStatCard({ icon: Icon, label, value, trend, className }: DashboardStatCardProps) {
   return (
-    <Card className={cn("shadow-xs", className)}>
+    <Card className={cn("border-neutral-200 shadow-sm transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md", className)}>
       <CardContent className="flex items-center gap-4 p-5">
         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary-50">
           <Icon className="h-5 w-5 text-primary-600" aria-hidden="true" />
         </div>
         <div className="flex flex-col gap-0.5">
-          <span className="text-body-sm text-secondary">{label}</span>
+          <span className="text-body-sm font-medium text-secondary">{label}</span>
           <div className="flex items-baseline gap-2">
             <span className="ltr-numerals text-h3 text-neutral-800">{value}</span>
             {trend && (
