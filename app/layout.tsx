@@ -9,8 +9,8 @@ import "./globals.css";
  */
 export const metadata: Metadata = {
   title: {
-    default: "منصّة الفٌرص",
-    template: "%s | منصّة الفٌرص",
+    default: "منصّة فٌرص",
+    template: "%s | منصّة فٌرص",
   },
   description:
     "منصّة ذكية تجمع بين الباحثين عن الفٌرص والجهات المعلِنة عن فٌرص العمل والتطوع والتدريب التعاوني",

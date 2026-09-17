@@ -7,7 +7,7 @@ export default async function OrganizationProfilePage() {
   const profile = await getOrganizationProfileByUserId(session.user.id);
 
   return (
-    <div className={profile ? "" : "mx-auto flex min-h-screen w-full max-w-2xl flex-col justify-center px-4 py-10"}>
+    <div className={profile ? "" : "mx-auto w-full max-w-2xl px-4 py-8"}>
       <div className={profile ? "" : "text-center"}>
         <h1 className="text-h1 text-neutral-900">{profile ? "ملف الجهة" : "أكمل ملف الجهة"}</h1>
         <p className="mt-2 text-body text-secondary">
