@@ -6,7 +6,6 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// يظهر من الجانب المنطقي الصحيح (يمين الشاشة في RTL) — راجع design-system.md § دعم RTL
 const ToastProvider = ToastPrimitive.Provider;
 
 const ToastViewport = React.forwardRef<
@@ -16,7 +15,7 @@ const ToastViewport = React.forwardRef<
   <ToastPrimitive.Viewport
     ref={ref}
     className={cn(
-      "fixed top-0 z-[100] flex max-h-screen w-full flex-col gap-2 p-4 end-0 sm:top-4 sm:max-w-sm",
+      "fixed inset-x-0 top-0 z-[100] flex max-h-screen w-full flex-col gap-3 p-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:inset-x-auto sm:bottom-5 sm:end-5 sm:top-auto sm:w-[24rem] sm:p-0",
       className
     )}
     {...props}
@@ -25,13 +24,14 @@ const ToastViewport = React.forwardRef<
 ToastViewport.displayName = ToastPrimitive.Viewport.displayName;
 
 const toastVariants = cva(
-  "group pointer-events-auto relative flex w-full items-start gap-3 rounded-lg border p-4 shadow-lg data-[state=open]:animate-fade-in",
+  "group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden rounded-lg border bg-surface p-4 pe-11 text-neutral-900 shadow-xl outline-none transition data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-bottom-3 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-bottom-2 data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=end]:animate-out data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] dark:bg-[#18231d] dark:text-[#f7faf8] sm:data-[state=open]:slide-in-from-left-4",
   {
     variants: {
       variant: {
-        success: "border-success-500/20 bg-success-50 text-neutral-800",
-        error: "border-danger-500/20 bg-danger-50 text-neutral-800",
-        info: "border-neutral-200 bg-surface text-neutral-800",
+        success: "border-emerald-200 border-s-4 border-s-emerald-600 dark:border-emerald-900 dark:border-s-emerald-400",
+        error: "border-red-200 border-s-4 border-s-red-600 dark:border-red-950 dark:border-s-red-400",
+        warning: "border-amber-200 border-s-4 border-s-amber-500 dark:border-amber-950 dark:border-s-amber-400",
+        info: "border-cyan-200 border-s-4 border-s-cyan-600 dark:border-cyan-950 dark:border-s-cyan-400",
       },
     },
     defaultVariants: { variant: "info" },
@@ -50,7 +50,7 @@ const ToastTitle = React.forwardRef<
   React.ElementRef<typeof ToastPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitive.Title>
 >(({ className, ...props }, ref) => (
-  <ToastPrimitive.Title ref={ref} className={cn("text-body-sm font-semibold", className)} {...props} />
+  <ToastPrimitive.Title ref={ref} className={cn("text-body font-semibold leading-6", className)} {...props} />
 ));
 ToastTitle.displayName = ToastPrimitive.Title.displayName;
 
@@ -58,7 +58,7 @@ const ToastDescription = React.forwardRef<
   React.ElementRef<typeof ToastPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitive.Description>
 >(({ className, ...props }, ref) => (
-  <ToastPrimitive.Description ref={ref} className={cn("text-body-sm text-secondary", className)} {...props} />
+  <ToastPrimitive.Description ref={ref} className={cn("text-body-sm leading-6 text-neutral-600 dark:text-[#bdc9c1]", className)} {...props} />
 ));
 ToastDescription.displayName = ToastPrimitive.Description.displayName;
 
@@ -68,11 +68,12 @@ const ToastClose = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitive.Close
     ref={ref}
-    className={cn("absolute end-2 top-2 rounded-sm text-neutral-400 hover:text-neutral-700", className)}
+    aria-label="إغلاق الرسالة"
+    className={cn("absolute end-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 focus-visible:outline-none dark:text-[#9eaba3] dark:hover:bg-[#26352d] dark:hover:text-white", className)}
     toast-close=""
     {...props}
   >
-    <X className="h-4 w-4" />
+    <X className="h-[18px] w-[18px]" />
   </ToastPrimitive.Close>
 ));
 ToastClose.displayName = ToastPrimitive.Close.displayName;

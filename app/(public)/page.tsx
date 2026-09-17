@@ -1,12 +1,10 @@
-import { redirect } from "next/navigation";
 import { HeroSection } from "@/features/landing/components/hero-section";
 import { StatementSection } from "@/features/landing/components/statement-section";
 import { OpportunityGridSection } from "@/features/landing/components/opportunity-grid-section";
 import { HowItWorksSection } from "@/features/landing/components/how-it-works-section";
 import { OrganizationsSection } from "@/features/landing/components/organizations-section";
 import { FinalCtaSection } from "@/features/landing/components/final-cta-section";
-import { getPostAuthPath } from "@/lib/auth/destination";
-import { getServerSession } from "@/lib/auth/session";
+import { SessionRedirect } from "@/components/shared/session-redirect";
 
 /**
  * الصفحة الرئيسية (Landing) — أول صفحة يراها الزائر غير المسجَّل.
@@ -14,12 +12,10 @@ import { getServerSession } from "@/lib/auth/session";
  * كيف تعمل (خلفية رمادية فاتحة) → قسم الجهات (خلفية داكنة) → CTA ختامي.
  * كل قسم مكوّن مستقل في features/landing/components لسهولة التعديل لاحقًا.
  */
-export default async function LandingPage() {
-  const session = await getServerSession();
-  if (session) redirect(await getPostAuthPath(session));
-
+export default function LandingPage() {
   return (
     <>
+      <SessionRedirect />
       <HeroSection />
       <StatementSection />
       <OpportunityGridSection />

@@ -10,7 +10,8 @@ import type { ToastProps } from "@/components/ui/toast";
  */
 
 const TOAST_LIMIT = 3;
-const TOAST_REMOVE_DELAY = 4000; // 4 ثوانٍ — راجع design-system.md § Toast
+const DEFAULT_TOAST_DURATION = 4500;
+const ERROR_TOAST_DURATION = 6500;
 
 type ToasterToast = ToastProps & {
   id: string;
@@ -34,15 +35,16 @@ type Toast = Omit<ToasterToast, "id">;
 
 function toast({ ...props }: Toast) {
   const id = genId();
+  const duration = props.duration ?? (props.variant === "error" ? ERROR_TOAST_DURATION : DEFAULT_TOAST_DURATION);
 
   const dismiss = () =>
     dispatch({ toasts: memoryState.toasts.filter((t) => t.id !== id) });
 
   dispatch({
-    toasts: [{ ...props, id }, ...memoryState.toasts].slice(0, TOAST_LIMIT),
+    toasts: [{ ...props, duration, id }, ...memoryState.toasts].slice(0, TOAST_LIMIT),
   });
 
-  setTimeout(dismiss, TOAST_REMOVE_DELAY);
+  setTimeout(dismiss, duration);
 
   return { id, dismiss };
 }
