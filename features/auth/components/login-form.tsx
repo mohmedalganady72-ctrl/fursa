@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { firebaseClientAuth } from "@/lib/firebase/client";
+import { firebaseAuthReady, firebaseClientAuth } from "@/lib/firebase/client";
 import { createBetterAuthSession, firebaseErrorMessage, resolvePostAuthPath } from "@/lib/firebase/auth-flow";
 import { CountryPhoneInput } from "@/features/auth/components/country-phone-input";
 import { authClient } from "@/lib/auth/client";
@@ -35,6 +35,7 @@ export function LoginForm() {
     event.preventDefault();
     setIsSubmitting(true);
     try {
+      await firebaseAuthReady;
       if (method === "email") {
         try {
           const credential = await signInWithEmailAndPassword(firebaseClientAuth, email, password);
@@ -70,6 +71,7 @@ export function LoginForm() {
   async function googleLogin() {
     setIsSubmitting(true);
     try {
+      await firebaseAuthReady;
       const credential = await signInWithPopup(firebaseClientAuth, new GoogleAuthProvider());
       await finish("google", await credential.user.getIdToken());
     } catch (error) {

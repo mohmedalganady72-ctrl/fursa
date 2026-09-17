@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { USER_ROLES } from "@/lib/constants";
-import { firebaseClientAuth } from "@/lib/firebase/client";
+import { firebaseAuthReady, firebaseClientAuth } from "@/lib/firebase/client";
 import { createBetterAuthSession, firebaseErrorMessage, profilePath, resolvePostAuthPath, type RegistrationRole } from "@/lib/firebase/auth-flow";
 
 export function VerifyPhoneForm() {
@@ -29,6 +29,7 @@ export function VerifyPhoneForm() {
     }
     setIsSubmitting(true);
     try {
+      await firebaseAuthReady;
       const credential = PhoneAuthProvider.credential(verificationId, code);
       const result = await signInWithCredential(firebaseClientAuth, credential);
       await createBetterAuthSession("phone", await result.user.getIdToken(), isLogin ? undefined : role);

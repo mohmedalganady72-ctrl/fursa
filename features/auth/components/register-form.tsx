@@ -11,7 +11,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { USER_ROLES } from "@/lib/constants";
-import { firebaseClientAuth } from "@/lib/firebase/client";
+import { firebaseAuthReady, firebaseClientAuth } from "@/lib/firebase/client";
 import { createBetterAuthSession, firebaseErrorMessage, resolvePostAuthPath, type RegistrationRole } from "@/lib/firebase/auth-flow";
 import { CountryPhoneInput } from "@/features/auth/components/country-phone-input";
 
@@ -62,6 +62,7 @@ export function RegisterForm() {
     event.preventDefault();
     setIsSubmitting(true);
     try {
+      await firebaseAuthReady;
       await (method === "email" ? registerWithEmail() : registerWithPhone());
     } catch (error) {
       toast({ variant: "error", title: "تعذّر إنشاء الحساب", description: firebaseErrorMessage(error) });
@@ -73,6 +74,7 @@ export function RegisterForm() {
   async function registerWithGoogle() {
     setIsSubmitting(true);
     try {
+      await firebaseAuthReady;
       if (redirectTo) sessionStorage.setItem("fursa-post-profile-redirect", redirectTo);
       const credential = await signInWithPopup(firebaseClientAuth, new GoogleAuthProvider());
       await createBetterAuthSession("google", await credential.user.getIdToken(), role);
