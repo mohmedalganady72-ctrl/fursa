@@ -9,7 +9,6 @@ import { firebaseAuthClientPlugin } from "better-auth-firebase-auth/client";
  * دون الحاجة لكتابة fetch يدوي لكل عملية (Better Auth يغلّف ذلك تلقائيًا).
  */
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_APP_URL,
   plugins: [firebaseAuthClientPlugin()],
 });
 
