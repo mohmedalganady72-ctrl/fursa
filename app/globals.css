@@ -125,7 +125,7 @@
     --border: #334139;
     --text-primary: #f8faf8;
     --text-secondary: #aeb8b1;
-    --text-on-primary: #10251e;
+    --text-on-primary: #ffffff;
   }
 
   /* إعادة ضبط أساسية + خط افتراضي لكل الصفحة */
@@ -138,6 +138,21 @@
     /* تنعيم عرض الخطوط على الشاشات عالية الدقة */
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+  }
+
+  /* اتجاه ثابت لكل قائمة HTML مستقبلية: النص يمينًا وسهم المتصفح في الجهة المقابلة. */
+  select {
+    direction: rtl;
+    text-align: right;
+  }
+
+  /* يضمن وضوح نص أي إجراء أخضر حتى لو لم يستخدم مكوّن Button المشترك. */
+  :is(button, a, [role="button"]).bg-primary-600 {
+    color: #ffffff !important;
+  }
+
+  .dark :is(button, a, [role="button"]).bg-primary-600 {
+    background-color: var(--color-primary-300) !important;
   }
 
   html.theme-transition *,

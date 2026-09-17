@@ -30,10 +30,10 @@ export function CountryPhoneInput({ id, value, onChange }: { id: string; value: 
     <Label htmlFor={id}>رقم الهاتف</Label>
     <div className="flex h-11 overflow-hidden rounded-md border border-neutral-300 bg-surface focus-within:ring-2 focus-within:ring-primary-500">
       <div className="relative shrink-0 border-e border-neutral-200">
-        <select aria-label="الدولة" value={countryCode} onChange={(event) => { const next = countries.find((item) => item.code === event.target.value) ?? countries[0]; setCountryCode(next.code); updateNumber(nationalNumber, next.dial); }} className="h-full appearance-none bg-neutral-50 ps-8 pe-9 text-body-sm font-medium text-neutral-800 outline-none">
+        <select dir="rtl" aria-label="الدولة" value={countryCode} onChange={(event) => { const next = countries.find((item) => item.code === event.target.value) ?? countries[0]; setCountryCode(next.code); updateNumber(nationalNumber, next.dial); }} className="h-full appearance-none bg-neutral-50 ps-3 pe-9 text-right text-body-sm font-medium text-neutral-800 outline-none">
           {countries.map((item) => <option key={item.code} value={item.code}>{item.flag} {item.dial} {item.name}</option>)}
         </select>
-        <ChevronDown className="pointer-events-none absolute end-2 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+        <ChevronDown className="pointer-events-none absolute end-2 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" aria-hidden="true" />
       </div>
       <Input id={id} type="tel" inputMode="numeric" dir="ltr" autoComplete="tel-national" value={nationalNumber} onChange={(event) => updateNumber(event.target.value)} required placeholder={country.placeholder} className="h-full rounded-none border-0 text-start shadow-none focus-visible:ring-0" />
     </div>

@@ -81,7 +81,7 @@ export function ChatWindow({
                 className={cn(
                   "max-w-[85%] rounded-lg px-3 py-2 text-body-sm shadow-xs sm:max-w-[72%]",
                   isOwnMessage
-                    ? "rounded-es-sm bg-primary-600 text-on-primary"
+                    ? "rounded-es-sm bg-primary-600 !text-white dark:bg-primary-300"
                     : "rounded-ee-sm bg-surface text-neutral-800"
                 )}
               >

@@ -66,5 +66,5 @@ export function NotificationCenter({ initialNotifications }: { initialNotificati
 }
 
 function FilterButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-  return <button type="button" role="tab" aria-selected={active} onClick={onClick} className={cn("h-9 rounded px-4 text-body-sm font-medium", active ? "bg-white text-neutral-900 shadow-sm" : "text-secondary")}>{children}</button>;
+  return <button type="button" role="tab" aria-selected={active} onClick={onClick} className={cn("h-9 rounded px-4 text-body-sm font-medium transition-colors duration-300", active ? "bg-surface text-neutral-900 shadow-sm ring-1 ring-neutral-200" : "text-secondary hover:bg-neutral-200/60 hover:text-neutral-800")}>{children}</button>;
 }

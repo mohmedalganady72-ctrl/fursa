@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { organizationProfiles } from "@/lib/db/schema";
 import { requireSession } from "@/lib/auth/session";
 import { USER_ROLES } from "@/lib/constants";
+import { ReportButton } from "@/features/reports/components/report-button";
 
 const ORG_TYPE_LABELS: Record<string, string> = {
   company: "شركة",
@@ -35,7 +36,8 @@ export default async function OrganizationPublicProfilePage({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 md:px-6 lg:px-8">
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
         <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-primary-50 text-h3 font-semibold text-primary-700">
           {organization.logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -57,6 +59,8 @@ export default async function OrganizationPublicProfilePage({
             </span>
           </div>
         </div>
+        </div>
+        <ReportButton targetId={organization.userId} targetLabel="الجهة" />
       </div>
 
       {organization.activityDescription && (
