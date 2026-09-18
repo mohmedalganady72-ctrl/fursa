@@ -192,6 +192,18 @@
     padding-right: 0 !important;
   }
 
+  /* نخفي زر الكشف الأصلي للمتصفح ونبقي زر المنصة الواحد داخل PasswordInput. */
+  .password-input::-ms-reveal,
+  .password-input::-ms-clear {
+    display: none;
+  }
+
+  .password-input::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+  }
+
   /* اتجاه ثابت لكل قائمة HTML مستقبلية: النص يمينًا وسهم المتصفح في الجهة المقابلة. */
   select {
     direction: rtl;

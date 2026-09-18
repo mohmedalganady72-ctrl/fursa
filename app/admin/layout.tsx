@@ -12,6 +12,7 @@ import { getPostAuthPath } from "@/lib/auth/destination";
 
 const ADMIN_NAV_ITEMS: SidebarNavItem[] = [
   { href: "/admin/dashboard", label: "الرئيسية", icon: "dashboard" },
+  { href: "/admin/profile", label: "حسابي", icon: "profile" },
   { href: "/admin/organizations/requests", label: "طلبات الجهات", icon: "organization" },
   { href: "/admin/users/applicants", label: "الباحثون", icon: "users" },
   { href: "/admin/users/organizations", label: "الجهات", icon: "opportunities" },
