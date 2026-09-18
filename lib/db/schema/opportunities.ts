@@ -27,7 +27,7 @@ export const opportunityStatusEnum = pgEnum("opportunity_status", [
 ]);
 
 /**
- * جدول الفرص الموحّد للأنواع الثلاثة (عمل / تطوع / تدريب تعاوني).
+ * جدول الفٌرص الموحّد للأنواع الثلاثة (عمل / تطوع / تدريب تعاوني).
  * القرار: جدول واحد بحقول مشتركة + حقول خاصة قابلة للـ NULL حسب النوع،
  * بدل ثلاثة جداول منفصلة — لأن معظم منطق العرض والبحث والفلترة مشترك،
  * والحقول الخاصة بكل نوع قليلة العدد (راجع وثيقة المتطلبات § 10.4).
@@ -58,7 +58,7 @@ export const opportunities = pgTable(
       .defaultNow(),
     applicationDeadline: timestamp("application_deadline", { withTimezone: true }).notNull(),
 
-    // ===== حقول خاصة بفرص العمل =====
+    // ===== حقول خاصة بفٌرص العمل =====
     requiredQualification: text("required_qualification"), // المؤهل المطلوب
     requiredSkills: text("required_skills"), // نص حر مفصول بفواصل، يُستخدم في خوارزمية التوافق
     minimumYearsExperience: integer("minimum_years_experience"), // NULL = غير مشترط (راجع features/matching)
@@ -74,7 +74,7 @@ export const opportunities = pgTable(
     // تاريخ النشر الفعلي — يُستخدم للترتيب الزمني (الأحدث أولًا) ولحساب اتجاه النشر بمرور الوقت
     publishedAt: timestamp("published_at", { withTimezone: true }).notNull().defaultNow(),
     // لا يوجد تعديل بعد النشر إطلاقًا في هذا الإصدار (راجع وثيقة المتطلبات § 5.7) —
-    // هذا العمود محذوف عمدًا؛ أي "تعديل" فعليًا هو إغلاق هذه الفرصة + إنشاء فرصة جديدة.
+    // هذا العمود محذوف عمدًا؛ أي "تعديل" فعليًا هو إغلاق هذه الفٌرصة + إنشاء فٌرصة جديدة.
     closedAt: timestamp("closed_at", { withTimezone: true }),
     closureReason: text("closure_reason"), // "seats_filled" | "expired" | "admin_action" | إلخ (نص حر توثيقي)
 
@@ -91,7 +91,7 @@ export const opportunities = pgTable(
   })
 );
 
-/** جدول ربط many-to-many بين الفرصة والمجالات المطلوبة لها */
+/** جدول ربط many-to-many بين الفٌرصة والمجالات المطلوبة لها */
 export const opportunityFields = pgTable("opportunity_fields", {
   id: uuid("id").primaryKey().defaultRandom(),
   opportunityId: uuid("opportunity_id")

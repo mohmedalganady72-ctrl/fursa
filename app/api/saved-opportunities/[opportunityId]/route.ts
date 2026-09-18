@@ -9,7 +9,7 @@ import {
 import { db } from "@/lib/db";
 import { applicantProfiles } from "@/lib/db/schema";
 
-/** POST /api/saved-opportunities/:opportunityId — حفظ فرصة */
+/** POST /api/saved-opportunities/:opportunityId — حفظ فٌرصة */
 export async function POST(
   _request: Request,
   { params }: { params: Promise<{ opportunityId: string }> }

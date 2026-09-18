@@ -16,21 +16,21 @@ import { getPostAuthPath } from "@/lib/auth/destination";
 /**
  * التنقل السفلي على الهاتف (DashboardBottomNav) يعرض فقط أول 5 عناصر (items.slice(0, 5)
  * — راجع phase 10). القائمة الأساسية أدناه بالضبط 5 عناصر وتُستخدم للسفلي وأساسًا للجانبي،
- * وعنصر "الفرص المحفوظة" يُضاف فوقها فقط للشريط الجانبي عبر SIDEBAR_NAV_ITEMS كي لا
+ * وعنصر "الفٌرص المحفوظة" يُضاف فوقها فقط للشريط الجانبي عبر SIDEBAR_NAV_ITEMS كي لا
  * يكسر التنقل السفلي بظهور عنصر سادس يُقتطَع بصمت أو يُزيح عنصرًا آخر.
  */
 const APPLICANT_NAV_ITEMS: SidebarNavItem[] = [
   { href: "/applicant/dashboard", label: "الرئيسية", icon: "dashboard" },
   { href: "/applicant/profile", label: "ملفي الشخصي", icon: "profile" },
   { href: "/applicant/applications", label: "طلباتي", icon: "applications" },
-  { href: "/applicant/opportunities", label: "البحث عن فرص", icon: "opportunities" },
+  { href: "/applicant/opportunities", label: "البحث عن فٌرص", icon: "opportunities" },
   { href: "/applicant/messages", label: "الرسائل", icon: "messages" },
 ];
 
 const SIDEBAR_NAV_ITEMS: SidebarNavItem[] = [
   ...APPLICANT_NAV_ITEMS,
   { href: "/applicant/smart-search", label: "البحث الذكي", icon: "smart-search" },
-  { href: "/applicant/saved-opportunities", label: "الفرص المحفوظة", icon: "saved" },
+  { href: "/applicant/saved-opportunities", label: "الفٌرص المحفوظة", icon: "saved" },
 ];
 
 export const dynamic = "force-dynamic";
@@ -65,7 +65,7 @@ export default async function ApplicantLayout({
 
   return <ProfileCompletionGate complete profilePath="/applicant/profile">
     <div className="dashboard-shell flex min-h-screen bg-background">
-      <DashboardSidebar items={sidebarItems} user={{ name: profile?.fullName ?? session.user.name ?? "باحث عن فرصة", image: profile?.avatarUrl ?? session.user.image, roleLabel: "باحث عن فرصة" }} />
+      <DashboardSidebar items={sidebarItems} user={{ name: profile?.fullName ?? session.user.name ?? "باحث عن فٌرصة", email: session.user.email, image: profile?.avatarUrl ?? session.user.image, roleLabel: "باحث عن فٌرصة" }} />
       <main className="flex-1 px-4 py-6 pb-20 md:px-6 md:pb-6 lg:px-8">
         <div className="mx-auto max-w-4xl"><DashboardHeader basePath="/applicant" initialNotifications={notificationCount} initialMessages={messageCount} />{children}</div>
       </main>

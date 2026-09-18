@@ -27,14 +27,14 @@ export default async function ApplicantApplicationsPage() {
   return (
     <div>
       <h1 className="text-h1 text-neutral-900">طلباتي</h1>
-      <p className="mt-1 text-body text-secondary">تابع حالة طلباتك والفرص التي تقدّمت إليها.</p>
+      <p className="mt-1 text-body text-secondary">تابع حالة طلباتك والفٌرص التي تقدّمت إليها.</p>
 
       {applications.length === 0 ? (
         <div className="mt-6">
           <EmptyState
             icon={FileText}
-            title="لم تتقدّم إلى أي فرصة حتى الآن"
-            actionLabel="تصفّح الفرص"
+            title="لم تتقدّم إلى أي فٌرصة حتى الآن"
+            actionLabel="تصفّح الفٌرص"
           />
         </div>
       ) : (

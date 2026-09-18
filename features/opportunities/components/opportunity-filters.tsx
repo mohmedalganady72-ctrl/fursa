@@ -15,7 +15,7 @@ const SORT_LABELS: Record<string, string> = {
 };
 
 /**
- * شريط الفلاتر لصفحة تصفح الفرص — يقرأ/يكتب الحالة مباشرة في query params
+ * شريط الفلاتر لصفحة تصفح الفٌرص — يقرأ/يكتب الحالة مباشرة في query params
  * (وليس React state محلي) حتى تكون النتائج قابلة للمشاركة عبر رابط ومتوافقة مع زر الرجوع.
  */
 export function OpportunityFilters() {
@@ -36,7 +36,7 @@ export function OpportunityFilters() {
       <div className="relative flex-1">
         <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
         <Input
-          placeholder="ابحث باسم الجهة أو عنوان الفرصة أو التخصص..."
+          placeholder="ابحث باسم الجهة أو عنوان الفٌرصة أو التخصص..."
           defaultValue={searchParams.get("searchQuery") ?? ""}
           onChange={(e) => updateFilter("searchQuery", e.target.value)}
           className="ps-9"

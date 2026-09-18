@@ -19,6 +19,19 @@ export type VerificationContext = {
 };
 
 let activeSessionRequest: Promise<unknown> | null = null;
+const AUTH_REQUEST_TIMEOUT_MS = 20_000;
+
+async function withAuthTimeout<T>(operation: Promise<T>, message: string): Promise<T> {
+  let timeoutId: number | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timeoutId = window.setTimeout(() => reject(new Error(message)), AUTH_REQUEST_TIMEOUT_MS);
+  });
+  try {
+    return await Promise.race([operation, timeout]);
+  } finally {
+    if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+  }
+}
 
 function isTransientAuthError(error: unknown) {
   if (!error || typeof error !== "object") return false;
@@ -35,7 +48,10 @@ export async function signInWithPassword(email: string, password: string) {
   let lastResponse: Awaited<ReturnType<typeof authClient.signIn.email>> | undefined;
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
-      lastResponse = await authClient.signIn.email({ email, password, rememberMe: true });
+      lastResponse = await withAuthTimeout(
+        authClient.signIn.email({ email, password, rememberMe: true }),
+        "استغرق تسجيل الدخول وقتًا أطول من المتوقع. حاول مرة أخرى.",
+      );
       if (!lastResponse.error || !isTransientAuthError(lastResponse.error)) return lastResponse;
       if (attempt === 2) throw new Error("تعذّر الاتصال بخدمة تسجيل الدخول. حاول مرة أخرى بعد قليل.");
     } catch (error) {
@@ -125,11 +141,14 @@ export async function createBetterAuthSession(
   activeSessionRequest = (async () => {
     let response: Awaited<ReturnType<typeof authClient.signInWithEmail>> | undefined;
     for (let attempt = 0; attempt < 3; attempt += 1) {
-      response = provider === "google"
-        ? await authClient.signInWithGoogle({ idToken })
-        : provider === "phone"
-          ? await authClient.signInWithPhone({ idToken })
-          : await authClient.signInWithEmail({ idToken });
+      response = await withAuthTimeout(
+        provider === "google"
+          ? authClient.signInWithGoogle({ idToken })
+          : provider === "phone"
+            ? authClient.signInWithPhone({ idToken })
+            : authClient.signInWithEmail({ idToken }),
+        "استغرق إنشاء الجلسة وقتًا أطول من المتوقع. حاول مرة أخرى.",
+      );
       if (!response.error || !isTransientAuthError(response.error) || attempt === 2) break;
       await waitForRetry(attempt);
     }
@@ -168,10 +187,18 @@ export async function createBetterAuthSession(
 export async function resolvePostAuthPath(requestedPath?: string) {
   const query = requestedPath ? `?redirectTo=${encodeURIComponent(requestedPath)}` : "";
   for (let attempt = 0; attempt < 3; attempt += 1) {
-    const response = await fetch(`/api/auth/destination${query}`, { cache: "no-store", credentials: "include" });
-    if (response.ok) {
-      const result = await response.json();
-      return result.data.path as string;
+    try {
+      const response = await fetch(`/api/auth/destination${query}`, {
+        cache: "no-store",
+        credentials: "include",
+        signal: AbortSignal.timeout(AUTH_REQUEST_TIMEOUT_MS),
+      });
+      if (response.ok) {
+        const result = await response.json();
+        return result.data.path as string;
+      }
+    } catch (error) {
+      if (attempt === 2) throw error;
     }
     if (attempt < 2) await new Promise((resolve) => window.setTimeout(resolve, 350 * (attempt + 1)));
   }

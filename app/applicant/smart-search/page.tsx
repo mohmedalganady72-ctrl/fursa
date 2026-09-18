@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 
 /**
  * صفحة البحث الذكي — تتيح للباحث رفع سيرته الذاتية ليحلّلها النظام (features/cv-parsing)
- * ثم يعرض الفرص الأقرب توافقًا بناءً على البيانات المدمجة (ملف شخصي + CV).
+ * ثم يعرض الفٌرص الأقرب توافقًا بناءً على البيانات المدمجة (ملف شخصي + CV).
  * راجع وثيقة المتطلبات § "البحث الذكي" للمسارين: بالملف الشخصي فقط، أو + السيرة الذاتية.
  */
 export default function SmartSearchPage() {
@@ -26,7 +26,7 @@ export default function SmartSearchPage() {
     try {
       // الخطوات الفعلية: 1) رفع resumeFile لـ Supabase Storage عبر endpoint مخصص
       // 2) استدعاء POST /api/cv/parse بالمسار الناتج (features/cv-parsing)
-      // 3) استدعاء GET /api/search/smart بالبيانات المُحلَّلة لجلب الفرص المرتّبة
+      // 3) استدعاء GET /api/search/smart بالبيانات المُحلَّلة لجلب الفٌرص المرتّبة
       const response = await fetch("/api/search/smart", { method: "GET" });
       const result = await response.json();
       setMatchedOpportunities(result.data ?? []);
@@ -44,7 +44,7 @@ export default function SmartSearchPage() {
         <h1 className="text-h1 text-neutral-900">البحث الذكي</h1>
       </div>
       <p className="mt-1 text-body text-secondary">
-        ارفع سيرتك الذاتية ليحلّلها النظام ويعرض لك الفرص الأقرب لبياناتك ومهاراتك
+        ارفع سيرتك الذاتية ليحلّلها النظام ويعرض لك الفٌرص الأقرب لبياناتك ومهاراتك
       </p>
 
       <Card className="mt-6 p-6">
@@ -59,7 +59,7 @@ export default function SmartSearchPage() {
 
         <div className="mt-4 flex gap-3">
           <Button onClick={handleAnalyze} isLoading={isAnalyzing} disabled={!resumeFile}>
-            تحليل وعرض الفرص المناسبة
+            تحليل وعرض الفٌرص المناسبة
           </Button>
           <Button variant="outline" onClick={handleAnalyze} isLoading={isAnalyzing}>
             الاعتماد على ملفي الشخصي فقط
@@ -71,7 +71,7 @@ export default function SmartSearchPage() {
         {isAnalyzing ? (
           <OpportunityGridSkeleton count={3} />
         ) : matchedOpportunities === null ? null : matchedOpportunities.length === 0 ? (
-          <EmptyState icon={Sparkles} title="لا توجد فرص مناسبة حاليًا" description="حدّث بيانات ملفك الشخصي لتحسين النتائج." />
+          <EmptyState icon={Sparkles} title="لا توجد فٌرص مناسبة حاليًا" description="حدّث بيانات ملفك الشخصي لتحسين النتائج." />
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {matchedOpportunities.map((row) => (

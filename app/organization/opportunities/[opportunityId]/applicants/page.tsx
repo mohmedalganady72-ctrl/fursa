@@ -13,7 +13,7 @@ import { getSignedUrl, STORAGE_BUCKETS } from "@/lib/supabase/storage";
 import { StartConversationButton } from "@/features/messaging/components/start-conversation-button";
 
 /**
- * قائمة المتقدمين على فرصة — الأعمدة تتغيّر حسب نوع الفرصة (راجع وثيقة المتطلبات
+ * قائمة المتقدمين على فٌرصة — الأعمدة تتغيّر حسب نوع الفٌرصة (راجع وثيقة المتطلبات
  * § "واجهات عرض المتقدمين"). مرتّبة تلقائيًا حسب درجة التوافق تنازليًا
  * (يحدث هذا فعليًا في listOpportunityApplicants عبر ORDER BY compatibilityScore DESC).
  * الترتيب/الترشيح الذكي هنا إرشادي بحت — يُذكَّر المستخدم بذلك بنص واضح أعلى الجدول.
@@ -47,7 +47,7 @@ export default async function OpportunityApplicantsPage({
 
       {applicants.length === 0 ? (
         <div className="mt-6">
-          <EmptyState icon={Users} title="لا يوجد متقدمون على هذه الفرصة حتى الآن" />
+          <EmptyState icon={Users} title="لا يوجد متقدمون على هذه الفٌرصة حتى الآن" />
         </div>
       ) : (
         <div className="mt-6 overflow-x-auto rounded-lg border border-neutral-200 bg-surface shadow-sm">

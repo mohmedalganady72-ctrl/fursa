@@ -21,7 +21,7 @@ export const applicationStatusHistory = pgTable(
     newStatus: applicationStatusEnum("new_status").notNull(),
 
     // من نفَّذ التغيير — قد يكون المتقدم نفسه (سحب الطلب) أو مستخدم الجهة (قبول/رفض)
-    // أو NULL إذا كان التغيير آليًا بالكامل من النظام (إغلاق فرصة عند اكتمال المقاعد)
+    // أو NULL إذا كان التغيير آليًا بالكامل من النظام (إغلاق فٌرصة عند اكتمال المقاعد)
     changedByUserId: uuid("changed_by_user_id").references(() => users.id),
 
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

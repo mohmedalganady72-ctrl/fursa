@@ -5,14 +5,14 @@ import { OPPORTUNITY_TYPES } from "@/lib/constants";
 import type { ApplicantMatchProfile, OpportunityMatchCriteria } from "@/features/matching/types";
 
 describe("جداول الأوزان", () => {
-  it("مجموع أوزان كل نوع فرصة يساوي 1 تمامًا", () => {
+  it("مجموع أوزان كل نوع فٌرصة يساوي 1 تمامًا", () => {
     expect(assertWeightsSumToOne(JOB_WEIGHTS)).toBe(true);
     expect(assertWeightsSumToOne(VOLUNTEERING_WEIGHTS)).toBe(true);
     expect(assertWeightsSumToOne(CO_OP_WEIGHTS)).toBe(true);
   });
 });
 
-describe("محرك حساب التوافق — فرص العمل", () => {
+describe("محرك حساب التوافق — فٌرص العمل", () => {
   const baseCriteria: OpportunityMatchCriteria = {
     type: OPPORTUNITY_TYPES.JOB,
     fieldIds: ["field-1"],
@@ -86,7 +86,7 @@ describe("محرك حساب التوافق — فرص العمل", () => {
 });
 
 describe("محرك حساب التوافق — التطوع (شرط الجنس)", () => {
-  it("لا يُطبَّق معيار الجنس إذا لم تشترطه الفرصة", () => {
+  it("لا يُطبَّق معيار الجنس إذا لم تشترطه الفٌرصة", () => {
     const criteriaNoGenderReq: OpportunityMatchCriteria = {
       type: OPPORTUNITY_TYPES.VOLUNTEERING,
       fieldIds: ["field-1"],
@@ -114,7 +114,7 @@ describe("محرك حساب التوافق — التطوع (شرط الجنس)"
     };
 
     const result = calculateMatchScore(applicant, criteriaNoGenderReq);
-    // معيار الجنس محقَّق تلقائيًا (1) رغم عدم تحديد جنس الفرصة — يجب ألا يُخفِّض الدرجة
+    // معيار الجنس محقَّق تلقائيًا (1) رغم عدم تحديد جنس الفٌرصة — يجب ألا يُخفِّض الدرجة
     expect(result.breakdown.gender).toBe(1);
   });
 });

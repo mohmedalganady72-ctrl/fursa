@@ -7,7 +7,7 @@ import { db } from "@/lib/db";
 import { applicantProfiles } from "@/lib/db/schema";
 import { listSavedOpportunities } from "@/features/opportunities/services/saved-opportunities.service";
 
-/** لوحة "الفرص المحفوظة" — كل الفرص التي حفظها الباحث لمراجعتها لاحقًا (راجع § 5.20) */
+/** لوحة "الفٌرص المحفوظة" — كل الفٌرص التي حفظها الباحث لمراجعتها لاحقًا (راجع § 5.20) */
 export default async function SavedOpportunitiesPage() {
   const session = await requirePageSession();
   const profile = await db.query.applicantProfiles.findFirst({
@@ -22,16 +22,16 @@ export default async function SavedOpportunitiesPage() {
 
   return (
     <div>
-      <h1 className="text-h1 text-neutral-900">الفرص المحفوظة</h1>
-      <p className="mt-1 text-body text-secondary">الفرص التي حفظتها لمراجعتها لاحقًا</p>
+      <h1 className="text-h1 text-neutral-900">الفٌرص المحفوظة</h1>
+      <p className="mt-1 text-body text-secondary">الفٌرص التي حفظتها لمراجعتها لاحقًا</p>
 
       {saved.length === 0 ? (
         <div className="mt-6">
           <EmptyState
             icon={Bookmark}
-            title="لا توجد فرص محفوظة بعد"
-            description="اضغط أيقونة الحفظ في بطاقة أي فرصة لإضافتها هنا."
-            actionLabel="تصفّح الفرص"
+            title="لا توجد فٌرص محفوظة بعد"
+            description="اضغط أيقونة الحفظ في بطاقة أي فٌرصة لإضافتها هنا."
+            actionLabel="تصفّح الفٌرص"
           />
         </div>
       ) : (

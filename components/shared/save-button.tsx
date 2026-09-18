@@ -13,12 +13,12 @@ interface SaveButtonProps {
 }
 
 /**
- * زر حفظ/إلغاء حفظ فرصة — يُستخدم داخل OpportunityCard وصفحة تفاصيل الفرصة.
+ * زر حفظ/إلغاء حفظ فٌرصة — يُستخدم داخل OpportunityCard وصفحة تفاصيل الفٌرصة.
  * لا يظهر إطلاقًا لغير الباحث المسجَّل؛ الأب هو من يقرر عرضه أصلاً عبر تمرير
  * isSaved (راجع OpportunityCard) — هذا المكوّن نفسه لا يتحقق من الصلاحية.
  *
  * يمنع فقاعة الحدث (stopPropagation) لأن البطاقة بأكملها رابط قابل للنقر
- * (Link يغلّف Card في opportunity-card.tsx)، فبدون هذا سيُفتح رابط الفرصة
+ * (Link يغلّف Card في opportunity-card.tsx)، فبدون هذا سيُفتح رابط الفٌرصة
  * كل مرة يحاول المستخدم فيها الحفظ فقط.
  */
 export function SaveButton({ opportunityId, initialSaved, className }: SaveButtonProps) {
@@ -43,11 +43,11 @@ export function SaveButton({ opportunityId, initialSaved, className }: SaveButto
 
       if (!response.ok) {
         setIsSaved(!nextSaved); // تراجع عن التحديث التفاؤلي عند الفشل
-        toast({ variant: "error", title: nextSaved ? "تعذّر حفظ الفرصة" : "تعذّر إلغاء الحفظ" });
+        toast({ variant: "error", title: nextSaved ? "تعذّر حفظ الفٌرصة" : "تعذّر إلغاء الحفظ" });
         return;
       }
 
-      router.refresh(); // يُحدّث أي قائمة فرص محفوظة معروضة في نفس الصفحة
+      router.refresh(); // يُحدّث أي قائمة فٌرص محفوظة معروضة في نفس الصفحة
     } catch {
       setIsSaved(!nextSaved);
       toast({ variant: "error", title: "تعذّر تحديث الحفظ", description: "تحقق من اتصالك وحاول مرة أخرى." });
@@ -62,8 +62,8 @@ export function SaveButton({ opportunityId, initialSaved, className }: SaveButto
       onClick={handleToggle}
       disabled={isPending}
       aria-pressed={isSaved}
-      aria-label={isSaved ? "إلغاء حفظ الفرصة" : "حفظ الفرصة"}
-      title={isSaved ? "إلغاء حفظ الفرصة" : "حفظ الفرصة"}
+      aria-label={isSaved ? "إلغاء حفظ الفٌرصة" : "حفظ الفٌرصة"}
+      title={isSaved ? "إلغاء حفظ الفٌرصة" : "حفظ الفٌرصة"}
       className={cn(
         "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-primary-600 transition-colors duration-fast hover:bg-primary-50 hover:text-primary-700 disabled:cursor-not-allowed disabled:opacity-60",
         className

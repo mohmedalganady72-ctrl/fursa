@@ -41,7 +41,7 @@ export default async function AdminLayout({
 
   return (
     <div className="dashboard-shell flex min-h-screen bg-background">
-      <DashboardSidebar items={ADMIN_NAV_ITEMS} user={{ name: admin?.displayName ?? session.user.name ?? "مدير المنصة", image: session.user.image, roleLabel: "مدير المنصة" }} />
+      <DashboardSidebar items={ADMIN_NAV_ITEMS} user={{ name: admin?.displayName ?? session.user.name ?? "مدير المنصة", email: session.user.email, image: session.user.image, roleLabel: "مدير المنصة" }} />
       <main className="flex-1 px-4 py-6 pb-20 md:px-6 md:pb-6 lg:px-8">
         <div className="mx-auto max-w-5xl"><div className="mb-4 flex justify-end md:hidden"><LogoutButton /></div>{children}</div>
       </main>

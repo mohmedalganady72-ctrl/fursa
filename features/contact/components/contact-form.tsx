@@ -15,7 +15,7 @@ export function ContactForm({ contactEmail }: { contactEmail?: string }) {
   function submit(event: React.FormEvent) {
     event.preventDefault();
     if (!contactEmail) return;
-    const subject = encodeURIComponent(`رسالة من ${name} عبر منصة فرص`);
+    const subject = encodeURIComponent(`رسالة من ${name} عبر منصة فٌرص`);
     const body = encodeURIComponent(`الاسم: ${name}\nالبريد الإلكتروني: ${email}\n\n${message}`);
     window.location.href = `mailto:${contactEmail}?subject=${subject}&body=${body}`;
   }

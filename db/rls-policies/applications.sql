@@ -2,7 +2,7 @@
 -- RLS: applications
 -- ============================================================
 -- هذا الجدول الأكثر حساسية في المشروع كامل: يجب ألا يرى أي متقدم تفاصيل
--- تقديم متقدم آخر على نفس الفرصة (راجع وثيقة المتطلبات § "لا يستطيع المتقدم
+-- تقديم متقدم آخر على نفس الفٌرصة (راجع وثيقة المتطلبات § "لا يستطيع المتقدم
 -- فتح ملف البروفايل لمتقدم آخر" — المبدأ نفسه يمتد لبيانات التقديم كاملة).
 
 alter table applications enable row level security;
@@ -18,7 +18,7 @@ create policy "applications_select_own_as_applicant"
     )
   );
 
--- الجهة ترى كل التقديمات على فرصها فقط (وليس فرص جهات أخرى)
+-- الجهة ترى كل التقديمات على فٌرصها فقط (وليس فٌرص جهات أخرى)
 create policy "applications_select_own_as_organization"
   on applications for select
   using (
@@ -40,7 +40,7 @@ create policy "applications_insert_own"
     )
   );
 
--- تحديث الحالة (قبول/رفض) مسموح فقط للجهة صاحبة الفرصة
+-- تحديث الحالة (قبول/رفض) مسموح فقط للجهة صاحبة الفٌرصة
 create policy "applications_update_by_owning_organization"
   on applications for update
   using (

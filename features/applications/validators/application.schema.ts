@@ -2,7 +2,7 @@ import { z } from "zod";
 import { OPPORTUNITY_TYPES } from "@/lib/constants";
 
 /**
- * التحقق من بيانات التقديم — يختلف حسب نوع الفرصة (راجع وثيقة المتطلبات § 10.3).
+ * التحقق من بيانات التقديم — يختلف حسب نوع الفٌرصة (راجع وثيقة المتطلبات § 10.3).
  * discriminated union بنفس نمط opportunity.schema.ts للسبب نفسه: أمان نوعي كامل.
  */
 
@@ -10,13 +10,13 @@ const jobApplicationSchema = z.object({
   opportunityType: z.literal(OPPORTUNITY_TYPES.JOB),
   opportunityId: z.string().uuid(),
   whySuitableText: z.string().min(30, "اكتب نصًا لا يقل عن 30 حرفًا").max(1500),
-  resumeUrl: z.string().min(1, "السيرة الذاتية مطلوبة لفرص العمل"),
+  resumeUrl: z.string().min(1, "السيرة الذاتية مطلوبة لفٌرص العمل"),
 });
 
 const volunteeringApplicationSchema = z.object({
   opportunityType: z.literal(OPPORTUNITY_TYPES.VOLUNTEERING),
   opportunityId: z.string().uuid(),
-  resumeUrl: z.string().optional(), // مطلوبة فقط إذا حدّدت الجهة ذلك في الفرصة (يُتحقَّق منه في service)
+  resumeUrl: z.string().optional(), // مطلوبة فقط إذا حدّدت الجهة ذلك في الفٌرصة (يُتحقَّق منه في service)
 });
 
 const coOpApplicationSchema = z.object({

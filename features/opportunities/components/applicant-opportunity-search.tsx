@@ -46,7 +46,7 @@ export function ApplicantOpportunitySearch() {
     <form onSubmit={submit} className="mt-6 border-y border-neutral-200 py-5">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col gap-2 md:col-span-2"><Label htmlFor="opportunity-query">كلمات البحث</Label><div className="relative"><Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" /><Input id="opportunity-query" value={query} onChange={(event) => setQuery(event.target.value)} className="ps-9" placeholder="المسمى، الجهة أو المؤهل المطلوب" /></div></div>
-        <FilterSelect label="نوع الفرصة" value={type} onChange={setType} options={{ [ALL]: "كل الأنواع", ...OPPORTUNITY_TYPE_LABELS }} />
+        <FilterSelect label="نوع الفٌرصة" value={type} onChange={setType} options={{ [ALL]: "كل الأنواع", ...OPPORTUNITY_TYPE_LABELS }} />
         <div className="flex flex-col gap-2"><Label htmlFor="opportunity-city">المدينة</Label><Input id="opportunity-city" value={city} onChange={(event) => setCity(event.target.value)} placeholder="مثال: الرياض" /></div>
         <FilterSelect label="نمط العمل" value={workMode} onChange={setWorkMode} options={{ [ALL]: "كل الأنماط", ...WORK_MODE_LABELS }} />
         <FilterSelect label="ترتيب النتائج" value={sortBy} onChange={setSortBy} options={SORT_LABELS} />

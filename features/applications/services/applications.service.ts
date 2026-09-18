@@ -27,7 +27,7 @@ function isDuplicateApplicationError(error: unknown): boolean {
 }
 
 /**
- * يبني كائن معايير المطابقة (OpportunityMatchCriteria) من صف فرصة حقيقي في قاعدة البيانات.
+ * يبني كائن معايير المطابقة (OpportunityMatchCriteria) من صف فٌرصة حقيقي في قاعدة البيانات.
  * فصل هذه الدالة عن scoring-engine.ts يبقي محرك الحساب خاليًا تمامًا من تفاصيل Drizzle/SQL
  * (قابل للاختبار بمعزل تام — راجع tests/unit/matching).
  */
@@ -88,8 +88,8 @@ export async function submitApplication(applicantProfileId: string, input: Appli
     where: eq(opportunities.id, input.opportunityId),
   });
   if (!opportunity) throw new Error("OPPORTUNITY_NOT_FOUND");
-  // الفرصة يجب أن تكون منشورة وغير منتهية الصلاحية زمنيًا لقبول تقديم جديد
-  // (راجع وثيقة المتطلبات § 3 قاعدة 13: "الفرص المنتهية أو المغلقة لا تقبل طلبات جديدة"
+  // الفٌرصة يجب أن تكون منشورة وغير منتهية الصلاحية زمنيًا لقبول تقديم جديد
+  // (راجع وثيقة المتطلبات § 3 قاعدة 13: "الفٌرص المنتهية أو المغلقة لا تقبل طلبات جديدة"
   // و§ 12 معيار القبول: يُفشَل الطلب على مستوى الخادم حتى لو أُرسل مباشرة عبر API)
   if (opportunity.status !== OPPORTUNITY_STATUS.PUBLISHED) {
     throw new Error("OPPORTUNITY_CLOSED");
@@ -171,7 +171,7 @@ export async function hasApplicantApplied(applicantProfileId: string, opportunit
   return Boolean(existing);
 }
 
-/** قائمة تقديمات باحث معيّن مع تفاصيل الفرصة (للوحة "تقديماتي") */
+/** قائمة تقديمات باحث معيّن مع تفاصيل الفٌرصة (للوحة "تقديماتي") */
 export async function listApplicantApplications(applicantProfileId: string) {
   return db.query.applications.findMany({
     where: eq(applications.applicantProfileId, applicantProfileId),
@@ -181,7 +181,7 @@ export async function listApplicantApplications(applicantProfileId: string) {
 }
 
 /**
- * قائمة المتقدمين على فرصة معيّنة، مرتّبة تنازليًا حسب درجة التوافق (الترتيب الذكي).
+ * قائمة المتقدمين على فٌرصة معيّنة، مرتّبة تنازليًا حسب درجة التوافق (الترتيب الذكي).
  * راجع وثيقة المتطلبات § "ترتيب ذكي للمتقدمين" — إرشادي فقط، القرار للجهة.
  */
 export async function listOpportunityApplicants(opportunityId: string, organizationUserId: string) {

@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-export function PlatformLoader({ message = "نجهّز فرصتك", fullScreen = true }: { message?: string; fullScreen?: boolean }) {
+export function PlatformLoader({ message = "نجهّز فٌرصتك", fullScreen = true }: { message?: string; fullScreen?: boolean }) {
   return <div className={cn("flex items-center justify-center bg-background", fullScreen ? "min-h-screen" : "min-h-72")} role="status" aria-label={message}>
     <div className="text-center">
       <div className="relative mx-auto h-20 w-20">

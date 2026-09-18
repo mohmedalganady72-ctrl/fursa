@@ -5,7 +5,7 @@ import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// تُستخدم في نموذج إعلان الفرصة (اختيار عمل/تطوع/تدريب تعاوني) وفلاتر البحث
+// تُستخدم في نموذج إعلان الفٌرصة (اختيار عمل/تطوع/تدريب تعاوني) وفلاتر البحث
 const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>

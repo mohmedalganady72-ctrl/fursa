@@ -13,11 +13,11 @@ import type { OpportunityType } from "@/lib/constants";
 interface ApplicationFormProps {
   opportunityId: string;
   opportunityType: OpportunityType;
-  requiresResume: boolean; // ذو صلة لفرص التطوع تحديدًا (راجع وثيقة المتطلبات § 10.3)
+  requiresResume: boolean; // ذو صلة لفٌرص التطوع تحديدًا (راجع وثيقة المتطلبات § 10.3)
 }
 
 /**
- * نموذج التقديم الموحّد — يعرض حقولًا مختلفة حسب نوع الفرصة (راجع وثيقة المتطلبات § 10.3):
+ * نموذج التقديم الموحّد — يعرض حقولًا مختلفة حسب نوع الفٌرصة (راجع وثيقة المتطلبات § 10.3):
  * عمل: "لماذا أنت مناسب؟" + CV إجباري
  * تطوع: CV اختياري (حسب طلب الجهة)
  * تدريب تعاوني: الرقم الأكاديمي، المستوى الدراسي، الجامعة، التخصص
@@ -90,7 +90,7 @@ export function ApplicationForm({ opportunityId, opportunityType, requiresResume
             id="whySuitable"
             value={whySuitableText}
             onChange={(e) => setWhySuitableText(e.target.value)}
-            placeholder="اشرح اهتمامك بهذه الفرصة وما يمكنك تقديمه، من دون تكرار محتوى سيرتك الذاتية."
+            placeholder="اشرح اهتمامك بهذه الفٌرصة وما يمكنك تقديمه، من دون تكرار محتوى سيرتك الذاتية."
             required
             minLength={30}
             className="min-h-32"
@@ -126,7 +126,7 @@ export function ApplicationForm({ opportunityId, opportunityType, requiresResume
       {(opportunityType === "job" || (opportunityType === "volunteering" && requiresResume)) && (
         <div className="flex flex-col gap-2">
           <Label htmlFor="resume">
-            السيرة الذاتية (PDF) {opportunityType === "volunteering" && "— مطلوبة لهذه الفرصة"}
+            السيرة الذاتية (PDF) {opportunityType === "volunteering" && "— مطلوبة لهذه الفٌرصة"}
           </Label>
           <label
             htmlFor="resume"

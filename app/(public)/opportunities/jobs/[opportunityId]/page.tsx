@@ -11,7 +11,7 @@ import { getRemainingTimeLabel } from "@/lib/utils";
 import { requirePageSession } from "@/lib/auth/session";
 
 /**
- * صفحة تفاصيل فرصة العمل + التقديم عليها. نفس البنية (بفروقات حقول التقديم فقط)
+ * صفحة تفاصيل فٌرصة العمل + التقديم عليها. نفس البنية (بفروقات حقول التقديم فقط)
  * تُطبَّق على opportunities/volunteering/[id] وopportunities/co-op/[id].
  */
 export default async function JobDetailsPage({
@@ -72,7 +72,7 @@ export default async function JobDetailsPage({
       </div>
 
       <Card className="mt-6 p-6">
-        <h2 className="text-h4 text-neutral-800">وصف الفرصة</h2>
+        <h2 className="text-h4 text-neutral-800">وصف الفٌرصة</h2>
         <p className="mt-2 whitespace-pre-line text-body text-neutral-700">{opportunity.description}</p>
       </Card>
 

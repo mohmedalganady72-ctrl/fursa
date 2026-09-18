@@ -57,7 +57,7 @@ export function BroadcastForm() {
         <Select value={audience} onValueChange={setAudience}>
           <SelectTrigger id="audience" className="sm:w-64"><SelectValue /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="applicants">الباحثون عن فرص فقط</SelectItem>
+            <SelectItem value="applicants">الباحثون عن فٌرص فقط</SelectItem>
             <SelectItem value="organizations">الجهات فقط</SelectItem>
             <SelectItem value="both">كلاهما معًا</SelectItem>
           </SelectContent>

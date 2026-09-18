@@ -6,7 +6,7 @@ import { applications } from "./applications";
  * محادثة واحدة لكل تقديم مقبول — تُنشأ تلقائيًا لحظة قبول الجهة للمتقدم
  * (راجع features/applications/services/acceptance-lifecycle.ts).
  * الربط بـ applicationId بدل ربط مباشر (organization ↔ applicant) يضمن أن كل محادثة
- * مؤطَّرة بسياق فرصة محددة، ويمنع بقاء المحادثة مفتوحة بعد رفض/سقوط التقديم دون سياق واضح.
+ * مؤطَّرة بسياق فٌرصة محددة، ويمنع بقاء المحادثة مفتوحة بعد رفض/سقوط التقديم دون سياق واضح.
  */
 export const conversations = pgTable(
   "conversations",

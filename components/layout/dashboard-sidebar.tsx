@@ -63,6 +63,7 @@ interface DashboardSidebarProps {
   items: SidebarNavItem[];
   user: {
     name: string;
+    email: string;
     image?: string | null;
     roleLabel: string;
   };
@@ -87,7 +88,8 @@ export function DashboardSidebar({ items, user }: DashboardSidebarProps) {
           </Avatar>
           <div className="min-w-0 flex-1">
             <p className="truncate text-body-sm font-semibold text-neutral-800" title={user.name}>{user.name}</p>
-            <p className="mt-0.5 text-caption text-secondary">{user.roleLabel}</p>
+            <p className="mt-0.5 truncate text-caption text-secondary" dir="ltr" title={user.email}>{user.email}</p>
+            <p className="mt-0.5 text-caption text-neutral-400">{user.roleLabel}</p>
           </div>
         </div>
         {items.map((item) => {

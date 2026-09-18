@@ -10,7 +10,7 @@ export function ShareOpportunityButton({ opportunityId, title }: { opportunityId
   const { toast } = useToast();
   const [url, setUrl] = React.useState("");
   React.useEffect(() => setUrl(`${window.location.origin}/applicant/opportunities/${opportunityId}`), [opportunityId]);
-  const text = `فرصة: ${title}`;
+  const text = `فٌرصة: ${title}`;
 
   async function share() {
     if (navigator.share) {
@@ -19,13 +19,13 @@ export function ShareOpportunityButton({ opportunityId, title }: { opportunityId
       }
     }
     await navigator.clipboard.writeText(url);
-    toast({ variant: "success", title: "تم نسخ رابط الفرصة" });
+    toast({ variant: "success", title: "تم نسخ رابط الفٌرصة" });
   }
 
   return <Dialog>
     <DialogTrigger asChild><Button type="button" variant="outline" size="sm"><Share2 className="h-4 w-4" />مشاركة</Button></DialogTrigger>
     <DialogContent>
-      <DialogHeader><DialogTitle>مشاركة الفرصة</DialogTitle><DialogDescription>سينتقل المستلم إلى تسجيل الدخول إذا لم يكن مسجّلًا، ثم تُفتح له صفحة الفرصة مباشرة.</DialogDescription></DialogHeader>
+      <DialogHeader><DialogTitle>مشاركة الفٌرصة</DialogTitle><DialogDescription>سينتقل المستلم إلى تسجيل الدخول إذا لم يكن مسجّلًا، ثم تُفتح له صفحة الفٌرصة مباشرة.</DialogDescription></DialogHeader>
       <div className="grid gap-2 sm:grid-cols-2">
         <Button type="button" onClick={share}><Share2 className="h-4 w-4" />مشاركة</Button>
         <Button variant="outline" asChild><a href={`https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`} target="_blank" rel="noopener noreferrer"><MessageCircle className="h-4 w-4" />واتساب</a></Button>

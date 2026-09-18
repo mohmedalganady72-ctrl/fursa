@@ -11,10 +11,10 @@ import { requirePageSession } from "@/lib/auth/session";
 import { isApplicant } from "@/features/auth/services/permissions";
 import { OPPORTUNITY_TYPES } from "@/lib/constants";
 
-export const metadata: Metadata = { title: "فرص العمل" };
+export const metadata: Metadata = { title: "فٌرص العمل" };
 
 /**
- * صفحة تصفح فرص العمل — نفس البنية تُستنسَخ حرفيًا لصفحتي التطوع والتدريب التعاوني
+ * صفحة تصفح فٌرص العمل — نفس البنية تُستنسَخ حرفيًا لصفحتي التطوع والتدريب التعاوني
  * (opportunities/volunteering, opportunities/co-op) بتغيير قيمة "type" فقط.
  * دُمج المنطق المشترك في opportunities.service.ts بدل تكراره في الصفحات الثلاث.
  */
@@ -43,7 +43,7 @@ export default async function JobsPage({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 lg:px-8">
-      <h1 className="text-h1 text-neutral-900">فرص العمل</h1>
+      <h1 className="text-h1 text-neutral-900">فٌرص العمل</h1>
       <p className="mt-2 text-body text-secondary">تصفّح أحدث الوظائف المتاحة وقدّم على ما يناسبك</p>
 
       <div className="mt-6">
@@ -54,7 +54,7 @@ export default async function JobsPage({
         {results.length === 0 ? (
           <EmptyState
             icon={Briefcase}
-            title="لا توجد فرص تطابق بحثك حاليًا"
+            title="لا توجد فٌرص تطابق بحثك حاليًا"
             description="جرّب تعديل خيارات التصفية أو استخدام كلمات بحث مختلفة."
           />
         ) : (

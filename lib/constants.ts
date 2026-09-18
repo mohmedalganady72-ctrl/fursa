@@ -3,7 +3,7 @@
  * مرة واحدة بدل تكرارها كنص حرفي (magic string) في عدة ملفات.
  */
 
-// ============ أنواع الفرص الثلاثة ============
+// ============ أنواع الفٌرص الثلاثة ============
 export const OPPORTUNITY_TYPES = {
   JOB: "job",
   VOLUNTEERING: "volunteering",
@@ -19,9 +19,9 @@ export const OPPORTUNITY_TYPE_LABELS: Record<OpportunityType, string> = {
   co_op: "تدريب تعاوني",
 };
 
-// ============ حالات الفرصة (راجع وثيقة المتطلبات § 7.2) ============
+// ============ حالات الفٌرصة (راجع وثيقة المتطلبات § 7.2) ============
 export const OPPORTUNITY_STATUS = {
-  DRAFT: "draft", // مسودة قبل النشر (معاينة الفرصة — § 5.6)
+  DRAFT: "draft", // مسودة قبل النشر (معاينة الفٌرصة — § 5.6)
   PUBLISHED: "published", // منشورة ومفتوحة للتقديم
   CLOSED: "closed", // أُغلقت يدويًا أو تلقائيًا فور اكتمال المقاعد المقبولة
   EXPIRED: "expired", // انتهى تاريخ آخر موعد للتقديم دون اكتمال المقاعد
@@ -45,7 +45,7 @@ export const APPLICATION_STATUS = {
   ACCEPTED: "accepted", // تم قبول المتقدم
   REJECTED: "rejected", // تم رفض الطلب
   WITHDRAWN: "withdrawn", // سحب الباحث طلبه (إذا كانت الخاصية مفعَّلة)
-  CLOSED: "closed", // أُغلقت الفرصة وأُوقف استقبال الطلبات — الطلب لم يُبتّ فيه وقت الإغلاق
+  CLOSED: "closed", // أُغلقت الفٌرصة وأُوقف استقبال الطلبات — الطلب لم يُبتّ فيه وقت الإغلاق
 } as const;
 
 export type ApplicationStatus =
@@ -58,29 +58,29 @@ export const APPLICATION_STATUS_LABELS: Record<ApplicationStatus, string> = {
   accepted: "مقبول",
   rejected: "غير مقبول",
   withdrawn: "مسحوب",
-  closed: "أُغلقت الفرصة",
+  closed: "أُغلقت الفٌرصة",
 };
 
 /**
  * لا توجد مهلة قبول 24 ساعة في هذا الإصدار (راجع قرارات § 14 في وثيقة المتطلبات
  * المحدَّثة: "لا توجد سياسة قبول لمدة 24 ساعة، ولا يسقط القبول تلقائيًا").
- * القبول فوري ونهائي؛ إغلاق الفرصة يحدث فور اكتمال المقاعد المطلوبة
+ * القبول فوري ونهائي؛ إغلاق الفٌرصة يحدث فور اكتمال المقاعد المطلوبة
  * (راجع features/applications/services/acceptance-lifecycle.ts).
  */
 
 // عدد أيام عدم النشاط قبل إرسال إشعار تحفيزي (راجع db/cron-jobs/inactivity-nudge.sql)
 export const INACTIVITY_NUDGE_THRESHOLD_DAYS = 3;
 
-// الحد الأقصى للتقديمات اليومية لكل نوع فرصة (راجع lib/rate-limit.ts)
+// الحد الأقصى للتقديمات اليومية لكل نوع فٌرصة (راجع lib/rate-limit.ts)
 export const MAX_DAILY_APPLICATIONS_PER_TYPE = 2;
 
 // الحد الأقصى لعدد المجالات القابلة للاختيار في الملف الشخصي
 export const MAX_APPLICANT_FIELDS = 5;
 
 /**
- * لا يوجد تعديل للفرصة بعد نشرها في هذا الإصدار (راجع وثيقة المتطلبات § 5.7:
- * "بعد نشر الفرصة، لا تملك الجهة صلاحية تعديل بياناتها"). أي حاجة لتغيير جوهري
- * تُعالَج بإغلاق الفرصة الحالية ونشر فرصة جديدة، والاحتفاظ بالقديمة كسجل تاريخي.
+ * لا يوجد تعديل للفٌرصة بعد نشرها في هذا الإصدار (راجع وثيقة المتطلبات § 5.7:
+ * "بعد نشر الفٌرصة، لا تملك الجهة صلاحية تعديل بياناتها"). أي حاجة لتغيير جوهري
+ * تُعالَج بإغلاق الفٌرصة الحالية ونشر فٌرصة جديدة، والاحتفاظ بالقديمة كسجل تاريخي.
  * راجع features/opportunities/services/opportunities.service.ts.
  */
 
@@ -108,7 +108,7 @@ export const USER_ROLES = {
 
 export type UserRole = (typeof USER_ROLES)[keyof typeof USER_ROLES];
 
-// ============ خيارات ترتيب قائمة الفرص ============
+// ============ خيارات ترتيب قائمة الفٌرص ============
 export const OPPORTUNITY_SORT_OPTIONS = {
   BEST_MATCH: "best_match", // الأكثر مناسبة لي
   DEADLINE_SOON: "deadline_soon", // الأقرب لانتهاء التقديم

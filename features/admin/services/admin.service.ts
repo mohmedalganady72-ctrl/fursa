@@ -64,7 +64,7 @@ export async function approveOrganization(organizationProfileId: string, adminId
     userId: orgProfile.userId,
     type: "account_verified",
     title: "اعتُمد حساب جهتكم",
-    body: "يمكنكم الآن نشر الفرص واستقبال طلبات المتقدمين.",
+    body: "يمكنكم الآن نشر الفٌرص واستقبال طلبات المتقدمين.",
     linkUrl: "/organization/dashboard",
     sendEmail: true,
   }).catch((error) => {
@@ -107,7 +107,7 @@ export async function rejectOrganization(
   return orgProfile;
 }
 
-/** قائمة كل الباحثين عن فرصة (لصفحة إدارة المستخدمين) */
+/** قائمة كل الباحثين عن فٌرصة (لصفحة إدارة المستخدمين) */
 export async function listAllApplicants(query = "") {
   const rows = await db.query.applicantProfiles.findMany({
     with: { user: true },

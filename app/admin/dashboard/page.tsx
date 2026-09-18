@@ -13,10 +13,10 @@ export default async function AdminDashboardPage() {
       <p className="mt-1 text-body text-secondary">نظرة شاملة على أداء المنصة</p>
 
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <DashboardStatCard icon={Users} label="الباحثون عن فرص" value={stats.totalApplicants} />
+        <DashboardStatCard icon={Users} label="الباحثون عن فٌرص" value={stats.totalApplicants} />
         <DashboardStatCard icon={Building2} label="الجهات المعتمدة" value={`${stats.approvedOrganizations}/${stats.totalOrganizations}`} />
         <DashboardStatCard icon={Clock} label="طلبات انضمام معلَّقة" value={stats.pendingJoinRequests} />
-        <DashboardStatCard icon={Briefcase} label="فرص مفتوحة" value={`${stats.openOpportunities}/${stats.totalOpportunities}`} />
+        <DashboardStatCard icon={Briefcase} label="فٌرص مفتوحة" value={`${stats.openOpportunities}/${stats.totalOpportunities}`} />
         <DashboardStatCard icon={FileText} label="إجمالي الطلبات" value={stats.totalApplications} />
         <DashboardStatCard icon={CheckCircle2} label="طلبات مقبولة" value={stats.acceptedApplications} />
       </div>

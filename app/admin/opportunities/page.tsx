@@ -15,7 +15,7 @@ const STATUS_VARIANTS: Record<string, "success" | "neutral" | "info" | "warning"
   expired: "warning",
 };
 
-/** مراجعة عامة على كل الفرص المنشورة عبر المنصة (راجع حالات الاستخدام § "مراجعة الفرص") */
+/** مراجعة عامة على كل الفٌرص المنشورة عبر المنصة (راجع حالات الاستخدام § "مراجعة الفٌرص") */
 export default async function AdminOpportunitiesPage() {
   const allOpportunities = await db.query.opportunities.findMany({
     with: { organizationProfile: true },
@@ -25,12 +25,12 @@ export default async function AdminOpportunitiesPage() {
 
   return (
     <div>
-      <h1 className="text-h1 text-neutral-900">الفرص</h1>
-      <p className="mt-1 text-body text-secondary">آخر 100 فرصة منشورة عبر المنصة</p>
+      <h1 className="text-h1 text-neutral-900">الفٌرص</h1>
+      <p className="mt-1 text-body text-secondary">آخر 100 فٌرصة منشورة عبر المنصة</p>
 
       {allOpportunities.length === 0 ? (
         <div className="mt-6">
-          <EmptyState icon={Briefcase} title="لا توجد فرص منشورة بعد" />
+          <EmptyState icon={Briefcase} title="لا توجد فٌرص منشورة بعد" />
         </div>
       ) : (
         <div className="mt-6 flex flex-col gap-2">

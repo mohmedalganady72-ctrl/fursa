@@ -12,7 +12,7 @@ import { listApplicantApplications } from "@/features/applications/services/appl
 
 /**
  * الصفحة الرئيسية للوحة الباحث — إحصائيات سريعة عن حالة تقديماته
- * + آخر الفرص التي قد تهمه (تُستبدل لاحقًا بترتيب "الأكثر مناسبة لي" الفعلي
+ * + آخر الفٌرص التي قد تهمه (تُستبدل لاحقًا بترتيب "الأكثر مناسبة لي" الفعلي
  * عبر features/matching بمجرد ربط هذه الصفحة بخدمة البحث الذكي الكاملة).
  */
 export default async function ApplicantDashboardPage() {
@@ -68,9 +68,9 @@ export default async function ApplicantDashboardPage() {
       {applications.length === 0 ? (
         <EmptyState
           icon={FileText}
-          title="لم تتقدّم إلى أي فرصة حتى الآن"
-          description="تصفّح الفرص المتاحة وقدّم على ما يناسبك"
-          actionLabel="تصفّح الفرص"
+          title="لم تتقدّم إلى أي فٌرصة حتى الآن"
+          description="تصفّح الفٌرص المتاحة وقدّم على ما يناسبك"
+          actionLabel="تصفّح الفٌرص"
         />
       ) : (
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">

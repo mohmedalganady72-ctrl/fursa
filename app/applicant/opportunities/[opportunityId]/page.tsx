@@ -47,14 +47,14 @@ export default async function ApplicantOpportunityDetailsPage({
     ? "التقديم على هذه الوظيفة"
     : opportunity.type === "co_op"
       ? "التقديم على هذا التدريب"
-      : "التقديم على هذه الفرصة";
+      : "التقديم على هذه الفٌرصة";
   const requiresResume = opportunity.type === "job"
     || (opportunity.type === "volunteering" && opportunity.requiresResume === "true");
 
   return (
     <div className="mx-auto max-w-3xl">
       <div className="mb-5 flex items-center justify-between gap-3">
-        <Button variant="ghost" size="sm" asChild><Link href="/applicant/opportunities"><ArrowRight className="h-4 w-4" />العودة إلى الفرص</Link></Button>
+        <Button variant="ghost" size="sm" asChild><Link href="/applicant/opportunities"><ArrowRight className="h-4 w-4" />العودة إلى الفٌرص</Link></Button>
         <ShareOpportunityButton opportunityId={opportunity.id} title={opportunity.title} />
       </div>
 
@@ -87,7 +87,7 @@ export default async function ApplicantOpportunityDetailsPage({
       </div>
 
       <Card className="mt-6 p-6">
-        <h2 className="text-h4 text-neutral-800">وصف الفرصة</h2>
+        <h2 className="text-h4 text-neutral-800">وصف الفٌرصة</h2>
         <p className="mt-2 whitespace-pre-line text-body text-neutral-700">{opportunity.description}</p>
       </Card>
 
@@ -96,7 +96,7 @@ export default async function ApplicantOpportunityDetailsPage({
         {alreadyApplied ? (
           <div className="mt-4 flex items-center gap-3 rounded-md border border-success-500/20 bg-success-50 p-4 text-success-500">
             <CheckCircle2 className="h-5 w-5 shrink-0" aria-hidden="true" />
-            <p className="text-body-sm font-medium">سبق أن قدمت على هذه الفرصة، ولا يمكن التقديم عليها مرة أخرى.</p>
+            <p className="text-body-sm font-medium">سبق أن قدمت على هذه الفٌرصة، ولا يمكن التقديم عليها مرة أخرى.</p>
           </div>
         ) : (
           <div className="mt-4">

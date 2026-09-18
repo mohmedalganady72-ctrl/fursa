@@ -6,10 +6,10 @@ import { opportunities } from "@/lib/db/schema";
 import { closePendingApplications } from "@/features/applications/services/status-transitions";
 
 /**
- * يُستدعى دوريًا (كل ساعة) — يضع حالة "منتهية" (expired) لأي فرصة تجاوزت
+ * يُستدعى دوريًا (كل ساعة) — يضع حالة "منتهية" (expired) لأي فٌرصة تجاوزت
  * applicationDeadline ولا تزال منشورة دون اكتمال المقاعد المطلوبة (راجع
  * وثيقة المتطلبات § 7.2). هذا مختلف عن حالة "مغلقة" (closed) التي تعني تحديدًا
- * اكتمال المقاعد المقبولة أو استبدال الجهة للفرصة — راجع lib/constants.ts § OPPORTUNITY_STATUS
+ * اكتمال المقاعد المقبولة أو استبدال الجهة للفٌرصة — راجع lib/constants.ts § OPPORTUNITY_STATUS
  * والتمييز الموثَّق هناك بين closed وexpired.
  */
 export async function POST(request: Request) {

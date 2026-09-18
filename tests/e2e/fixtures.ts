@@ -3,7 +3,7 @@ import { hashPassword } from "better-auth/crypto";
 import { eq } from "drizzle-orm";
 import { db } from "../../lib/db";
 import { users, accounts, applicantProfiles, organizationProfiles, opportunities, applications, fields, admins, organizationJoinRequests } from "../../lib/db/schema";
-import type { Page } from "@playwright/test";
+import type { APIResponse, Page } from "@playwright/test";
 
 export async function createTestUser(role: "applicant" | "organization" | "admin") {
   const id = randomUUID();
@@ -30,21 +30,27 @@ export async function pendingOrganizationFixture() {
 }
 
 export async function login(page: Page, user: Awaited<ReturnType<typeof createTestUser>>) {
-  await page.goto(user.role === "admin" ? "/admin-login" : "/login");
-  const email = page.getByLabel("البريد الإلكتروني");
-  const password = page.getByLabel("كلمة المرور", { exact: true });
-  await email.waitFor({ state: "visible" });
-  // Next dev can replace the prerendered form once during first-page hydration.
-  await page.waitForTimeout(1000);
-  await email.fill(user.email);
-  await password.fill(user.password);
-  await Promise.all([
-    page.waitForResponse((response) => response.url().includes("/sign-in/email") && response.status() === 200),
-    page.getByRole("button", { name: user.role === "admin" ? "دخول" : "تسجيل الدخول", exact: true }).click(),
-  ]);
-  await page.waitForURL((url) => !["/login", "/admin-login"].includes(url.pathname));
-  await page.waitForLoadState("load");
-  await page.waitForTimeout(250);
+  // QA accounts live only in Better Auth; Firebase UI login is covered by a separate smoke test.
+  let response: APIResponse | undefined;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    response = await page.request.post("/api/auth/sign-in/email", {
+      headers: { Origin: "http://localhost:3000" },
+      data: { email: user.email, password: user.password, rememberMe: true },
+    });
+    if (response.status() < 500) break;
+    await new Promise((resolve) => setTimeout(resolve, 400 * (attempt + 1)));
+  }
+  if (!response) throw new Error("QA_LOGIN_FAILED: no response");
+  if (!response.ok()) {
+    throw new Error(`QA_LOGIN_FAILED (${response.status()}): ${await response.text()}`);
+  }
+
+  const destination = user.role === "admin"
+    ? "/admin/dashboard"
+    : user.role === "organization"
+      ? "/organization/dashboard"
+      : "/applicant/dashboard";
+  await page.goto(destination, { waitUntil: "load" });
 }
 
 export async function lifecycleFixture(seats = 1) {

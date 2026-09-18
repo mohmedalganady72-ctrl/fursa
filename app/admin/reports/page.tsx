@@ -5,7 +5,7 @@ import { ReportActions } from "@/features/admin/components/report-actions";
 import { listPendingReports } from "@/features/messaging/services/reports.service";
 import { formatDateArabic } from "@/lib/utils";
 
-const TARGET_LABELS = { message: "رسالة", user: "مستخدم", opportunity: "فرصة" } as const;
+const TARGET_LABELS = { message: "رسالة", user: "مستخدم", opportunity: "فٌرصة" } as const;
 
 export default async function ReportsPage() {
   const reports = await listPendingReports();

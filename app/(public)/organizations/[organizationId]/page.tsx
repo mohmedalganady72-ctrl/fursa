@@ -16,7 +16,7 @@ const ORG_TYPE_LABELS: Record<string, string> = {
 };
 
 /**
- * الملف التعريفي العام لجهة — يستطيع أي باحث فتحه من بطاقة الفرصة
+ * الملف التعريفي العام لجهة — يستطيع أي باحث فتحه من بطاقة الفٌرصة
  * (راجع حالات الاستخدام § "يستطيع الباحثين... عرض بيانات الشركة").
  */
 export default async function OrganizationPublicProfilePage({

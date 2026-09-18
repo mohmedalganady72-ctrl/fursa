@@ -7,7 +7,7 @@ import { submitApplication } from "@/features/applications/services/applications
 import { db } from "@/lib/db";
 import { applicantProfiles } from "@/lib/db/schema";
 
-/** POST /api/applications — تقديم جديد على فرصة (باحث فقط) */
+/** POST /api/applications — تقديم جديد على فٌرصة (باحث فقط) */
 export async function POST(request: Request) {
   const session = await requireSession();
   if (!isApplicant(session)) {
@@ -36,12 +36,12 @@ export async function POST(request: Request) {
     const knownErrors: Record<string, { status: number; userMessage: string }> = {
       DAILY_APPLICATION_LIMIT_EXCEEDED: {
         status: 429,
-        userMessage: "وصلت إلى الحد اليومي لطلبات هذا النوع من الفرص",
+        userMessage: "وصلت إلى الحد اليومي لطلبات هذا النوع من الفٌرص",
       },
-      OPPORTUNITY_CLOSED: { status: 409, userMessage: "انتهى موعد التقديم على هذه الفرصة" },
-      OPPORTUNITY_EXPIRED: { status: 409, userMessage: "انتهى موعد التقديم على هذه الفرصة" },
-      OPPORTUNITY_NOT_FOUND: { status: 404, userMessage: "الفرصة غير موجودة" },
-      APPLICATION_ALREADY_EXISTS: { status: 409, userMessage: "سبق أن قدمت على هذه الفرصة" },
+      OPPORTUNITY_CLOSED: { status: 409, userMessage: "انتهى موعد التقديم على هذه الفٌرصة" },
+      OPPORTUNITY_EXPIRED: { status: 409, userMessage: "انتهى موعد التقديم على هذه الفٌرصة" },
+      OPPORTUNITY_NOT_FOUND: { status: 404, userMessage: "الفٌرصة غير موجودة" },
+      APPLICATION_ALREADY_EXISTS: { status: 409, userMessage: "سبق أن قدمت على هذه الفٌرصة" },
     };
 
     const known = knownErrors[message];

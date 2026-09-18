@@ -3,7 +3,7 @@ import { relations } from "drizzle-orm";
 import { users } from "./users";
 
 export const notificationTypeEnum = pgEnum("notification_type", [
-  "new_matching_opportunity", // فرصة جديدة تناسب اهتماماته
+  "new_matching_opportunity", // فٌرصة جديدة تناسب اهتماماته
   "application_status_changed", // تحديث حالة الطلب
   "deadline_approaching", // قرب انتهاء موعد التقديم
   "new_message", // وصول رسالة جديدة

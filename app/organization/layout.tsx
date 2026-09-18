@@ -18,7 +18,7 @@ import { getPostAuthPath } from "@/lib/auth/destination";
 const ORGANIZATION_NAV_ITEMS: SidebarNavItem[] = [
   { href: "/organization/dashboard", label: "الرئيسية", icon: "dashboard" },
   { href: "/organization/profile", label: "ملف الجهة", icon: "organization" },
-  { href: "/organization/opportunities", label: "فرصي", icon: "opportunities" },
+  { href: "/organization/opportunities", label: "فٌرصي", icon: "opportunities" },
   { href: "/organization/messages", label: "الرسائل", icon: "messages" },
 ];
 
@@ -60,7 +60,7 @@ export default async function OrganizationLayout({
           <h1 className="mt-4 text-h3 text-neutral-800">حسابك قيد المراجعة</h1>
           <p className="mt-2 text-body-sm text-secondary">
             يراجع فريق المنصة بيانات جهتكم حاليًا. سيصلكم إشعار عند اعتماد الحساب،
-            وبعدها يمكنكم نشر الفرص واستقبال طلبات المتقدمين.
+            وبعدها يمكنكم نشر الفٌرص واستقبال طلبات المتقدمين.
           </p>
         </div>
       </div></ProfileCompletionGate>
@@ -75,7 +75,7 @@ export default async function OrganizationLayout({
 
   return <ProfileCompletionGate complete profilePath="/organization/profile">
     <div className="dashboard-shell flex min-h-screen bg-background">
-      <DashboardSidebar items={navItems} user={{ name: profile?.name ?? session.user.name ?? "جهة", image: profile?.logoUrl ?? session.user.image, roleLabel: "حساب جهة" }} />
+      <DashboardSidebar items={navItems} user={{ name: profile?.name ?? session.user.name ?? "جهة", email: session.user.email, image: profile?.logoUrl ?? session.user.image, roleLabel: "حساب جهة" }} />
       <main className="flex-1 px-4 py-6 pb-20 md:px-6 md:pb-6 lg:px-8">
         <div className="mx-auto max-w-5xl"><DashboardHeader basePath="/organization" initialNotifications={notificationCount} initialMessages={messageCount} />{children}</div>
       </main>

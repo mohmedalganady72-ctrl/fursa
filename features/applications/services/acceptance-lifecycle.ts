@@ -24,7 +24,7 @@ async function notifyApplicant(applicationId: string, status: keyof typeof STATU
     userId: application.userId,
     type: "application_status_changed",
     title: STATUS_LABELS[status],
-    body: `تحدّثت حالة طلبك على فرصة «${application.opportunityTitle}».`,
+    body: `تحدّثت حالة طلبك على فٌرصة «${application.opportunityTitle}».`,
     linkUrl: status === "accepted" ? "/applicant/messages" : "/applicant/applications",
   });
 }

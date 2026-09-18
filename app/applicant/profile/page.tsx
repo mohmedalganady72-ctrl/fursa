@@ -12,13 +12,17 @@ export default async function ApplicantProfilePage() {
   ]);
 
   return (
-    <div>
-      <h1 className="text-h1 text-neutral-900">ملفي الشخصي</h1>
-      <p className="mt-1 text-body text-secondary">
-        هذه البيانات تُستخدم في البحث الذكي وحساب درجة توافقك مع الفرص
-      </p>
+    <div className={profile ? "" : "mx-auto flex min-h-screen w-full max-w-2xl flex-col justify-center px-4 py-10"}>
+      <div className={profile ? "" : "text-center"}>
+        <h1 className="text-h1 text-neutral-900">{profile ? "ملفي الشخصي" : "أكمل ملفك الشخصي"}</h1>
+        <p className="mt-2 text-body text-secondary">
+          {profile
+            ? "تُستخدم هذه البيانات في البحث الذكي وحساب مدى توافقك مع الفرص."
+            : "أدخل بياناتك لنتمكن من مساعدتك في العثور على الفرص المناسبة لك."}
+        </p>
+      </div>
 
-      <div className="mt-6 max-w-2xl">
+      <div className="mt-6 w-full">
         <ProfileForm
           initialProfile={profile ?? undefined}
           availableFields={availableFields}

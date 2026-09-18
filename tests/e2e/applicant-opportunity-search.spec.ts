@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { lifecycleFixture, login, retireFixture } from "./fixtures";
 
-test("البحث عن الفرص لا يبدأ إلا بعد الضغط على زر البحث", async ({ page }) => {
+test("البحث عن الفٌرص لا يبدأ إلا بعد الضغط على زر البحث", async ({ page }) => {
   test.setTimeout(180_000);
   const fixture = await lifecycleFixture(2);
   try {
@@ -15,7 +15,7 @@ test("البحث عن الفرص لا يبدأ إلا بعد الضغط على �
     expect(await page.evaluate(() => document.documentElement.clientWidth)).toBe(widthBeforeSelect);
     await page.keyboard.press("Escape");
 
-    await page.getByLabel("كلمات البحث").fill("فرصة غير موجودة إطلاقاً");
+    await page.getByLabel("كلمات البحث").fill("فٌرصة غير موجودة إطلاقاً");
     await expect(page).toHaveURL(/\/applicant\/opportunities$/);
     await expect(page.getByText("QA lifecycle verification").first()).toBeVisible();
 

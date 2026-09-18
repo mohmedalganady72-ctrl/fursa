@@ -2,7 +2,7 @@ import { z } from "zod";
 import { OPPORTUNITY_TYPES, WORK_MODES } from "@/lib/constants";
 
 /**
- * نموذج إعلان الفرصة موحّد الواجهة (راجع وثيقة المتطلبات § 10.4)، لكن التحقق من الصحة
+ * نموذج إعلان الفٌرصة موحّد الواجهة (راجع وثيقة المتطلبات § 10.4)، لكن التحقق من الصحة
  * يستخدم Zod discriminated union حسب النوع — كل نوع له حقوله الإجبارية الخاصة،
  * بدل حقل واحد "any" يضعف الأمان النوعي (type safety) في بقية الكود.
  */
@@ -49,6 +49,6 @@ export const opportunitySchema = z.discriminatedUnion("type", [
 
 export type OpportunityInput = z.infer<typeof opportunitySchema>;
 
-// لا يوجد schema منفصل للتعديل — الفرص لا تُعدَّل بعد النشر في هذا الإصدار
+// لا يوجد schema منفصل للتعديل — الفٌرص لا تُعدَّل بعد النشر في هذا الإصدار
 // (راجع وثيقة المتطلبات § 5.7). نموذج "الاستبدال" يستخدم opportunitySchema نفسه كاملًا
 // (راجع app/api/opportunities/[opportunityId]/replace/route.ts).

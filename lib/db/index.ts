@@ -17,11 +17,13 @@ const globalForPostgres = globalThis as typeof globalThis & {
 function createPostgresClient() {
   return postgres(env.DATABASE_URL, {
     prepare: false,
+    ssl: "require",
     // Vercel ينشئ عدة مثيلات؛ اتصال واحد لكل مثيل يمنع استنزاف Supavisor.
     max: process.env.VERCEL ? 1 : 5,
     connect_timeout: 5,
     idle_timeout: 60,
     max_lifetime: 60 * 5,
+    keep_alive: 30,
   });
 }
 
