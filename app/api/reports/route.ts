@@ -11,6 +11,9 @@ import { USER_ROLES } from "@/lib/constants";
 export async function POST(request: Request) {
   const session = await getServerSession();
   if (!session) return NextResponse.json({ error: "UNAUTHENTICATED", message: "سجّل الدخول لإرسال البلاغ" }, { status: 401 });
+  if (session.user.isRestricted) {
+    return NextResponse.json({ error: "ACCOUNT_RESTRICTED", message: "الحساب مقيّد حاليًا" }, { status: 403 });
+  }
 
   const body = await request.json().catch(() => null);
   const parsed = reportSchema.safeParse(body);

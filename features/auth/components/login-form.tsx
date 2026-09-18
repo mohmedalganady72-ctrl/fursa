@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
+import { InlineFeedback } from "@/components/shared/inline-feedback";
 import { firebaseAuthReady, firebaseClientAuth } from "@/lib/firebase/client";
 import { clearPostProfileRedirect, clearVerificationContext, createBetterAuthSession, firebaseErrorMessage, rememberLoginVerification, resolvePostAuthPath, signInWithPassword } from "@/lib/firebase/auth-flow";
 import { CountryPhoneInput } from "@/features/auth/components/country-phone-input";
@@ -17,12 +17,12 @@ import { CountryPhoneInput } from "@/features/auth/components/country-phone-inpu
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { toast } = useToast();
   const [method, setMethod] = React.useState<"email" | "phone">("email");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [feedback, setFeedback] = React.useState<{ title: string; message: string } | null>(null);
   const authActionInFlight = React.useRef(false);
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
 
@@ -38,6 +38,7 @@ export function LoginForm() {
     if (authActionInFlight.current) return;
     authActionInFlight.current = true;
     setIsSubmitting(true);
+    setFeedback(null);
     try {
       await firebaseAuthReady;
       if (method === "email") {
@@ -70,7 +71,7 @@ export function LoginForm() {
         }
       }
     } catch (error) {
-      toast({ variant: "error", title: "تعذّر تسجيل الدخول", description: firebaseErrorMessage(error) });
+      setFeedback({ title: "تعذّر تسجيل الدخول", message: firebaseErrorMessage(error) });
     } finally {
       authActionInFlight.current = false;
       setIsSubmitting(false);
@@ -81,12 +82,13 @@ export function LoginForm() {
     if (authActionInFlight.current) return;
     authActionInFlight.current = true;
     setIsSubmitting(true);
+    setFeedback(null);
     try {
       await firebaseAuthReady;
       const credential = await signInWithPopup(firebaseClientAuth, new GoogleAuthProvider());
       await finish("google", await credential.user.getIdToken());
     } catch (error) {
-      toast({ variant: "error", title: "تعذّر الدخول عبر Google", description: firebaseErrorMessage(error) });
+      setFeedback({ title: "تعذّر الدخول عبر Google", message: firebaseErrorMessage(error) });
     } finally {
       authActionInFlight.current = false;
       setIsSubmitting(false);
@@ -105,6 +107,7 @@ export function LoginForm() {
         <div className="flex flex-col gap-2"><Label htmlFor="login-password">كلمة المرور</Label><PasswordInput id="login-password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} required /></div>
       </> : <CountryPhoneInput id="login-phone" value={phone} onChange={setPhone} />}
       <div id="firebase-login-recaptcha" />
+      {feedback ? <InlineFeedback title={feedback.title} message={feedback.message} /> : null}
       <Button type="submit" size="lg" isLoading={isSubmitting}>تسجيل الدخول</Button>
       {method === "email" && <Link href="/forgot-password" className="text-center text-body-sm font-medium text-primary-600 hover:underline">نسيت كلمة المرور؟</Link>}
       <div className="flex items-center gap-3 text-caption text-secondary before:h-px before:flex-1 before:bg-neutral-200 after:h-px after:flex-1 after:bg-neutral-200">أو</div>

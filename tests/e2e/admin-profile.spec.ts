@@ -21,7 +21,7 @@ test("يستطيع المدير تعديل بيانات حسابه وتسجيل 
     );
     await page.getByRole("button", { name: "حفظ التغييرات" }).click();
     expect((await updateResponse).status()).toBe(200);
-    await expect(page.getByText("تم تحديث بيانات حسابك")).toBeVisible();
+    await expect(page.getByRole("status")).toContainText("تم تحديث الحساب");
     await expect(page.getByTitle(displayName)).toBeVisible();
     await expect(page.getByTitle(email)).toBeVisible();
 

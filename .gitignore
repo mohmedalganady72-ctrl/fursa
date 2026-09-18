@@ -17,6 +17,7 @@ build/
 # Drizzle
 lib/db/migrations/*.sql
 !lib/db/migrations/.gitkeep
+!lib/db/migrations/0003_hard_guardsmen.sql
 
 # Testing
 /coverage

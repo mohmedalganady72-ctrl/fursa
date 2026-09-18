@@ -4,16 +4,17 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import { InlineFeedback } from "@/components/shared/inline-feedback";
 
 /** أزرار القبول/الرفض لصف متقدم واحد — راجع app/api/applications/[id]/decision/route.ts */
 export function ApplicantRowActions({ applicationId, canAccept }: { applicationId: string; canAccept: boolean }) {
   const router = useRouter();
-  const { toast } = useToast();
   const [isProcessing, setIsProcessing] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   async function handleDecision(decision: "accept" | "reject") {
     setIsProcessing(true);
+    setErrorMessage(null);
     try {
       const response = await fetch(`/api/applications/${applicationId}/decision`, {
         method: "PATCH",
@@ -23,23 +24,20 @@ export function ApplicantRowActions({ applicationId, canAccept }: { applicationI
 
       const result = await response.json();
       if (!response.ok) {
-        toast({ variant: "error", title: "تعذّر تنفيذ الإجراء", description: result.message ?? result.error });
+        setErrorMessage(result.message ?? result.error ?? "تعذّر تنفيذ الإجراء.");
         return;
       }
 
-      toast({
-        variant: "success",
-        title: decision === "accept" ? "قُبل المتقدم" : "لم يُقبل المتقدم",
-        description: decision === "accept" ? "أُنشئت محادثة للتواصل معه." : undefined,
-      });
       router.refresh();
+    } catch {
+      setErrorMessage("تعذّر تنفيذ الإجراء. تحقق من اتصالك، ثم حاول مرة أخرى.");
     } finally {
       setIsProcessing(false);
     }
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-col items-end gap-2"><div className="flex items-center gap-2">
       <Button
         size="sm"
         variant="outline"
@@ -54,6 +52,8 @@ export function ApplicantRowActions({ applicationId, canAccept }: { applicationI
         <X className="h-4 w-4 text-danger-500" />
         رفض
       </Button>
+      </div>
+      {errorMessage ? <InlineFeedback message={errorMessage} className="max-w-xs" /> : null}
     </div>
   );
 }

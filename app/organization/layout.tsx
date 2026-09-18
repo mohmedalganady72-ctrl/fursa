@@ -39,6 +39,7 @@ export default async function OrganizationLayout({
   if (!session) {
     redirect("/login");
   }
+  if (session.user.isRestricted) redirect("/account-restricted");
   if (!isOrganization(session)) redirect(await getPostAuthPath(session));
 
   const profile = await withDatabaseRetry(() => db.query.organizationProfiles.findFirst({

@@ -15,6 +15,7 @@ import { MAX_APPLICANT_FIELDS } from "@/lib/constants";
 import type { ApplicantProfile } from "@/lib/db/schema";
 import { FileUploadDropzone } from "@/components/shared/file-upload-dropzone";
 import { consumePostProfileRedirect } from "@/lib/firebase/auth-flow";
+import { InlineFeedback } from "@/components/shared/inline-feedback";
 
 interface Field {
   id: string;
@@ -56,6 +57,9 @@ export function ProfileForm({ initialProfile, availableFields, selectedFieldIds 
   const [specialization, setSpecialization] = React.useState(initialProfile?.specialization ?? "");
   const [avatarFile, setAvatarFile] = React.useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = React.useState<string | undefined>(initialProfile?.avatarUrl ?? undefined);
+  const [formError, setFormError] = React.useState<string | null>(null);
+  const [avatarError, setAvatarError] = React.useState<string | null>(null);
+  const [fieldLimitMessage, setFieldLimitMessage] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (!avatarFile) { setAvatarPreview(initialProfile?.avatarUrl ?? undefined); return; }
@@ -79,9 +83,10 @@ export function ProfileForm({ initialProfile, availableFields, selectedFieldIds 
     setSelectedFields((current) => {
       if (current.includes(fieldId)) return current.filter((id) => id !== fieldId);
       if (current.length >= MAX_APPLICANT_FIELDS) {
-        toast({ variant: "info", title: `يمكن اختيار ${MAX_APPLICANT_FIELDS} مجالات كحد أقصى` });
+        setFieldLimitMessage(`يمكن اختيار ${MAX_APPLICANT_FIELDS} مجالات كحد أقصى. احذف مجالًا قبل اختيار مجال آخر.`);
         return current;
       }
+      setFieldLimitMessage(null);
       return [...current, fieldId];
     });
   }
@@ -89,6 +94,8 @@ export function ProfileForm({ initialProfile, availableFields, selectedFieldIds 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsSubmitting(true);
+    setFormError(null);
+    setAvatarError(null);
 
     try {
       let avatarUrl = initialProfile?.avatarUrl ?? undefined;
@@ -97,7 +104,7 @@ export function ProfileForm({ initialProfile, availableFields, selectedFieldIds 
         const uploadResponse = await fetch("/api/uploads", { method: "POST", body: upload });
         const uploadResult = await uploadResponse.json().catch(() => ({ message: "تعذّر قراءة استجابة الخادم. حاول مرة أخرى." }));
         if (!uploadResponse.ok) {
-          toast({ variant: "error", title: "تعذّر رفع الصورة", description: uploadResult.message ?? uploadResult.error });
+          setAvatarError(uploadResult.message ?? uploadResult.error ?? "تعذّر رفع الصورة. اختر ملفًا آخر وحاول مجددًا.");
           return;
         }
         avatarUrl = uploadResult.data.url;
@@ -119,7 +126,7 @@ export function ProfileForm({ initialProfile, availableFields, selectedFieldIds 
 
       if (!response.ok) {
         const result = await response.json().catch(() => ({ message: "تعذّر قراءة استجابة الخادم. حاول مرة أخرى." }));
-        toast({ variant: "error", title: "تعذّر حفظ الملف الشخصي", description: result.message });
+        setFormError(result.message ?? "تحقق من البيانات، ثم حاول مرة أخرى.");
         return;
       }
 
@@ -130,6 +137,8 @@ export function ProfileForm({ initialProfile, availableFields, selectedFieldIds 
       sessionStorage.removeItem("fursa-post-profile-redirect");
       router.push(sharedOpportunityPath?.startsWith("/applicant/opportunities/") ? sharedOpportunityPath : "/applicant/dashboard");
       router.refresh();
+    } catch {
+      setFormError("تعذّر حفظ الملف الشخصي. تحقق من اتصالك، ثم حاول مرة أخرى.");
     } finally {
       setIsSubmitting(false);
     }
@@ -151,7 +160,8 @@ export function ProfileForm({ initialProfile, availableFields, selectedFieldIds 
         </Avatar>
         <div className="flex-1"><FileUploadDropzone accept="image/png,image/jpeg,image/webp" maxSizeMb={5}
           label="الصورة الشخصية" helperText="PNG أو JPEG أو WebP، حتى 5 ميجابايت" compact
-          selectedFile={avatarFile} onFileSelected={setAvatarFile} /></div>
+          selectedFile={avatarFile} onFileSelected={(file) => { setAvatarFile(file); setAvatarError(null); }} />
+          {avatarError ? <p role="alert" className="mt-2 text-body-sm text-danger-500">{avatarError}</p> : null}</div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -278,8 +288,10 @@ export function ProfileForm({ initialProfile, availableFields, selectedFieldIds 
             <p className="px-2 py-4 text-center text-body-sm text-neutral-500">لا توجد مجالات مطابقة لعبارة البحث.</p>
           )}
         </div>
+        {fieldLimitMessage ? <InlineFeedback variant="info" message={fieldLimitMessage} /> : null}
       </div>
 
+      {formError ? <InlineFeedback title="تعذّر حفظ الملف الشخصي" message={formError} /> : null}
       <Button type="submit" size="lg" isLoading={isSubmitting} className="mt-2">
         حفظ الملف الشخصي
       </Button>

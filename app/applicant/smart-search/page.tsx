@@ -8,7 +8,7 @@ import { FileUploadDropzone } from "@/components/shared/file-upload-dropzone";
 import { OpportunityCard } from "@/components/shared/opportunity-card";
 import { EmptyState } from "@/components/shared/empty-state";
 import { OpportunityGridSkeleton } from "@/components/shared/loading-skeletons";
-import { useToast } from "@/hooks/use-toast";
+import { InlineFeedback } from "@/components/shared/inline-feedback";
 
 /**
  * صفحة البحث الذكي — تتيح للباحث رفع سيرته الذاتية ليحلّلها النظام (features/cv-parsing)
@@ -16,13 +16,14 @@ import { useToast } from "@/hooks/use-toast";
  * راجع وثيقة المتطلبات § "البحث الذكي" للمسارين: بالملف الشخصي فقط، أو + السيرة الذاتية.
  */
 export default function SmartSearchPage() {
-  const { toast } = useToast();
   const [resumeFile, setResumeFile] = React.useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = React.useState(false);
   const [matchedOpportunities, setMatchedOpportunities] = React.useState<any[] | null>(null);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   async function handleAnalyze() {
     setIsAnalyzing(true);
+    setErrorMessage(null);
     try {
       // الخطوات الفعلية: 1) رفع resumeFile لـ Supabase Storage عبر endpoint مخصص
       // 2) استدعاء POST /api/cv/parse بالمسار الناتج (features/cv-parsing)
@@ -31,7 +32,7 @@ export default function SmartSearchPage() {
       const result = await response.json();
       setMatchedOpportunities(result.data ?? []);
     } catch {
-      toast({ variant: "error", title: "تعذّر تحليل السيرة الذاتية", description: "تحقق من الملف وحاول مرة أخرى." });
+      setErrorMessage("تحقق من الملف واتصالك بالإنترنت، ثم حاول مرة أخرى.");
     } finally {
       setIsAnalyzing(false);
     }
@@ -56,6 +57,7 @@ export default function SmartSearchPage() {
           label="السيرة الذاتية (PDF)"
           helperText="يمكنك الاعتماد على بيانات ملفك الشخصي من دون رفع سيرة ذاتية."
         />
+        {errorMessage ? <InlineFeedback title="تعذّر تحليل السيرة الذاتية" message={errorMessage} className="mt-4" /> : null}
 
         <div className="mt-4 flex gap-3">
           <Button onClick={handleAnalyze} isLoading={isAnalyzing} disabled={!resumeFile}>

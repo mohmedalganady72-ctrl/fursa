@@ -8,16 +8,16 @@ import { authClient } from "@/lib/auth/client";
 import { firebaseClientAuth } from "@/lib/firebase/client";
 import { cn } from "@/lib/utils";
 import { clearPostProfileRedirect, clearVerificationContext } from "@/lib/firebase/auth-flow";
-import { useToast } from "@/hooks/use-toast";
 
 export function LogoutButton({ showLabel = false, className }: { showLabel?: boolean; className?: string }) {
   const pathname = usePathname();
-  const { toast } = useToast();
   const [pending, setPending] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   async function logout() {
     if (pending) return;
     setPending(true);
+    setErrorMessage(null);
     try {
       const result = await authClient.signOut();
       if (result.error) throw new Error(result.error.message ?? "تعذّر إنهاء الجلسة.");
@@ -30,17 +30,13 @@ export function LogoutButton({ showLabel = false, className }: { showLabel?: boo
       sessionStorage.removeItem("fursa-post-profile-redirect");
       window.location.replace(pathname.startsWith("/admin") ? "/admin-login" : "/login");
     } catch (error) {
-      toast({
-        variant: "error",
-        title: "تعذّر تسجيل الخروج",
-        description: error instanceof Error ? error.message : "تحقق من اتصالك وحاول مرة أخرى.",
-      });
+      setErrorMessage(error instanceof Error ? error.message : "تحقق من اتصالك وحاول مرة أخرى.");
     } finally {
       setPending(false);
     }
   }
 
-  return <button
+  return <span className={cn("relative inline-flex", showLabel && "w-full flex-col")}><button
     type="button"
     onClick={logout}
     disabled={pending}
@@ -54,5 +50,5 @@ export function LogoutButton({ showLabel = false, className }: { showLabel?: boo
   >
     <LogOut className="h-4.5 w-4.5 rtl-flip" />
     {showLabel && <span>{pending ? "جارٍ الخروج..." : "تسجيل الخروج"}</span>}
-  </button>;
+  </button>{errorMessage ? <span role="alert" className={cn("z-20 rounded-md border border-danger-500/25 bg-danger-50 px-2 py-1.5 text-start text-caption text-danger-500 shadow-md", showLabel ? "mt-1 w-full" : "absolute end-0 top-full mt-1 w-48")}>{errorMessage}</span> : null}</span>;
 }

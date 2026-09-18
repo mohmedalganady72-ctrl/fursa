@@ -4,7 +4,6 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 
 interface DeleteSavedSearchButtonProps {
   savedSearchId: string;
@@ -13,26 +12,28 @@ interface DeleteSavedSearchButtonProps {
 /** زر حذف بحث محفوظ — يستدعي DELETE /api/saved-searches/:id ثم يُحدّث القائمة */
 export function DeleteSavedSearchButton({ savedSearchId }: DeleteSavedSearchButtonProps) {
   const router = useRouter();
-  const { toast } = useToast();
   const [isDeleting, setIsDeleting] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   async function handleDelete() {
     setIsDeleting(true);
+    setErrorMessage(null);
     try {
       const response = await fetch(`/api/saved-searches/${savedSearchId}`, { method: "DELETE" });
       if (!response.ok) {
-        toast({ variant: "error", title: "تعذّر حذف البحث المحفوظ" });
+        setErrorMessage("تعذّر حذف البحث المحفوظ.");
         return;
       }
       router.refresh();
     } catch {
-      toast({ variant: "error", title: "تعذّر حذف البحث المحفوظ", description: "تحقق من اتصالك وحاول مرة أخرى." });
+      setErrorMessage("تعذّر حذف البحث المحفوظ. تحقق من اتصالك وحاول مرة أخرى.");
     } finally {
       setIsDeleting(false);
     }
   }
 
   return (
+    <span className="relative inline-flex">
     <Button
       variant="ghost"
       size="sm"
@@ -43,5 +44,7 @@ export function DeleteSavedSearchButton({ savedSearchId }: DeleteSavedSearchButt
     >
       <Trash2 className="h-4 w-4" aria-hidden="true" />
     </Button>
+    {errorMessage ? <span role="alert" className="absolute end-0 top-full z-20 mt-1 w-48 rounded-md border border-danger-500/25 bg-danger-50 px-2 py-1.5 text-start text-caption text-danger-500 shadow-md">{errorMessage}</span> : null}
+    </span>
   );
 }

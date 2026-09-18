@@ -14,6 +14,7 @@ import { USER_ROLES } from "@/lib/constants";
 import { firebaseAuthReady, firebaseClientAuth } from "@/lib/firebase/client";
 import { clearPostProfileRedirect, clearVerificationContext, createBetterAuthSession, firebaseErrorMessage, rememberPostProfileRedirect, rememberRegistrationVerification, resolvePostAuthPath, type RegistrationRole } from "@/lib/firebase/auth-flow";
 import { CountryPhoneInput } from "@/features/auth/components/country-phone-input";
+import { InlineFeedback } from "@/components/shared/inline-feedback";
 
 type RegistrationMethod = "email" | "phone";
 
@@ -30,6 +31,8 @@ export function RegisterForm() {
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [formError, setFormError] = React.useState<string | null>(null);
+  const [confirmPasswordError, setConfirmPasswordError] = React.useState<string | null>(null);
   const authActionInFlight = React.useRef(false);
 
   function emailVerificationPath(targetEmail: string) {
@@ -37,7 +40,10 @@ export function RegisterForm() {
   }
 
   async function registerWithEmail() {
-    if (password !== confirmPassword) throw new Error("كلمتا المرور غير متطابقتين");
+    if (password !== confirmPassword) {
+      setConfirmPasswordError("كلمتا المرور غير متطابقتين.");
+      throw new Error("كلمتا المرور غير متطابقتين");
+    }
     const credential = await createUserWithEmailAndPassword(firebaseClientAuth, email, password);
     await updateProfile(credential.user, { displayName: email.split("@")[0] }).catch(() => undefined);
     rememberRegistrationVerification(role, redirectTo);
@@ -71,6 +77,12 @@ export function RegisterForm() {
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    setFormError(null);
+    setConfirmPasswordError(null);
+    if (method === "email" && password !== confirmPassword) {
+      setConfirmPasswordError("كلمتا المرور غير متطابقتين.");
+      return;
+    }
     if (authActionInFlight.current) return;
     authActionInFlight.current = true;
     setIsSubmitting(true);
@@ -79,7 +91,7 @@ export function RegisterForm() {
       clearVerificationContext();
       await (method === "email" ? registerWithEmail() : registerWithPhone());
     } catch (error) {
-      toast({ variant: "error", title: "تعذّر إنشاء الحساب", description: firebaseErrorMessage(error) });
+      if (password === confirmPassword) setFormError(firebaseErrorMessage(error));
     } finally {
       authActionInFlight.current = false;
       setIsSubmitting(false);
@@ -90,6 +102,7 @@ export function RegisterForm() {
     if (authActionInFlight.current) return;
     authActionInFlight.current = true;
     setIsSubmitting(true);
+    setFormError(null);
     try {
       await firebaseAuthReady;
       clearVerificationContext();
@@ -100,7 +113,7 @@ export function RegisterForm() {
       if (!destination.endsWith("/profile")) clearPostProfileRedirect();
       window.location.replace(destination);
     } catch (error) {
-      toast({ variant: "error", title: "تعذّر التسجيل عبر Google", description: firebaseErrorMessage(error) });
+      setFormError(firebaseErrorMessage(error));
     } finally {
       authActionInFlight.current = false;
       setIsSubmitting(false);
@@ -121,9 +134,10 @@ export function RegisterForm() {
       {method === "email" ? <>
         <Field id="email" label="البريد الإلكتروني"><Input id="email" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} required /></Field>
         <Field id="password" label="كلمة المرور"><PasswordInput id="password" autoComplete="new-password" value={password} onChange={(event) => setPassword(event.target.value)} required minLength={8} /></Field>
-        <Field id="confirm-password" label="تأكيد كلمة المرور"><PasswordInput id="confirm-password" autoComplete="new-password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} required minLength={8} /></Field>
+        <Field id="confirm-password" label="تأكيد كلمة المرور"><PasswordInput id="confirm-password" autoComplete="new-password" value={confirmPassword} onChange={(event) => { setConfirmPassword(event.target.value); setConfirmPasswordError(null); }} required minLength={8} aria-invalid={Boolean(confirmPasswordError)} aria-describedby={confirmPasswordError ? "confirm-password-error" : undefined} />{confirmPasswordError ? <p id="confirm-password-error" role="alert" className="text-body-sm text-danger-500">{confirmPasswordError}</p> : null}</Field>
       </> : <CountryPhoneInput id="phone" value={phone} onChange={setPhone} />}
       <div id="firebase-recaptcha" />
+      {formError ? <InlineFeedback title="تعذّر إنشاء الحساب" message={formError} /> : null}
       <Button type="submit" size="lg" isLoading={isSubmitting}>إنشاء الحساب</Button>
       <div className="flex items-center gap-3 text-caption text-secondary before:h-px before:flex-1 before:bg-neutral-200 after:h-px after:flex-1 after:bg-neutral-200">أو</div>
       <Button type="button" variant="outline" size="lg" onClick={registerWithGoogle} disabled={isSubmitting}><span aria-hidden="true" className="text-base font-bold">G</span>المتابعة باستخدام Google</Button>

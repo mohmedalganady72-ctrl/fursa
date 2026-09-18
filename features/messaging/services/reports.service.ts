@@ -39,7 +39,13 @@ export async function listPendingReports() {
   });
   const userTargetIds = rows.filter((report) => report.targetType === "user").map((report) => report.targetId);
   const targetUsers = userTargetIds.length
-    ? await db.select({ id: users.id, name: users.name, email: users.email, role: users.role }).from(users).where(inArray(users.id, userTargetIds))
+    ? await db.select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        role: users.role,
+        isRestricted: users.isRestricted,
+      }).from(users).where(inArray(users.id, userTargetIds))
     : [];
   const usersById = new Map(targetUsers.map((user) => [user.id, user]));
   return rows.map((report) => ({ ...report, targetUser: report.targetType === "user" ? usersById.get(report.targetId) ?? null : null }));

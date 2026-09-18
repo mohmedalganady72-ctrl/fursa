@@ -5,21 +5,22 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
+import { InlineFeedback } from "@/components/shared/inline-feedback";
 
 export function AdminProfileForm({ displayName: initialName, email: initialEmail }: {
   displayName: string;
   email: string;
 }) {
   const router = useRouter();
-  const { toast } = useToast();
   const [displayName, setDisplayName] = React.useState(initialName);
   const [email, setEmail] = React.useState(initialEmail);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [feedback, setFeedback] = React.useState<{ variant: "error" | "success"; message: string } | null>(null);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setIsSubmitting(true);
+    setFeedback(null);
     try {
       const response = await fetch("/api/admin/profile", {
         method: "PATCH",
@@ -28,17 +29,13 @@ export function AdminProfileForm({ displayName: initialName, email: initialEmail
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) {
-        toast({ variant: "error", title: "تعذّر تحديث الحساب", description: result.message ?? "حاول مرة أخرى." });
+        setFeedback({ variant: "error", message: result.message ?? "تحقق من البيانات، ثم حاول مرة أخرى." });
         return;
       }
-      toast({ variant: "success", title: "تم تحديث بيانات حسابك" });
+      setFeedback({ variant: "success", message: "حُفظ الاسم والبريد الإلكتروني بنجاح." });
       router.refresh();
     } catch {
-      toast({
-        variant: "error",
-        title: "تعذّر تحديث الحساب",
-        description: "تحقق من اتصالك بالإنترنت، ثم حاول مرة أخرى.",
-      });
+      setFeedback({ variant: "error", message: "تحقق من اتصالك بالإنترنت، ثم حاول مرة أخرى." });
     } finally {
       setIsSubmitting(false);
     }
@@ -54,6 +51,7 @@ export function AdminProfileForm({ displayName: initialName, email: initialEmail
         <Label htmlFor="admin-profile-email">البريد الإلكتروني</Label>
         <Input id="admin-profile-email" type="email" dir="ltr" className="text-right" value={email} onChange={(event) => setEmail(event.target.value)} required />
       </div>
+      {feedback ? <InlineFeedback variant={feedback.variant} title={feedback.variant === "success" ? "تم تحديث الحساب" : "تعذّر تحديث الحساب"} message={feedback.message} /> : null}
       <Button type="submit" isLoading={isSubmitting} disabled={isSubmitting} className="mt-1 w-fit min-w-36">
         حفظ التغييرات
       </Button>
