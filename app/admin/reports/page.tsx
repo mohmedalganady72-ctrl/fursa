@@ -4,6 +4,8 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { ReportActions } from "@/features/admin/components/report-actions";
 import { listPendingReports } from "@/features/messaging/services/reports.service";
 import { formatDateArabic } from "@/lib/utils";
+import { AccountRestrictionButton } from "@/features/admin/components/account-restriction-button";
+import { Badge } from "@/components/ui/badge";
 
 const TARGET_LABELS = { message: "رسالة", user: "مستخدم", opportunity: "فٌرصة" } as const;
 
@@ -22,7 +24,18 @@ export default async function ReportsPage() {
               <p className="mt-1 whitespace-pre-wrap text-body-sm text-neutral-700">{report.reason}</p>
               <p className="mt-2 text-caption text-neutral-400">{report.reporter.email} · {formatDateArabic(report.createdAt)}</p>
             </div>
-            <ReportActions reportId={report.id} />
+            <div className="flex flex-wrap items-center gap-2">
+              {report.targetUser?.isRestricted ? <Badge variant="danger">الحساب مقيّد</Badge> : null}
+              {report.targetUser && !report.targetUser.isRestricted ? (
+                <AccountRestrictionButton
+                  userId={report.targetUser.id}
+                  userName={report.targetUser.name || report.targetUser.email}
+                  isRestricted={false}
+                  reportId={report.id}
+                />
+              ) : null}
+              <ReportActions reportId={report.id} />
+            </div>
           </div>
         </Card>)}</div>}
   </div>;

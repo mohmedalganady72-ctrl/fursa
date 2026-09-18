@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth/client";
 import { firebaseErrorMessage } from "@/lib/firebase/auth-flow";
+import { InlineFeedback } from "@/components/shared/inline-feedback";
 
 export function ResetPasswordForm() {
   const searchParams = useSearchParams();
@@ -16,16 +17,18 @@ export function ResetPasswordForm() {
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [pending, setPending] = React.useState(false);
+  const [formError, setFormError] = React.useState<string | null>(null);
+  const [confirmError, setConfirmError] = React.useState<string | null>(null);
   async function submit(event: React.FormEvent) {
-    event.preventDefault(); setPending(true);
+    event.preventDefault(); setPending(true); setFormError(null); setConfirmError(null);
     try {
-      if (!oobCode) { toast({ variant: "error", title: "رابط الاستعادة غير صالح", description: "اطلب رابطًا جديدًا وحاول مرة أخرى." }); return; }
-      if (password !== confirmPassword) { toast({ variant: "error", title: "كلمتا المرور غير متطابقتين" }); return; }
+      if (!oobCode) { setFormError("رابط الاستعادة غير صالح. اطلب رابطًا جديدًا وحاول مرة أخرى."); return; }
+      if (password !== confirmPassword) { setConfirmError("كلمتا المرور غير متطابقتين."); return; }
       const { error } = await authClient.confirmPasswordReset({ oobCode, newPassword: password });
       if (error) throw new Error(error.message);
       toast({ variant: "success", title: "تغيّرت كلمة المرور بنجاح" }); router.push("/login");
     } catch (error) {
-      toast({ variant: "error", title: "تعذّر تغيير كلمة المرور", description: firebaseErrorMessage(error) });
+      setFormError(firebaseErrorMessage(error));
     } finally { setPending(false); }
   }
   return <form onSubmit={submit} className="flex flex-col gap-5 rounded-lg border border-neutral-200 bg-surface p-6 shadow-sm">
@@ -33,7 +36,8 @@ export function ResetPasswordForm() {
     <div className="flex flex-col gap-2"><Label htmlFor="newPassword">كلمة المرور الجديدة</Label>
       <PasswordInput id="newPassword" autoComplete="new-password" required minLength={8} value={password} onChange={(event) => setPassword(event.target.value)} /></div>
     <div className="flex flex-col gap-2"><Label htmlFor="confirmNewPassword">تأكيد كلمة المرور</Label>
-      <PasswordInput id="confirmNewPassword" autoComplete="new-password" required minLength={8} value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} /></div>
+      <PasswordInput id="confirmNewPassword" autoComplete="new-password" required minLength={8} value={confirmPassword} onChange={(event) => { setConfirmPassword(event.target.value); setConfirmError(null); }} aria-invalid={Boolean(confirmError)} aria-describedby={confirmError ? "confirm-new-password-error" : undefined} />{confirmError ? <p id="confirm-new-password-error" role="alert" className="text-body-sm text-danger-500">{confirmError}</p> : null}</div>
+    {formError ? <InlineFeedback title="تعذّر تغيير كلمة المرور" message={formError} /> : null}
     <Button type="submit" size="lg" isLoading={pending}>حفظ كلمة المرور</Button>
   </form>;
 }

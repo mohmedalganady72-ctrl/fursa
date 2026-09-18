@@ -7,6 +7,7 @@ import {
   users,
   admins,
   adminAuditLog,
+  reports,
 } from "@/lib/db/schema";
 import { createNotification } from "@/features/notifications/services/notifications.service";
 import { withDatabaseRetry } from "@/lib/db/retry";
@@ -129,6 +130,47 @@ export async function listAllOrganizations(query = "") {
   if (!normalized) return rows;
   return rows.filter((profile) => [profile.name, profile.city, profile.organizationType, profile.activityDescription, profile.user.email]
     .some((value) => value?.toLocaleLowerCase("ar").includes(normalized)));
+}
+
+/** تقييد حساب باحث أو جهة أو إعادة تمكينه، مع توثيق الإجراء الإداري. */
+export async function setUserRestriction(
+  userId: string,
+  restricted: boolean,
+  adminId: string,
+  reportId?: string,
+) {
+  return withDatabaseRetry(() => db.transaction(async (tx) => {
+    const target = await tx.query.users.findFirst({
+      columns: { id: true, role: true, isRestricted: true },
+      where: eq(users.id, userId),
+    });
+    if (!target) throw new Error("USER_NOT_FOUND");
+    if (target.role === "admin") throw new Error("ADMIN_RESTRICTION_FORBIDDEN");
+
+    if (reportId) {
+      const report = await tx.query.reports.findFirst({
+        columns: { id: true, targetId: true, targetType: true },
+        where: eq(reports.id, reportId),
+      });
+      if (!report || report.targetType !== "user" || report.targetId !== userId) {
+        throw new Error("REPORT_TARGET_MISMATCH");
+      }
+      await tx.update(reports).set({ status: "reviewed" }).where(eq(reports.id, reportId));
+    }
+
+    if (target.isRestricted !== restricted) {
+      await tx.update(users).set({ isRestricted: restricted, updatedAt: new Date() }).where(eq(users.id, userId));
+      await tx.insert(adminAuditLog).values({
+        adminId,
+        action: restricted ? "user_restricted" : "user_reenabled",
+        targetType: "user",
+        targetId: userId,
+        metadata: reportId ? { reportId } : undefined,
+      });
+    }
+
+    return { id: userId, isRestricted: restricted };
+  }));
 }
 
 export async function getOrganizationForAdmin(organizationProfileId: string) {

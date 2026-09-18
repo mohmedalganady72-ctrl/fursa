@@ -8,19 +8,29 @@ import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/shared/empty-state";
 import { cn, formatDateArabic } from "@/lib/utils";
 import type { Notification } from "@/lib/db/schema";
+import { InlineFeedback } from "@/components/shared/inline-feedback";
 
 export function NotificationCenter({ initialNotifications }: { initialNotifications: Notification[] }) {
   const router = useRouter();
   const [items, setItems] = React.useState(initialNotifications);
   const [filter, setFilter] = React.useState<"all" | "unread">("all");
   const [isMarkingAll, setIsMarkingAll] = React.useState(false);
+  const [markAllError, setMarkAllError] = React.useState<string | null>(null);
+  const [itemErrorId, setItemErrorId] = React.useState<string | null>(null);
   const visible = filter === "unread" ? items.filter((item) => !item.isRead) : items;
   const unreadCount = items.filter((item) => !item.isRead).length;
 
   async function openNotification(notification: Notification) {
     if (!notification.isRead) {
-      const response = await fetch(`/api/notifications/${notification.id}/read`, { method: "PATCH" });
-      if (response.ok) setItems((current) => current.map((item) => item.id === notification.id ? { ...item, isRead: true } : item));
+      setItemErrorId(null);
+      try {
+        const response = await fetch(`/api/notifications/${notification.id}/read`, { method: "PATCH" });
+        if (!response.ok) { setItemErrorId(notification.id); return; }
+        setItems((current) => current.map((item) => item.id === notification.id ? { ...item, isRead: true } : item));
+      } catch {
+        setItemErrorId(notification.id);
+        return;
+      }
     }
     if (notification.linkUrl) router.push(notification.linkUrl);
     router.refresh();
@@ -28,12 +38,15 @@ export function NotificationCenter({ initialNotifications }: { initialNotificati
 
   async function markAll() {
     setIsMarkingAll(true);
+    setMarkAllError(null);
     try {
       const response = await fetch("/api/notifications", { method: "PATCH" });
       if (response.ok) {
         setItems((current) => current.map((item) => ({ ...item, isRead: true })));
         router.refresh();
-      }
+      } else setMarkAllError("تعذّر تحديث الإشعارات. حاول مرة أخرى.");
+    } catch {
+      setMarkAllError("تعذّر تحديث الإشعارات. تحقق من اتصالك، ثم حاول مرة أخرى.");
     } finally {
       setIsMarkingAll(false);
     }
@@ -45,6 +58,7 @@ export function NotificationCenter({ initialNotifications }: { initialNotificati
         <div><h1 className="text-h1 text-neutral-900">الإشعارات</h1><p className="mt-1 text-body-sm text-secondary">{unreadCount ? `الإشعارات غير المقروءة: ${unreadCount}` : "اطلعت على جميع الإشعارات"}</p></div>
         <Button type="button" variant="outline" size="sm" onClick={markAll} isLoading={isMarkingAll} disabled={!unreadCount}><CheckCheck className="h-4 w-4" />تحديد الكل كمقروء</Button>
       </div>
+      {markAllError ? <InlineFeedback message={markAllError} className="mt-3 max-w-md" /> : null}
       <div className="mt-5 inline-flex rounded-md bg-neutral-100 p-1" role="tablist" aria-label="تصفية الإشعارات">
         <FilterButton active={filter === "all"} onClick={() => setFilter("all")}>الكل</FilterButton>
         <FilterButton active={filter === "unread"} onClick={() => setFilter("unread")}>غير المقروءة</FilterButton>
@@ -57,6 +71,7 @@ export function NotificationCenter({ initialNotifications }: { initialNotificati
                 <span className="min-w-0"><span className="block text-body-sm font-semibold text-neutral-800">{notification.title}</span><span className="mt-1 block break-words text-body-sm text-secondary">{notification.body}</span><span className="mt-2 block text-caption text-neutral-400">{formatDateArabic(notification.createdAt)}</span></span>
                 {!notification.isRead && <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary-600" />}
               </button>
+              {itemErrorId === notification.id ? <InlineFeedback message="تعذّر فتح الإشعار. حاول مرة أخرى." className="mx-4 mb-4" /> : null}
             </Card>
           ))}
         </div>

@@ -2,11 +2,17 @@ import { eq } from "drizzle-orm";
 import { USER_ROLES } from "@/lib/constants";
 import { db } from "@/lib/db";
 import { withDatabaseRetry } from "@/lib/db/retry";
-import { applicantProfiles, organizationProfiles } from "@/lib/db/schema";
+import { applicantProfiles, organizationProfiles, users } from "@/lib/db/schema";
 import { safeRedirectForRole } from "./redirects";
 import type { Session } from "./config";
 
 export async function getPostAuthPath(session: Session, requestedPath?: string | null) {
+  const account = await withDatabaseRetry(() => db.query.users.findFirst({
+    columns: { isRestricted: true },
+    where: eq(users.id, session.user.id),
+  }));
+  if (account?.isRestricted) return "/account-restricted";
+
   if (session.user.role === USER_ROLES.ADMIN) {
     return safeRedirectForRole(requestedPath, USER_ROLES.ADMIN) ?? "/admin/dashboard";
   }

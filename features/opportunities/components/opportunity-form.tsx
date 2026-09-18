@@ -11,6 +11,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { useToast } from "@/hooks/use-toast";
 import { OPPORTUNITY_TYPES, OPPORTUNITY_TYPE_LABELS, WORK_MODE_LABELS, WORK_MODES } from "@/lib/constants";
 import type { OpportunityType } from "@/lib/constants";
+import { InlineFeedback } from "@/components/shared/inline-feedback";
 
 interface Field {
   id: string;
@@ -36,6 +37,7 @@ export function OpportunityForm({ availableFields, lockedType, replacesOpportuni
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [formError, setFormError] = React.useState<string | null>(null);
 
   const [type, setType] = React.useState<OpportunityType>(lockedType ?? OPPORTUNITY_TYPES.JOB);
   const [title, setTitle] = React.useState("");
@@ -68,6 +70,7 @@ export function OpportunityForm({ availableFields, lockedType, replacesOpportuni
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsSubmitting(true);
+    setFormError(null);
 
     const basePayload = {
       type,
@@ -110,7 +113,7 @@ export function OpportunityForm({ availableFields, lockedType, replacesOpportuni
           result.error === "OPPORTUNITY_ALREADY_CLOSED"
             ? "هذه الفٌرصة مغلقة بالفعل ولا يمكن استبدالها"
             : result.message ?? "تحقق من البيانات المدخلة";
-        toast({ variant: "error", title: "تعذّر حفظ الفٌرصة", description: message });
+        setFormError(message);
         return;
       }
 
@@ -120,6 +123,8 @@ export function OpportunityForm({ availableFields, lockedType, replacesOpportuni
       });
       router.push("/organization/opportunities");
       router.refresh();
+    } catch {
+      setFormError("تعذّر حفظ الفٌرصة. تحقق من اتصالك، ثم حاول مرة أخرى.");
     } finally {
       setIsSubmitting(false);
     }
@@ -295,6 +300,7 @@ export function OpportunityForm({ availableFields, lockedType, replacesOpportuni
         </div>
       )}
 
+      {formError ? <InlineFeedback title="تعذّر حفظ الفٌرصة" message={formError} /> : null}
       <Button type="submit" size="lg" isLoading={isSubmitting} className="mt-2">
         {replacesOpportunityId ? "إغلاق الفٌرصة السابقة ونشر البديلة" : "نشر الفٌرصة"}
       </Button>

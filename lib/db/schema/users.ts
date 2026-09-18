@@ -75,6 +75,7 @@ export const users = pgTable("users", {
   role: userRoleEnum("role").notNull(),
 
   isActive: boolean("is_active").notNull().default(false),
+  isRestricted: boolean("is_restricted").notNull().default(false),
 
   createdAt: timestamp("created_at", {
     withTimezone: true,

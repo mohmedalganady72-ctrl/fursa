@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { OrganizationProfile } from "@/lib/db/schema";
 import { FileUploadDropzone } from "@/components/shared/file-upload-dropzone";
 import { clearPostProfileRedirect } from "@/lib/firebase/auth-flow";
+import { InlineFeedback } from "@/components/shared/inline-feedback";
 
 const ORG_TYPE_OPTIONS = [
   { value: "company", label: "شركة" },
@@ -31,6 +32,8 @@ export function OrganizationProfileForm({ initialProfile }: { initialProfile?: P
   const [activityDescription, setActivityDescription] = React.useState(initialProfile?.activityDescription ?? "");
   const [logoFile, setLogoFile] = React.useState<File | null>(null);
   const [logoPreview, setLogoPreview] = React.useState<string | undefined>(initialProfile?.logoUrl ?? undefined);
+  const [formError, setFormError] = React.useState<string | null>(null);
+  const [logoError, setLogoError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (!logoFile) { setLogoPreview(initialProfile?.logoUrl ?? undefined); return; }
@@ -42,6 +45,8 @@ export function OrganizationProfileForm({ initialProfile }: { initialProfile?: P
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsSubmitting(true);
+    setFormError(null);
+    setLogoError(null);
 
     try {
       let logoUrl = initialProfile?.logoUrl ?? undefined;
@@ -50,7 +55,7 @@ export function OrganizationProfileForm({ initialProfile }: { initialProfile?: P
         const uploadResponse = await fetch("/api/uploads", { method: "POST", body: upload });
         const uploadResult = await uploadResponse.json().catch(() => ({ message: "تعذّر قراءة استجابة الخادم. حاول مرة أخرى." }));
         if (!uploadResponse.ok) {
-          toast({ variant: "error", title: "تعذّر رفع الشعار", description: uploadResult.message ?? uploadResult.error });
+          setLogoError(uploadResult.message ?? uploadResult.error ?? "تعذّر رفع الشعار. اختر ملفًا آخر وحاول مجددًا.");
           return;
         }
         logoUrl = uploadResult.data.url;
@@ -63,7 +68,7 @@ export function OrganizationProfileForm({ initialProfile }: { initialProfile?: P
 
       if (!response.ok) {
         const result = await response.json().catch(() => ({ message: "تعذّر قراءة استجابة الخادم. حاول مرة أخرى." }));
-        toast({ variant: "error", title: "تعذّر حفظ الملف", description: result.message });
+        setFormError(result.message ?? "تحقق من البيانات، ثم حاول مرة أخرى.");
         return;
       }
 
@@ -72,6 +77,8 @@ export function OrganizationProfileForm({ initialProfile }: { initialProfile?: P
       sessionStorage.removeItem("fursa-post-profile-redirect");
       router.push("/organization/dashboard");
       router.refresh();
+    } catch {
+      setFormError("تعذّر حفظ ملف الجهة. تحقق من اتصالك، ثم حاول مرة أخرى.");
     } finally {
       setIsSubmitting(false);
     }
@@ -91,7 +98,8 @@ export function OrganizationProfileForm({ initialProfile }: { initialProfile?: P
         </Avatar>
         <div className="flex-1"><FileUploadDropzone accept="image/png,image/jpeg,image/webp" maxSizeMb={5}
           label="شعار الجهة" helperText="PNG أو JPEG أو WebP، حتى 5 ميجابايت" compact
-          selectedFile={logoFile} onFileSelected={setLogoFile} /></div>
+          selectedFile={logoFile} onFileSelected={(file) => { setLogoFile(file); setLogoError(null); }} />
+          {logoError ? <p role="alert" className="mt-2 text-body-sm text-danger-500">{logoError}</p> : null}</div>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -127,6 +135,7 @@ export function OrganizationProfileForm({ initialProfile }: { initialProfile?: P
         />
       </div>
 
+      {formError ? <InlineFeedback title="تعذّر حفظ ملف الجهة" message={formError} /> : null}
       <Button type="submit" size="lg" isLoading={isSubmitting} className="mt-2">
         حفظ ملف الجهة
       </Button>

@@ -15,6 +15,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { InlineFeedback } from "@/components/shared/inline-feedback";
 
 /** أزرار اعتماد/رفض طلب انضمام جهة — الرفض يفتح نافذة لسبب اختياري يُعرَض للجهة */
 export function JoinRequestActions({ organizationProfileId }: { organizationProfileId: string }) {
@@ -23,9 +24,11 @@ export function JoinRequestActions({ organizationProfileId }: { organizationProf
   const [isProcessing, setIsProcessing] = React.useState(false);
   const [rejectionReason, setRejectionReason] = React.useState("");
   const [isRejectDialogOpen, setIsRejectDialogOpen] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   async function submitDecision(decision: "approve" | "reject") {
     setIsProcessing(true);
+    setErrorMessage(null);
     try {
       const response = await fetch(`/api/organizations/${organizationProfileId}/approve`, {
         method: "PATCH",
@@ -35,7 +38,7 @@ export function JoinRequestActions({ organizationProfileId }: { organizationProf
 
       const result = await response.json().catch(() => null);
       if (!response.ok) {
-        toast({ variant: "error", title: "تعذّر تنفيذ الإجراء", description: result?.message ?? result?.error ?? "تحقق من اتصالك بالإنترنت وحاول مرة أخرى." });
+        setErrorMessage(result?.message ?? result?.error ?? "تحقق من اتصالك بالإنترنت وحاول مرة أخرى.");
         return;
       }
 
@@ -43,15 +46,15 @@ export function JoinRequestActions({ organizationProfileId }: { organizationProf
       setIsRejectDialogOpen(false);
       router.refresh();
     } catch (error) {
-      toast({ variant: "error", title: "تعذّر تنفيذ الإجراء", description: error instanceof Error ? error.message : "تحقق من اتصالك وحاول مرة أخرى." });
+      setErrorMessage(error instanceof Error ? error.message : "تحقق من اتصالك وحاول مرة أخرى.");
     } finally {
       setIsProcessing(false);
     }
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <Button size="sm" onClick={() => submitDecision("approve")} isLoading={isProcessing}>
+    <div className="flex flex-col items-end gap-2">
+      <div className="flex items-center gap-2"><Button size="sm" onClick={() => submitDecision("approve")} isLoading={isProcessing}>
         <Check className="h-4 w-4" /> اعتماد
       </Button>
 
@@ -69,6 +72,7 @@ export function JoinRequestActions({ organizationProfileId }: { organizationProf
             <Label htmlFor="reason">سبب الرفض (اختياري، يُعرَض للجهة)</Label>
             <Textarea id="reason" value={rejectionReason} onChange={(e) => setRejectionReason(e.target.value)} />
           </div>
+          {errorMessage ? <InlineFeedback title="تعذّر رفض الطلب" message={errorMessage} className="mt-4" /> : null}
           <DialogFooter>
             <Button variant="ghost" onClick={() => setIsRejectDialogOpen(false)}>إلغاء</Button>
             <Button variant="danger" onClick={() => submitDecision("reject")} isLoading={isProcessing}>
@@ -77,6 +81,8 @@ export function JoinRequestActions({ organizationProfileId }: { organizationProf
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      </div>
+      {errorMessage && !isRejectDialogOpen ? <InlineFeedback title="تعذّر اعتماد الجهة" message={errorMessage} className="max-w-sm" /> : null}
     </div>
   );
 }

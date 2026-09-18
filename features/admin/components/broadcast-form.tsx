@@ -7,20 +7,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import { InlineFeedback } from "@/components/shared/inline-feedback";
 
 /** نموذج إرسال إشعار موجّه لفئة كاملة من المستخدمين (راجع حالات الاستخدام § 10) */
 export function BroadcastForm() {
-  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [audience, setAudience] = React.useState("both");
   const [title, setTitle] = React.useState("");
   const [body, setBody] = React.useState("");
   const [sendEmail, setSendEmail] = React.useState(false);
+  const [feedback, setFeedback] = React.useState<{ variant: "error" | "success" | "info"; title: string; message: string } | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsSubmitting(true);
+    setFeedback(null);
 
     try {
       const response = await fetch("/api/admin/broadcast", {
@@ -32,19 +33,19 @@ export function BroadcastForm() {
       const result = await response.json().catch(() => null);
 
       if (!response.ok) {
-        toast({ variant: "error", title: "تعذّر إرسال الإشعار", description: result?.message ?? result?.error ?? "تحقق من اتصالك وحاول مرة أخرى." });
+        setFeedback({ variant: "error", title: "تعذّر إرسال الإشعار", message: result?.message ?? result?.error ?? "تحقق من اتصالك وحاول مرة أخرى." });
         return;
       }
 
-      toast({
+      setFeedback({
         variant: result.data.emailFailureCount ? "info" : "success",
         title: "أُرسل الإشعار بنجاح",
-        description: result.data.emailFailureCount ? `عدد المستلمين: ${result.data.recipientCount}. تعذّر إرسال نسخة البريد إلى ${result.data.emailFailureCount} من المستخدمين.` : `عدد المستلمين: ${result.data.recipientCount}.`,
+        message: result.data.emailFailureCount ? `عدد المستلمين: ${result.data.recipientCount}. تعذّر إرسال نسخة البريد إلى ${result.data.emailFailureCount} من المستخدمين.` : `عدد المستلمين: ${result.data.recipientCount}.`,
       });
       setTitle("");
       setBody("");
     } catch (error) {
-      toast({ variant: "error", title: "تعذّر إرسال الإشعار", description: error instanceof Error ? error.message : "تحقق من اتصالك وحاول مرة أخرى." });
+      setFeedback({ variant: "error", title: "تعذّر إرسال الإشعار", message: error instanceof Error ? error.message : "تحقق من اتصالك وحاول مرة أخرى." });
     } finally {
       setIsSubmitting(false);
     }
@@ -79,6 +80,7 @@ export function BroadcastForm() {
         <Label htmlFor="sendEmail">إرسال نسخة عبر البريد الإلكتروني أيضًا</Label>
       </div>
 
+      {feedback ? <InlineFeedback variant={feedback.variant} title={feedback.title} message={feedback.message} /> : null}
       <Button type="submit" size="lg" isLoading={isSubmitting} className="mt-2">
         إرسال الإشعار
       </Button>

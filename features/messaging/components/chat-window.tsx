@@ -7,7 +7,7 @@ import { ArrowRight, CheckCheck, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast";
+import { InlineFeedback } from "@/components/shared/inline-feedback";
 import { useRealtimeChat } from "../hooks/use-realtime-chat";
 import type { Message } from "@/lib/db/schema";
 
@@ -30,12 +30,12 @@ export function ChatWindow({
   participantName,
   opportunityTitle,
 }: ChatWindowProps) {
-  const { toast } = useToast();
   const pathname = usePathname();
   const messagesPath = pathname.startsWith("/organization") ? "/organization/messages" : "/applicant/messages";
   const { messages, appendOptimisticMessage } = useRealtimeChat(conversationId, initialMessages);
   const [draft, setDraft] = React.useState("");
   const [isSending, setIsSending] = React.useState(false);
+  const [sendError, setSendError] = React.useState<string | null>(null);
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -48,6 +48,7 @@ export function ChatWindow({
 
     setIsSending(true);
     setDraft("");
+    setSendError(null);
     try {
       const response = await fetch(`/api/messages/${conversationId}`, {
         method: "POST",
@@ -59,7 +60,7 @@ export function ChatWindow({
       appendOptimisticMessage(result.data);
     } catch (error) {
       setDraft(content);
-      toast({ variant: "error", title: "لم تُرسل الرسالة", description: error instanceof Error ? error.message : "تحقق من اتصالك وحاول مرة أخرى." });
+      setSendError(error instanceof Error ? error.message : "تحقق من اتصالك وحاول مرة أخرى.");
     } finally {
       setIsSending(false);
     }
@@ -117,6 +118,7 @@ export function ChatWindow({
           {!isSending && <Send className="h-4 w-4 rtl-flip" />}
         </Button>
       </div>
+      {sendError ? <InlineFeedback title="لم تُرسل الرسالة" message={sendError} className="mx-3 mt-2" /> : null}
       <span className="px-3 pb-2 text-start text-[10px] text-neutral-400" aria-live="polite">{draft.length}/2000</span>
     </div>
   );

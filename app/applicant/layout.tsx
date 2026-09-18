@@ -46,6 +46,7 @@ export default async function ApplicantLayout({
   if (!session) {
     redirect("/login");
   }
+  if (session.user.isRestricted) redirect("/account-restricted");
   if (!isApplicant(session)) redirect(await getPostAuthPath(session));
 
   const profile = await withDatabaseRetry(() =>

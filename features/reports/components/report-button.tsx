@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { InlineFeedback } from "@/components/shared/inline-feedback";
 import { useToast } from "@/hooks/use-toast";
 
 const REASONS = {
@@ -23,9 +24,11 @@ export function ReportButton({ targetId, targetLabel }: { targetId: string; targ
   const [reason, setReason] = React.useState<keyof typeof REASONS>("misleading");
   const [details, setDetails] = React.useState("");
   const [pending, setPending] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   async function submit() {
     setPending(true);
+    setErrorMessage(null);
     try {
       const description = `${REASONS[reason]}${details.trim() ? `\n${details.trim()}` : ""}`;
       const response = await fetch("/api/reports", {
@@ -39,7 +42,7 @@ export function ReportButton({ targetId, targetLabel }: { targetId: string; targ
       setOpen(false);
       setDetails("");
     } catch (error) {
-      toast({ variant: "error", title: "تعذّر إرسال البلاغ", description: error instanceof Error ? error.message : undefined });
+      setErrorMessage(error instanceof Error ? error.message : "تعذّر إرسال البلاغ. حاول مرة أخرى.");
     } finally {
       setPending(false);
     }
@@ -53,6 +56,7 @@ export function ReportButton({ targetId, targetLabel }: { targetId: string; targ
         <div className="space-y-2"><Label>سبب البلاغ</Label><Select value={reason} onValueChange={(value) => setReason(value as keyof typeof REASONS)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{Object.entries(REASONS).map(([value, label]) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectContent></Select></div>
         <div className="space-y-2"><Label htmlFor="report-details">تفاصيل إضافية (اختياري)</Label><Textarea id="report-details" value={details} onChange={(event) => setDetails(event.target.value)} maxLength={400} placeholder="أضف معلومات تساعد فريق الإدارة على مراجعة البلاغ." /></div>
       </div>
+      {errorMessage ? <InlineFeedback title="تعذّر إرسال البلاغ" message={errorMessage} className="mt-4" /> : null}
       <DialogFooter><Button type="button" variant="ghost" onClick={() => setOpen(false)}>إلغاء</Button><Button type="button" variant="danger" onClick={submit} isLoading={pending}>إرسال البلاغ</Button></DialogFooter>
     </DialogContent>
   </Dialog>;

@@ -5,6 +5,8 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { listAllApplicants } from "@/features/admin/services/admin.service";
 import { formatDateArabic } from "@/lib/utils";
 import { AdminSearch } from "@/features/admin/components/admin-search";
+import { Badge } from "@/components/ui/badge";
+import { AccountRestrictionButton } from "@/features/admin/components/account-restriction-button";
 
 /** قائمة كل الباحثين عن فٌرصة المسجَّلين في المنصة (راجع حالات الاستخدام § "عرض المستخدمين الباحثين عن فٌرص") */
 export default async function AdminApplicantsPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
@@ -24,18 +26,24 @@ export default async function AdminApplicantsPage({ searchParams }: { searchPara
       ) : (
         <div className="mt-6 flex flex-col gap-2">
           {applicants.map((applicant) => (
-            <Card key={applicant.id} className="flex items-center gap-3 p-4">
+            <Card key={applicant.id} className="flex flex-wrap items-center gap-3 p-4">
               <Avatar>
                 <AvatarImage src={applicant.avatarUrl ?? undefined} />
                 <AvatarFallback>{applicant.fullName.charAt(0)}</AvatarFallback>
               </Avatar>
-              <div className="flex-1">
+              <div className="min-w-48 flex-1">
                 <p className="text-body-sm font-semibold text-neutral-800">{applicant.fullName}</p>
                 <p className="text-caption text-secondary">{applicant.user.email} · {applicant.city}</p>
               </div>
+              {applicant.user.isRestricted ? <Badge variant="danger">مقيّد</Badge> : <Badge variant="success">مُمكّن</Badge>}
               <p className="text-caption text-neutral-400">
                 انضم في {formatDateArabic(applicant.createdAt)}
               </p>
+              <AccountRestrictionButton
+                userId={applicant.user.id}
+                userName={applicant.fullName}
+                isRestricted={applicant.user.isRestricted}
+              />
             </Card>
           ))}
         </div>

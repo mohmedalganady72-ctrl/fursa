@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { InlineFeedback } from "@/components/shared/inline-feedback";
 
 /** نموذج إنشاء حساب مدير جديد من داخل لوحة التحكم (راجع حالات الاستخدام § "إنشاء حساب مدير") */
 export function CreateAdminForm() {
@@ -17,11 +18,15 @@ export function CreateAdminForm() {
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [displayName, setDisplayName] = React.useState("");
+  const [formError, setFormError] = React.useState<string | null>(null);
+  const [confirmError, setConfirmError] = React.useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setFormError(null);
+    setConfirmError(null);
     if (password !== confirmPassword) {
-      toast({ variant: "error", title: "كلمتا المرور غير متطابقتين" });
+      setConfirmError("كلمتا المرور غير متطابقتين.");
       return;
     }
     setIsSubmitting(true);
@@ -36,7 +41,7 @@ export function CreateAdminForm() {
       const result = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        toast({ variant: "error", title: "تعذّر إنشاء الحساب", description: result.message ?? "تحقق من البيانات وحاول مرة أخرى." });
+        setFormError(result.message ?? "تحقق من البيانات، ثم حاول مرة أخرى.");
         return;
       }
 
@@ -68,8 +73,10 @@ export function CreateAdminForm() {
       </div>
       <div className="flex flex-col gap-2">
         <Label htmlFor="confirmPassword">تأكيد كلمة المرور</Label>
-        <PasswordInput id="confirmPassword" autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required minLength={8} />
+        <PasswordInput id="confirmPassword" autoComplete="new-password" value={confirmPassword} onChange={(e) => { setConfirmPassword(e.target.value); setConfirmError(null); }} required minLength={8} aria-invalid={Boolean(confirmError)} aria-describedby={confirmError ? "create-admin-confirm-error" : undefined} />
+        {confirmError ? <p id="create-admin-confirm-error" role="alert" className="text-body-sm text-danger-500">{confirmError}</p> : null}
       </div>
+      {formError ? <InlineFeedback title="تعذّر إنشاء الحساب" message={formError} /> : null}
       <Button type="submit" isLoading={isSubmitting} className="mt-2">
         إنشاء حساب المدير
       </Button>

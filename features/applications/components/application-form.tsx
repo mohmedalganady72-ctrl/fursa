@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import type { OpportunityType } from "@/lib/constants";
+import { InlineFeedback } from "@/components/shared/inline-feedback";
 
 interface ApplicationFormProps {
   opportunityId: string;
@@ -29,6 +30,8 @@ export function ApplicationForm({ opportunityId, opportunityType, requiresResume
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [resumeFile, setResumeFile] = React.useState<File | null>(null);
+  const [formError, setFormError] = React.useState<string | null>(null);
+  const [resumeError, setResumeError] = React.useState<string | null>(null);
 
   const [whySuitableText, setWhySuitableText] = React.useState("");
   const [academicId, setAcademicId] = React.useState("");
@@ -39,6 +42,8 @@ export function ApplicationForm({ opportunityId, opportunityType, requiresResume
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsSubmitting(true);
+    setFormError(null);
+    setResumeError(null);
 
     try {
       let resumeUrl: string | undefined;
@@ -49,7 +54,7 @@ export function ApplicationForm({ opportunityId, opportunityType, requiresResume
         const uploadResponse = await fetch("/api/uploads", { method: "POST", body: upload });
         const uploadResult = await uploadResponse.json().catch(() => ({ message: "تعذّر قراءة استجابة الخادم. حاول مرة أخرى." }));
         if (!uploadResponse.ok) {
-          toast({ variant: "error", title: "تعذّر رفع السيرة الذاتية", description: uploadResult.message ?? uploadResult.error });
+          setResumeError(uploadResult.message ?? uploadResult.error ?? "تعذّر رفع السيرة الذاتية. اختر ملفًا آخر وحاول مجددًا.");
           return;
         }
         resumeUrl = uploadResult.data.path;
@@ -70,12 +75,14 @@ export function ApplicationForm({ opportunityId, opportunityType, requiresResume
       const result = await response.json().catch(() => ({ message: "تعذّر قراءة استجابة الخادم. حاول مرة أخرى." }));
 
       if (!response.ok) {
-        toast({ variant: "error", title: "تعذّر إرسال الطلب", description: result.message ?? result.error });
+        setFormError(result.message ?? result.error ?? "تحقق من البيانات، ثم حاول مرة أخرى.");
         return;
       }
 
       toast({ variant: "success", title: "أُرسل طلبك بنجاح" });
       router.push("/applicant/applications");
+    } catch {
+      setFormError("تعذّر إرسال الطلب. تحقق من اتصالك، ثم حاول مرة أخرى.");
     } finally {
       setIsSubmitting(false);
     }
@@ -149,12 +156,14 @@ export function ApplicationForm({ opportunityId, opportunityType, requiresResume
             type="file"
             accept="application/pdf"
             className="hidden"
-            onChange={(e) => setResumeFile(e.target.files?.[0] ?? null)}
+            onChange={(e) => { setResumeFile(e.target.files?.[0] ?? null); setResumeError(null); }}
             required={opportunityType === "job"}
           />
+          {resumeError ? <p role="alert" className="text-body-sm text-danger-500">{resumeError}</p> : null}
         </div>
       )}
 
+      {formError ? <InlineFeedback title="تعذّر إرسال الطلب" message={formError} /> : null}
       <Button type="submit" size="lg" isLoading={isSubmitting} className="mt-2">
         إرسال الطلب
       </Button>

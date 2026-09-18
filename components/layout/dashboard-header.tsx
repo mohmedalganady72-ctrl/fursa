@@ -23,6 +23,11 @@ export function DashboardHeader({ basePath, initialNotifications, initialMessage
       lastRefreshAt.current = Date.now();
       try {
         const response = await fetch("/api/navigation-counts", { cache: "no-store" });
+        if (response.status === 403) {
+          const result = await response.json().catch(() => ({}));
+          if (result.error === "ACCOUNT_RESTRICTED") window.location.replace("/account-restricted");
+          return;
+        }
         if (response.ok) setCounts((await response.json()).data);
       } finally {
         isRefreshing.current = false;
