@@ -14,6 +14,7 @@ function getAuthBaseUrl() {
   return vercelHost.startsWith("http") ? vercelHost : `https://${vercelHost}`;
 }
 
+const CANONICAL_PRODUCTION_ORIGIN = "https://fursa-delta.vercel.app";
 const authBaseUrl = getAuthBaseUrl();
 const productionHost = process.env.VERCEL_PROJECT_PRODUCTION_URL;
 const previewHostPattern = productionHost?.endsWith(".vercel.app")
@@ -21,7 +22,12 @@ const previewHostPattern = productionHost?.endsWith(".vercel.app")
   : undefined;
 const authBaseUrlConfig = process.env.VERCEL
   ? {
-      allowedHosts: [productionHost, process.env.VERCEL_URL, previewHostPattern].filter(
+      allowedHosts: [
+        new URL(CANONICAL_PRODUCTION_ORIGIN).host,
+        productionHost,
+        process.env.VERCEL_URL,
+        previewHostPattern,
+      ].filter(
         (host): host is string => Boolean(host),
       ),
       fallback: authBaseUrl,
@@ -133,6 +139,16 @@ export const auth = betterAuth({
     }),
   ],
 
+  // Better Auth validates browser Origin headers independently from baseURL.
+  // Include the stable production alias as well as this deployment's Vercel hosts.
+  trustedOrigins: [
+    CANONICAL_PRODUCTION_ORIGIN,
+    new URL(env.BETTER_AUTH_URL).origin,
+    new URL(authBaseUrl).origin,
+    productionHost ? `https://${productionHost}` : undefined,
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined,
+    previewHostPattern ? `https://${previewHostPattern}` : undefined,
+  ].filter((origin): origin is string => Boolean(origin)),
   baseURL: authBaseUrlConfig,
   secret: env.BETTER_AUTH_SECRET,
 });
