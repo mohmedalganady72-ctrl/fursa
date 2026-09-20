@@ -17,14 +17,16 @@ import { getDailyApplicationLimitPerType } from "@/features/admin/services/syste
  */
 export async function assertDailyApplicationLimitNotExceeded(
   applicantProfileId: string,
-  opportunityType: OpportunityType
+  opportunityType: OpportunityType,
+  client: Pick<typeof db, "select" | "query"> = db
 ): Promise<void> {
-  const dailyLimit = await getDailyApplicationLimitPerType();
+  const dailyLimit = await getDailyApplicationLimitPerType(client);
 
-  const startOfDay = new Date();
-  startOfDay.setHours(0, 0, 0, 0);
+  const riyadhOffset = 3 * 60 * 60 * 1000;
+  const localDay = new Date(Date.now() + riyadhOffset).toISOString().slice(0, 10);
+  const startOfDay = new Date(`${localDay}T00:00:00+03:00`);
 
-  const submittedTodayRows = await db
+  const submittedTodayRows = await client
     .select({ value: count() })
     .from(applications)
     .innerJoin(opportunities, eq(applications.opportunityId, opportunities.id))

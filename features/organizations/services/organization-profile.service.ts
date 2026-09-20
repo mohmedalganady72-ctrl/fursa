@@ -9,7 +9,8 @@ import type { OrganizationProfileInput } from "../validators/organization-profil
  * الحساب يبقى isApproved=false حتى يوافق المدير صراحة.
  */
 export async function createOrganizationProfile(userId: string, input: OrganizationProfileInput) {
-  const [created] = await db
+  return db.transaction(async (tx) => {
+  const [created] = await tx
     .insert(organizationProfiles)
     .values({
       userId,
@@ -17,14 +18,16 @@ export async function createOrganizationProfile(userId: string, input: Organizat
       organizationType: input.organizationType,
       city: input.city,
       activityDescription: input.activityDescription,
+      logoUrl: input.logoUrl,
     })
     .returning();
 
   if (!created) throw new Error("ORGANIZATION_PROFILE_CREATE_FAILED");
 
-  await db.insert(organizationJoinRequests).values({ organizationProfileId: created.id });
+  await tx.insert(organizationJoinRequests).values({ organizationProfileId: created.id });
 
   return created;
+  });
 }
 
 export async function updateOrganizationProfile(

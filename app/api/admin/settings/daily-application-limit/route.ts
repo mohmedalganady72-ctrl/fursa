@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { isAdmin } from "@/features/auth/services/permissions";
 import {
   getDailyApplicationLimitPerType,
@@ -9,12 +9,16 @@ import {
 
 /** GET/PATCH لقيمة الحد اليومي للتقديم — إعداد قابل للتعديل من لوحة المدير (§ 5.12) */
 export async function GET() {
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
+  if (!isAdmin(session)) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   const value = await getDailyApplicationLimitPerType();
   return NextResponse.json({ data: { value } });
 }
 
 export async function PATCH(request: Request) {
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   if (!isAdmin(session)) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }

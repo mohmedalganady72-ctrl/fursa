@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { isAdmin } from "@/features/auth/services/permissions";
 import { resolveReport } from "@/features/messaging/services/reports.service";
 import { db } from "@/lib/db";
@@ -10,7 +10,8 @@ import { admins } from "@/lib/db/schema";
 const schema = z.object({ status: z.enum(["reviewed", "dismissed"]) });
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ reportId: string }> }) {
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   if (!isAdmin(session)) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   const parsed = schema.safeParse(await request.json());
   if (!parsed.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });

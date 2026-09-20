@@ -3,7 +3,8 @@ import { getServerSession } from "@/lib/auth/session";
 import { reportSchema } from "@/features/messaging/validators/report.schema";
 import { createReport } from "@/features/messaging/services/reports.service";
 import { db } from "@/lib/db";
-import { users } from "@/lib/db/schema";
+import { users, messages, opportunities } from "@/lib/db/schema";
+import { getAuthorizedConversation } from "@/features/messaging/services/messages.service";
 import { eq } from "drizzle-orm";
 import { USER_ROLES } from "@/lib/constants";
 
@@ -30,6 +31,21 @@ export async function POST(request: Request) {
     const validPair = (session.user.role === USER_ROLES.APPLICANT && target.role === USER_ROLES.ORGANIZATION)
       || (session.user.role === USER_ROLES.ORGANIZATION && target.role === USER_ROLES.APPLICANT);
     if (!validPair) return NextResponse.json({ error: "FORBIDDEN", message: "لا يمكن إرسال هذا البلاغ" }, { status: 403 });
+  }
+
+  if (parsed.data.targetType === "opportunity") {
+    const target = await db.query.opportunities.findFirst({ columns: { id: true }, where: eq(opportunities.id, parsed.data.targetId) });
+    if (!target) return NextResponse.json({ error: "TARGET_NOT_FOUND" }, { status: 404 });
+  }
+  if (parsed.data.targetType === "message") {
+    const target = await db.query.messages.findFirst({ columns: { conversationId: true }, where: eq(messages.id, parsed.data.targetId) });
+    if (!target) return NextResponse.json({ error: "TARGET_NOT_FOUND" }, { status: 404 });
+    try {
+      await getAuthorizedConversation(target.conversationId, session.user.id);
+    } catch (error) {
+      if (error instanceof Error && error.message === "FORBIDDEN") return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+      throw error;
+    }
   }
 
   try {

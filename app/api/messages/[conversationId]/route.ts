@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import {
   sendMessage,
   listConversationMessages,
@@ -12,7 +12,8 @@ export async function GET(
   { params }: { params: Promise<{ conversationId: string }> }
 ) {
   const { conversationId } = await params;
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
 
   try {
     const messages = await listConversationMessages(conversationId, session.user.id);
@@ -30,7 +31,8 @@ export async function POST(
   { params }: { params: Promise<{ conversationId: string }> }
 ) {
   const { conversationId } = await params;
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
 
   const { content } = await request.json().catch(() => ({ content: null }));
   if (!content || typeof content !== "string" || content.trim().length === 0) {

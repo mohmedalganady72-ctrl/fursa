@@ -39,7 +39,7 @@ export function AdminLoginForm() {
 
       const destination = await resolvePostAuthPath();
       if (!destination.startsWith("/admin/")) {
-        await authClient.signOut();
+        await authClient.signOut({ disableRedirect: true, fetchOptions: { timeout: 20_000 } });
         setFeedback("هذا الحساب غير مخوّل للدخول إلى لوحة إدارة المنصة.");
         return;
       }

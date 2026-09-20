@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { isAdmin } from "@/features/auth/services/permissions";
 import { setUserRestriction } from "@/features/admin/services/admin.service";
 import { db } from "@/lib/db";
@@ -17,7 +17,8 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ userId: string }> },
 ) {
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   if (!isAdmin(session)) {
     return NextResponse.json({ message: "لا تملك صلاحية تنفيذ هذا الإجراء." }, { status: 403 });
   }

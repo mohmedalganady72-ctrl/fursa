@@ -19,7 +19,7 @@ export const getServerSession = cache(async () => {
 
   // لا نعتمد على نسخة المستخدم المخزنة مؤقتًا في الكوكيز للحالات الأمنية.
   const accountState = await withDatabaseRetry(() => db.query.users.findFirst({
-    columns: { isActive: true, isRestricted: true },
+    columns: { isActive: true, isRestricted: true, role: true },
     where: eq(users.id, session.user.id),
   }));
   if (!accountState) return null;

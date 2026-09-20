@@ -57,10 +57,8 @@ export default async function ApplicantLayout({
     return <ProfileCompletionGate complete={false} profilePath="/applicant/profile">{children}</ProfileCompletionGate>;
   }
 
-  const [notificationCount, messageCount] = await withDatabaseRetry(() => Promise.all([
-    getUnreadNotificationCount(session.user.id),
-    getUnreadMessageCount(session.user.id),
-  ]));
+  const notificationCount = await withDatabaseRetry(() => getUnreadNotificationCount(session.user.id));
+  const messageCount = await withDatabaseRetry(() => getUnreadMessageCount(session.user.id));
   const applicantItems = APPLICANT_NAV_ITEMS.map((item) => item.icon === "messages" ? { ...item, badge: messageCount } : item);
   const sidebarItems = SIDEBAR_NAV_ITEMS.map((item) => item.icon === "messages" ? { ...item, badge: messageCount } : item);
 

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { isActiveOrganization } from "@/features/auth/services/permissions";
 import { opportunitySchema } from "@/features/opportunities/validators/opportunity.schema";
 import { opportunityFiltersSchema } from "@/features/opportunities/validators/opportunity-filters.schema";
@@ -10,6 +10,8 @@ import { eq } from "drizzle-orm";
 
 /** GET /api/opportunities?type=job&city=...&sortBy=... — قائمة عامة مفلترة (لا يتطلب تسجيل دخول) */
 export async function GET(request: Request) {
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   const { searchParams } = new URL(request.url);
   const parsed = opportunityFiltersSchema.safeParse(Object.fromEntries(searchParams));
 
@@ -23,7 +25,8 @@ export async function GET(request: Request) {
 
 /** POST /api/opportunities — إنشاء فٌرصة جديدة (جهة معتمدة ونشطة فقط) */
 export async function POST(request: Request) {
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   if (!isActiveOrganization(session)) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }

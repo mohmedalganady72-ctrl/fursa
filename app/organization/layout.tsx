@@ -68,10 +68,8 @@ export default async function OrganizationLayout({
     );
   }
 
-  const [notificationCount, messageCount] = await Promise.all([
-    getUnreadNotificationCount(session.user.id),
-    getUnreadMessageCount(session.user.id),
-  ]);
+  const notificationCount = await withDatabaseRetry(() => getUnreadNotificationCount(session.user.id));
+  const messageCount = await withDatabaseRetry(() => getUnreadMessageCount(session.user.id));
   const navItems = ORGANIZATION_NAV_ITEMS.map((item) => item.icon === "messages" ? { ...item, badge: messageCount } : item);
 
   return <ProfileCompletionGate complete profilePath="/organization/profile">

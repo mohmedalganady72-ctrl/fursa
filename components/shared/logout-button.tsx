@@ -19,8 +19,8 @@ export function LogoutButton({ showLabel = false, className }: { showLabel?: boo
     setPending(true);
     setErrorMessage(null);
     try {
-      const result = await authClient.signOut();
-      if (result.error) throw new Error(result.error.message ?? "تعذّر إنهاء الجلسة.");
+      const result = await authClient.signOut({ disableRedirect: true, fetchOptions: { timeout: 20_000 } });
+      if (result.error) throw new Error("تعذّر تسجيل الخروج. حاول مرة أخرى بعد لحظات.");
       await signOutFirebase(firebaseClientAuth).catch(() => undefined);
       clearVerificationContext();
       clearPostProfileRedirect();

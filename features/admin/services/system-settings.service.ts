@@ -13,8 +13,8 @@ export const SETTING_KEYS = {
  * هذا يبقي المشروع يعمل فورًا بعد db:migrate دون الحاجة لبيانات seed إضافية،
  * بينما يسمح لمدير المنصة بتجاوز القيمة الافتراضية لاحقًا دون نشر كود جديد.
  */
-export async function getDailyApplicationLimitPerType(): Promise<number> {
-  const setting = await db.query.systemSettings.findFirst({
+export async function getDailyApplicationLimitPerType(client: Pick<typeof db, "query"> = db): Promise<number> {
+  const setting = await client.query.systemSettings.findFirst({
     where: eq(systemSettings.key, SETTING_KEYS.DAILY_APPLICATION_LIMIT_PER_TYPE),
   });
 

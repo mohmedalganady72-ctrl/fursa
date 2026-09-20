@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { isApplicant } from "@/features/auth/services/permissions";
 import {
   saveOpportunity,
@@ -15,7 +15,8 @@ export async function POST(
   { params }: { params: Promise<{ opportunityId: string }> }
 ) {
   const { opportunityId } = await params;
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   if (!isApplicant(session)) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
@@ -35,7 +36,8 @@ export async function DELETE(
   { params }: { params: Promise<{ opportunityId: string }> }
 ) {
   const { opportunityId } = await params;
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   if (!isApplicant(session)) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
