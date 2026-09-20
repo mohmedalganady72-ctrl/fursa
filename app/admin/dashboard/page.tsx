@@ -5,7 +5,11 @@ import { getPlatformOverviewStats, getApplicationsTrend, getPlatformChartBreakdo
 
 /** الصفحة الرئيسية للوحة المدير — صورة شاملة عن صحة المنصة (راجع حالات الاستخدام § 10) */
 export default async function AdminDashboardPage() {
-  const [stats, trend, breakdowns] = await Promise.all([getPlatformOverviewStats(), getApplicationsTrend(), getPlatformChartBreakdowns()]);
+  // Vercel uses one pooled database connection per instance. Keep dashboard
+  // queries sequential so the first navigation after login cannot starve the pool.
+  const stats = await getPlatformOverviewStats();
+  const trend = await getApplicationsTrend();
+  const breakdowns = await getPlatformChartBreakdowns();
 
   return (
     <div>

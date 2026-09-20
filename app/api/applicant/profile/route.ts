@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { isApplicant } from "@/features/auth/services/permissions";
 import { applicantProfileSchema } from "@/features/applicant-profile/validators/applicant-profile.schema";
 import {
@@ -10,14 +10,16 @@ import {
 
 /** GET /api/applicant/profile — الملف الشخصي للمستخدم الحالي */
 export async function GET() {
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   const profile = await getApplicantProfileByUserId(session.user.id);
   return NextResponse.json({ data: profile });
 }
 
 /** PATCH /api/applicant/profile — إنشاء أو تحديث (upsert) بحسب وجود الملف مسبقًا */
 export async function PATCH(request: Request) {
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   if (!isApplicant(session)) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }

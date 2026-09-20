@@ -5,7 +5,8 @@ import type { ApplicantProfileInput } from "../validators/applicant-profile.sche
 
 /** يُنشئ الملف الشخصي لأول مرة (بعد التحقق من البريد مباشرة — راجع حالات الاستخدام § 2) */
 export async function createApplicantProfile(userId: string, input: ApplicantProfileInput) {
-  const [created] = await db
+  return db.transaction(async (tx) => {
+  const [created] = await tx
     .insert(applicantProfiles)
     .values({
       userId,
@@ -22,12 +23,13 @@ export async function createApplicantProfile(userId: string, input: ApplicantPro
   if (!created) throw new Error("APPLICANT_PROFILE_CREATE_FAILED");
 
   if (input.fieldIds.length > 0) {
-    await db.insert(applicantFields).values(
-      input.fieldIds.map((fieldId) => ({ applicantProfileId: created.id, fieldId }))
+    await tx.insert(applicantFields).values(
+      [...new Set(input.fieldIds)].map((fieldId) => ({ applicantProfileId: created.id, fieldId }))
     );
   }
 
   return created;
+  });
 }
 
 /**
@@ -39,7 +41,8 @@ export async function updateApplicantProfile(
   applicantProfileId: string,
   input: ApplicantProfileInput
 ) {
-  const [updated] = await db
+  return db.transaction(async (tx) => {
+  const [updated] = await tx
     .update(applicantProfiles)
     .set({
       fullName: input.fullName,
@@ -56,15 +59,16 @@ export async function updateApplicantProfile(
 
   if (!updated) throw new Error("APPLICANT_PROFILE_NOT_FOUND");
 
-  await db.delete(applicantFields).where(eq(applicantFields.applicantProfileId, applicantProfileId));
+  await tx.delete(applicantFields).where(eq(applicantFields.applicantProfileId, applicantProfileId));
 
   if (input.fieldIds.length > 0) {
-    await db.insert(applicantFields).values(
-      input.fieldIds.map((fieldId) => ({ applicantProfileId, fieldId }))
+    await tx.insert(applicantFields).values(
+      [...new Set(input.fieldIds)].map((fieldId) => ({ applicantProfileId, fieldId }))
     );
   }
 
   return updated;
+  });
 }
 
 export async function getApplicantProfileByUserId(userId: string) {

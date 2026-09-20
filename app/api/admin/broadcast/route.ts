@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { broadcastNotificationSchema } from "@/features/admin/validators/broadcast.schema";
 import { broadcastNotification } from "@/features/admin/services/broadcast.service";
 import { db } from "@/lib/db";
@@ -8,7 +8,8 @@ import { eq } from "drizzle-orm";
 
 /** POST /api/admin/broadcast — إرسال إشعار موجّه لفئة كاملة من المستخدمين */
 export async function POST(request: Request) {
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
 
   const body = await request.json();
   const parsed = broadcastNotificationSchema.safeParse(body);

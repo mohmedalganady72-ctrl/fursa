@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { messages, conversations, applications, applicantProfiles, opportunities, organizationProfiles, notifications } from "@/lib/db/schema";
 import { createNotification } from "@/features/notifications/services/notifications.service";
 
-async function getAuthorizedConversation(conversationId: string, userId: string) {
+export async function getAuthorizedConversation(conversationId: string, userId: string) {
   const conversation = await db.query.conversations.findFirst({
     where: eq(conversations.id, conversationId),
     with: {
@@ -45,7 +45,7 @@ export async function sendMessage(params: { conversationId: string; senderId: st
     title: "رسالة جديدة",
     body: content.slice(0, 100),
     linkUrl: `/${sentByApplicant ? "organization" : "applicant"}/messages/${params.conversationId}`,
-  });
+  }).catch((error) => console.error("[messages] notification failed after message delivery", error));
   return created;
 }
 

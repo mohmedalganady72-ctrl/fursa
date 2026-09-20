@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { markNotificationAsRead } from "@/features/notifications/services/notifications.service";
 
 /** PATCH /api/notifications/:id/read — تعليم إشعار واحد كمقروء */
@@ -8,7 +8,8 @@ export async function PATCH(
   { params }: { params: Promise<{ notificationId: string }> }
 ) {
   const { notificationId } = await params;
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
 
   const updated = await markNotificationAsRead(notificationId, session.user.id);
   if (!updated) {

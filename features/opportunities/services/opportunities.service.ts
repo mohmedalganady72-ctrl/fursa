@@ -1,6 +1,6 @@
-import { and, desc, asc, eq, ilike, or, sql, gt } from "drizzle-orm";
+import { and, desc, asc, eq, ilike, or, sql, gt, exists, lte } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { opportunities, opportunityFields, organizationProfiles } from "@/lib/db/schema";
+import { applications, opportunities, opportunityFields, organizationProfiles, users } from "@/lib/db/schema";
 import { OPPORTUNITY_SORT_OPTIONS, OPPORTUNITY_STATUS } from "@/lib/constants";
 import type { OpportunityInput } from "../validators/opportunity.schema";
 import type { OpportunityFiltersInput } from "../validators/opportunity-filters.schema";
@@ -128,8 +128,20 @@ export async function closeOpportunity(
  * لأنه يعتمد على ملف الباحث الشخصي؛ يُطبَّق كترتيب لاحق (post-sort) في طبقة الـ route
  * بعد جلب الصفحة الحالية من النتائج المرتّبة بالأحدث، عبر features/matching.
  */
-export async function listOpportunities(filters: OpportunityFiltersInput) {
-  const conditions = [eq(opportunities.status, OPPORTUNITY_STATUS.PUBLISHED)];
+export async function listOpportunities(filters: OpportunityFiltersInput, includeNextPage = false) {
+  const now = new Date();
+  const conditions = [
+    eq(opportunities.status, OPPORTUNITY_STATUS.PUBLISHED),
+    gt(opportunities.applicationDeadline, now),
+    lte(opportunities.applicationStartAt, now),
+    eq(organizationProfiles.isApproved, true),
+    exists(db.select({ id: users.id }).from(users).where(and(
+      eq(users.id, organizationProfiles.userId), eq(users.isActive, true), eq(users.isRestricted, false)
+    ))),
+  ];
+
+  if (filters.fieldId) conditions.push(exists(db.select({ id: opportunityFields.id }).from(opportunityFields)
+    .where(and(eq(opportunityFields.opportunityId, opportunities.id), eq(opportunityFields.fieldId, filters.fieldId)))));
 
   if (filters.type) conditions.push(eq(opportunities.type, filters.type));
 
@@ -147,12 +159,13 @@ export async function listOpportunities(filters: OpportunityFiltersInput) {
     );
   }
 
+  const applicationCount = sql<number>`(select count(*) from ${applications} where ${applications.opportunityId} = ${opportunities.id})`;
   const orderBy = {
     [OPPORTUNITY_SORT_OPTIONS.NEWEST]: desc(opportunities.createdAt),
     [OPPORTUNITY_SORT_OPTIONS.DEADLINE_SOON]: asc(opportunities.applicationDeadline),
     // "الأقل/الأكثر تقدمًا" تحتاج عدد التقديمات الفعلي — تُحسَب عبر subquery في seatsFilled كتقريب أولي
-    [OPPORTUNITY_SORT_OPTIONS.LEAST_APPLIED]: asc(opportunities.seatsFilled),
-    [OPPORTUNITY_SORT_OPTIONS.MOST_APPLIED]: desc(opportunities.seatsFilled),
+    [OPPORTUNITY_SORT_OPTIONS.LEAST_APPLIED]: asc(applicationCount),
+    [OPPORTUNITY_SORT_OPTIONS.MOST_APPLIED]: desc(applicationCount),
     [OPPORTUNITY_SORT_OPTIONS.BEST_MATCH]: desc(opportunities.createdAt), // fallback؛ يُعاد ترتيبه لاحقًا في الـ route
   }[filters.sortBy];
 
@@ -161,8 +174,8 @@ export async function listOpportunities(filters: OpportunityFiltersInput) {
     .from(opportunities)
     .leftJoin(organizationProfiles, eq(opportunities.organizationProfileId, organizationProfiles.id))
     .where(and(...conditions))
-    .orderBy(orderBy)
-    .limit(filters.pageSize)
+    .orderBy(orderBy, desc(opportunities.id))
+    .limit(filters.pageSize + (includeNextPage ? 1 : 0))
     .offset((filters.page - 1) * filters.pageSize);
 
   return results;

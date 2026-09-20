@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { isApplicant } from "@/features/auth/services/permissions";
 import { applicationSchema } from "@/features/applications/validators/application.schema";
 import { submitApplication } from "@/features/applications/services/applications.service";
@@ -9,7 +9,8 @@ import { applicantProfiles } from "@/lib/db/schema";
 
 /** POST /api/applications — تقديم جديد على فٌرصة (باحث فقط) */
 export async function POST(request: Request) {
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   if (!isApplicant(session)) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
@@ -34,6 +35,10 @@ export async function POST(request: Request) {
     const message = error instanceof Error ? error.message : "UNKNOWN_ERROR";
 
     const knownErrors: Record<string, { status: number; userMessage: string }> = {
+      OPPORTUNITY_TYPE_MISMATCH: { status: 400, userMessage: "نوع الطلب لا يطابق هذه الفرصة." },
+      OPPORTUNITY_NOT_STARTED: { status: 409, userMessage: "لم يبدأ التقديم على هذه الفرصة بعد." },
+      RESUME_REQUIRED: { status: 400, userMessage: "أرفق السيرة الذاتية المطلوبة لهذه الفرصة." },
+      INVALID_RESUME_PATH: { status: 400, userMessage: "أعد رفع سيرتك الذاتية من حسابك." },
       DAILY_APPLICATION_LIMIT_EXCEEDED: {
         status: 429,
         userMessage: "وصلت إلى الحد اليومي لطلبات هذا النوع من الفٌرص",

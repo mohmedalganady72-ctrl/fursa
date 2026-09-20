@@ -49,7 +49,7 @@ export async function signInWithPassword(email: string, password: string) {
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
       lastResponse = await withAuthTimeout(
-        authClient.signIn.email({ email, password, rememberMe: true }),
+        authClient.signIn.email({ email: email.trim().toLowerCase(), password, rememberMe: true }),
         "استغرق تسجيل الدخول وقتًا أطول من المتوقع. حاول مرة أخرى.",
       );
       if (!lastResponse.error || !isTransientAuthError(lastResponse.error)) return lastResponse;
@@ -162,6 +162,7 @@ export async function createBetterAuthSession(
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
+          signal: AbortSignal.timeout(AUTH_REQUEST_TIMEOUT_MS),
           body: JSON.stringify({ role }),
         });
         if (roleResponse.status < 500 || attempt === 2) break;

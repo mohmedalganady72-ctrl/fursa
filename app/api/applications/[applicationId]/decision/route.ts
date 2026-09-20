@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { isActiveOrganization } from "@/features/auth/services/permissions";
 import { applicationDecisionSchema } from "@/features/applications/validators/application.schema";
 import { acceptApplicant, rejectApplicant } from "@/features/applications/services/acceptance-lifecycle";
@@ -16,7 +16,8 @@ export async function PATCH(
   { params }: { params: Promise<{ applicationId: string }> }
 ) {
   const { applicationId } = await params;
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
 
   if (!isActiveOrganization(session)) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });

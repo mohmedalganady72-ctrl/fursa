@@ -8,6 +8,7 @@ import {
   applicantFields,
   applicationStatusHistory,
   organizationProfiles,
+  users,
 } from "@/lib/db/schema";
 import { assertDailyApplicationLimitNotExceeded } from "@/lib/rate-limit";
 import { calculateMatchScore } from "@/features/matching/services/scoring-engine";
@@ -31,8 +32,8 @@ function isDuplicateApplicationError(error: unknown): boolean {
  * فصل هذه الدالة عن scoring-engine.ts يبقي محرك الحساب خاليًا تمامًا من تفاصيل Drizzle/SQL
  * (قابل للاختبار بمعزل تام — راجع tests/unit/matching).
  */
-async function buildOpportunityCriteria(opportunityId: string): Promise<OpportunityMatchCriteria> {
-  const opportunity = await db.query.opportunities.findFirst({
+async function buildOpportunityCriteria(opportunityId: string, client: Pick<typeof db, "query"> = db): Promise<OpportunityMatchCriteria> {
+  const opportunity = await client.query.opportunities.findFirst({
     where: eq(opportunities.id, opportunityId),
     with: { opportunityFields: true },
   });
@@ -53,8 +54,8 @@ async function buildOpportunityCriteria(opportunityId: string): Promise<Opportun
 }
 
 /** يبني كائن ملف الباحث من صف applicant_profiles حقيقي (+ بيانات CV المُحلَّلة إن وُجدت) */
-async function buildApplicantMatchProfile(applicantProfileId: string): Promise<ApplicantMatchProfile> {
-  const profile = await db.query.applicantProfiles.findFirst({
+async function buildApplicantMatchProfile(applicantProfileId: string, client: Pick<typeof db, "query"> = db): Promise<ApplicantMatchProfile> {
+  const profile = await client.query.applicantProfiles.findFirst({
     where: eq(applicantProfiles.id, applicantProfileId),
     with: { applicantFields: true },
   });
@@ -84,10 +85,27 @@ async function buildApplicantMatchProfile(applicantProfileId: string): Promise<A
  * كطبقة حماية ثانية) → حساب درجة التوافق قبل الحفظ.
  */
 export async function submitApplication(applicantProfileId: string, input: ApplicationInput) {
-  const opportunity = await db.query.opportunities.findFirst({
-    where: eq(opportunities.id, input.opportunityId),
-  });
+  return db.transaction(async (tx) => {
+  // Match the decision writers' lock order; serialize each applicant's daily quota.
+  const [opportunity] = await tx.select().from(opportunities)
+    .where(eq(opportunities.id, input.opportunityId)).for("update");
   if (!opportunity) throw new Error("OPPORTUNITY_NOT_FOUND");
+  const [profile] = await tx.select().from(applicantProfiles)
+    .where(eq(applicantProfiles.id, applicantProfileId)).for("update");
+  if (!profile) throw new Error("APPLICANT_PROFILE_NOT_FOUND");
+  if (input.opportunityType !== opportunity.type) throw new Error("OPPORTUNITY_TYPE_MISMATCH");
+  if (opportunity.applicationStartAt > new Date()) throw new Error("OPPORTUNITY_NOT_STARTED");
+  const [owner] = await tx.select({ id: users.id }).from(organizationProfiles)
+    .innerJoin(users, eq(users.id, organizationProfiles.userId))
+    .where(and(eq(organizationProfiles.id, opportunity.organizationProfileId),
+      eq(organizationProfiles.isApproved, true), eq(users.isActive, true), eq(users.isRestricted, false)));
+  if (!owner) throw new Error("OPPORTUNITY_CLOSED");
+  if (input.opportunityType !== "co_op") {
+    if (opportunity.requiresResume === "true" && !input.resumeUrl) throw new Error("RESUME_REQUIRED");
+    if (input.resumeUrl && (!input.resumeUrl.startsWith(`${profile.userId}/`) || input.resumeUrl.includes(".."))) {
+      throw new Error("INVALID_RESUME_PATH");
+    }
+  }
   // الفٌرصة يجب أن تكون منشورة وغير منتهية الصلاحية زمنيًا لقبول تقديم جديد
   // (راجع وثيقة المتطلبات § 3 قاعدة 13: "الفٌرص المنتهية أو المغلقة لا تقبل طلبات جديدة"
   // و§ 12 معيار القبول: يُفشَل الطلب على مستوى الخادم حتى لو أُرسل مباشرة عبر API)
@@ -98,22 +116,22 @@ export async function submitApplication(applicantProfileId: string, input: Appli
     throw new Error("OPPORTUNITY_EXPIRED");
   }
 
-  if (await hasApplicantApplied(applicantProfileId, input.opportunityId)) {
+  if (await hasApplicantApplied(applicantProfileId, input.opportunityId, tx)) {
     throw new Error("APPLICATION_ALREADY_EXISTS");
   }
 
-  await assertDailyApplicationLimitNotExceeded(applicantProfileId, opportunity.type);
+  await assertDailyApplicationLimitNotExceeded(applicantProfileId, opportunity.type, tx);
 
   const [criteria, applicantProfile] = await Promise.all([
-    buildOpportunityCriteria(input.opportunityId),
-    buildApplicantMatchProfile(applicantProfileId),
+    buildOpportunityCriteria(input.opportunityId, tx),
+    buildApplicantMatchProfile(applicantProfileId, tx),
   ]);
 
   const matchResult = calculateMatchScore(applicantProfile, criteria);
 
   let created;
   try {
-    [created] = await db
+    [created] = await tx
       .insert(applications)
       .values({
       opportunityId: input.opportunityId,
@@ -150,18 +168,19 @@ export async function submitApplication(applicantProfileId: string, input: Appli
   if (!created) throw new Error("APPLICATION_CREATE_FAILED");
 
   // أول صف في سجل تاريخ الحالة لهذا التقديم — oldStatus = null لأنه إنشاء جديد
-  await db.insert(applicationStatusHistory).values({
+  await tx.insert(applicationStatusHistory).values({
     applicationId: created.id,
     oldStatus: null,
     newStatus: APPLICATION_STATUS.APPLIED,
   });
 
   return created;
+  });
 }
 
 /** يستخدم في الخادم والواجهة لمنع عرض نموذج تقديم أُرسل سابقًا. */
-export async function hasApplicantApplied(applicantProfileId: string, opportunityId: string) {
-  const existing = await db.query.applications.findFirst({
+export async function hasApplicantApplied(applicantProfileId: string, opportunityId: string, client: Pick<typeof db, "query"> = db) {
+  const existing = await client.query.applications.findFirst({
     columns: { id: true },
     where: and(
       eq(applications.applicantProfileId, applicantProfileId),

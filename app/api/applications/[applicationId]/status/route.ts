@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { db } from "@/lib/db";
 import { applications, applicantProfiles } from "@/lib/db/schema";
 
@@ -15,7 +15,8 @@ export async function GET(
   { params }: { params: Promise<{ applicationId: string }> }
 ) {
   const { applicationId } = await params;
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
 
   const application = await db.query.applications.findFirst({
     where: eq(applications.id, applicationId),

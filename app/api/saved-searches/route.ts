@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { isApplicant } from "@/features/auth/services/permissions";
 import { savedSearchSchema } from "@/features/opportunities/validators/saved-search.schema";
 import {
@@ -19,7 +19,8 @@ async function getOwnApplicantProfileId(userId: string) {
 
 /** GET /api/saved-searches — عمليات البحث المحفوظة للباحث الحالي */
 export async function GET() {
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   const profileId = await getOwnApplicantProfileId(session.user.id);
   if (!profileId) return NextResponse.json({ data: [] });
 
@@ -29,7 +30,8 @@ export async function GET() {
 
 /** POST /api/saved-searches — حفظ بحث جديد */
 export async function POST(request: Request) {
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   if (!isApplicant(session)) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }

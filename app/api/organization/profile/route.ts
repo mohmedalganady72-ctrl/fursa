@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { isOrganization } from "@/features/auth/services/permissions";
 import { organizationProfileSchema } from "@/features/organizations/validators/organization-profile.schema";
 import {
@@ -9,13 +9,15 @@ import {
 } from "@/features/organizations/services/organization-profile.service";
 
 export async function GET() {
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   const profile = await getOrganizationProfileByUserId(session.user.id);
   return NextResponse.json({ data: profile });
 }
 
 export async function PATCH(request: Request) {
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   if (!isOrganization(session)) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }

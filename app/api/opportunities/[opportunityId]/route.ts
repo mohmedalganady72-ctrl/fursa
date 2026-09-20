@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { getOpportunityById } from "@/features/opportunities/services/opportunities.service";
 
 /** GET /api/opportunities/:id — تفاصيل فٌرصة واحدة (عام) */
@@ -6,6 +7,8 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ opportunityId: string }> }
 ) {
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   const { opportunityId } = await params;
   const opportunity = await getOpportunityById(opportunityId);
 

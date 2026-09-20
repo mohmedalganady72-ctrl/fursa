@@ -27,8 +27,8 @@ export function useRealtimeChat(conversationId: string, initialMessages: Message
           filter: `conversation_id=eq.${conversationId}`,
         },
         (payload) => {
-          setMessages((current) => current.some((message) => message.id === payload.new.id)
-            ? current : [...current, payload.new as Message]);
+          // Realtime uses SQL column names; the API returns the Drizzle shape.
+          window.dispatchEvent(new Event(`fursa:conversation:${conversationId}`));
         }
       )
       .subscribe();
@@ -39,18 +39,34 @@ export function useRealtimeChat(conversationId: string, initialMessages: Message
   }, [conversationId]);
 
   useEffect(() => {
+    let inFlight = false;
+    const controller = new AbortController();
+    setMessages(initialMessages);
     const refresh = async () => {
-      if (document.visibilityState !== "visible") return;
-      const response = await fetch(`/api/messages/${conversationId}`);
-      if (response.ok) setMessages((await response.json()).data);
+      if (document.visibilityState !== "visible" || inFlight || controller.signal.aborted) return;
+      inFlight = true;
+      try {
+        const response = await fetch(`/api/messages/${conversationId}`, { signal: controller.signal });
+        if (response.ok) {
+          const result = await response.json();
+          if (!controller.signal.aborted) setMessages(result.data);
+        }
+      } catch {
+        // Keep the last successful conversation and retry on the next refresh.
+      } finally {
+        inFlight = false;
+      }
     };
     const interval = window.setInterval(refresh, 10_000);
     window.addEventListener("focus", refresh);
+    window.addEventListener(`fursa:conversation:${conversationId}`, refresh);
     return () => {
+      controller.abort();
       window.clearInterval(interval);
       window.removeEventListener("focus", refresh);
+      window.removeEventListener(`fursa:conversation:${conversationId}`, refresh);
     };
-  }, [conversationId]);
+  }, [conversationId, initialMessages]);
 
   const appendOptimisticMessage = useCallback((message: Message) => {
     // يُستخدم لعرض رسالة المستخدم نفسه فورًا قبل تأكيد الخادم (تجربة استخدام أسرع)

@@ -34,6 +34,7 @@ export default async function AdminLayout({
   if (!session) {
     redirect("/admin-login");
   }
+  if (session.user.isRestricted) redirect("/account-restricted");
   if (!isAdmin(session)) redirect(await getPostAuthPath(session));
   const admin = await withDatabaseRetry(() => db.query.admins.findFirst({
     columns: { displayName: true },

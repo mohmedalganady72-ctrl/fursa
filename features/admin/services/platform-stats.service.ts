@@ -59,34 +59,37 @@ export async function getPlatformOverviewStats() {
  * (راجع components/charts/applications-trend-chart.tsx في مرحلة بناء الصفحات).
  */
 export async function getApplicationsTrend(days = 30) {
-  const startDate = new Date();
-  startDate.setDate(startDate.getDate() - days);
+  const today = new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const startDate = new Date(`${today}T00:00:00+03:00`);
+  startDate.setUTCDate(startDate.getUTCDate() - days + 1);
 
+  const day = sql<string>`to_char(${applications.submittedAt} at time zone 'Asia/Riyadh', 'YYYY-MM-DD')`;
   const rows = await retryQuery(async () => db
-    .select({ submittedAt: applications.submittedAt })
+    .select({ date: day, value: count() })
     .from(applications)
-    .where(gte(applications.submittedAt, startDate)));
+    .where(gte(applications.submittedAt, startDate)).groupBy(day));
 
   // تجميع يدوي حسب اليوم — أبسط من استعلام SQL بتنسيق تاريخ خاص بـ dialect معيّن،
   // وحجم البيانات هنا (شهر واحد) صغير بما يكفي ليكون التجميع في التطبيق مقبول الأداء
   const countsByDate = new Map<string, number>();
   for (const row of rows) {
-    const dateKey = row.submittedAt.toISOString().slice(0, 10);
-    countsByDate.set(dateKey, (countsByDate.get(dateKey) ?? 0) + 1);
+    countsByDate.set(row.date, Number(row.value));
   }
 
   return Array.from({ length: days }, (_, index) => {
-    const date = new Date(startDate);
-    date.setDate(startDate.getDate() + index + 1);
+    const date = new Date(startDate.getTime() + 3 * 60 * 60 * 1000);
+    date.setUTCDate(date.getUTCDate() + index);
     const dateKey = date.toISOString().slice(0, 10);
     return { date: dateKey, value: countsByDate.get(dateKey) ?? 0 };
   });
 }
 
 export async function getPlatformChartBreakdowns() {
-  const [opportunityTypes, applicationStatuses] = await Promise.all([
-    retryQuery(async () => db.select({ name: opportunities.type, value: count() }).from(opportunities).groupBy(opportunities.type)),
-    retryQuery(async () => db.select({ name: applications.status, value: count() }).from(applications).groupBy(applications.status)),
-  ]);
+  const opportunityTypes = await retryQuery(async () =>
+    db.select({ name: opportunities.type, value: count() }).from(opportunities).groupBy(opportunities.type)
+  );
+  const applicationStatuses = await retryQuery(async () =>
+    db.select({ name: applications.status, value: count() }).from(applications).groupBy(applications.status)
+  );
   return { opportunityTypes, applicationStatuses };
 }

@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { STORAGE_BUCKETS, getPublicUrl, uploadFile } from "@/lib/supabase/storage";
 
 const CONFIG = {
@@ -19,7 +19,8 @@ function detectFile(bytes: Uint8Array) {
 
 export async function POST(request: Request) {
   try {
-    const session = await requireSession();
+    const session = await requireApiSession();
+  if (session instanceof Response) return session;
     const form = await request.formData();
     const kind = form.get("kind");
     const file = form.get("file");

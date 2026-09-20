@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
-import { requireSession } from "@/lib/auth/session";
+import { eq, and, gt, lte } from "drizzle-orm";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { isApplicant } from "@/features/auth/services/permissions";
 import { db } from "@/lib/db";
 import { applicantProfiles, opportunities } from "@/lib/db/schema";
@@ -18,7 +18,8 @@ import type { ApplicantMatchProfile, OpportunityMatchCriteria } from "@/features
  * فقط على مجموعة مختصرة من المرشحين.
  */
 export async function GET() {
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   if (!isApplicant(session)) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
@@ -46,7 +47,8 @@ export async function GET() {
   };
 
   const openJobs = await db.query.opportunities.findMany({
-    where: eq(opportunities.status, "published"),
+    where: and(eq(opportunities.status, "published"), eq(opportunities.type, "job"),
+      gt(opportunities.applicationDeadline, new Date()), lte(opportunities.applicationStartAt, new Date())),
     with: { opportunityFields: true, organizationProfile: true },
   });
 

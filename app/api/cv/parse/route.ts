@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { isApplicant } from "@/features/auth/services/permissions";
 import { extractTextFromPdf } from "@/features/cv-parsing/services/pdf-extractor";
 import { structureResumeData } from "@/features/cv-parsing/services/llm-structurer";
@@ -14,13 +14,15 @@ import { eq } from "drizzle-orm";
  * الـ route نفسه رقيق: يتحقق من الصلاحية فقط ثم يفوّض العمل الفعلي لطبقة features/.
  */
 export async function POST(request: Request) {
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   if (!isApplicant(session)) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
 
-  const { resumePath } = await request.json();
-  if (typeof resumePath !== "string" || !resumePath.startsWith(`${session.user.id}/`)) {
+  const body = await request.json().catch(() => null);
+  const resumePath = body?.resumePath;
+  if (typeof resumePath !== "string" || !resumePath.startsWith(`${session.user.id}/`) || resumePath.includes("..")) {
     return NextResponse.json({ error: "MISSING_RESUME_PATH" }, { status: 400 });
   }
 

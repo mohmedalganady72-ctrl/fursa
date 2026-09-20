@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { isAdmin } from "@/features/auth/services/permissions";
 import { createAdminAccount } from "@/features/admin/services/admin.service";
 import { db } from "@/lib/db";
@@ -21,7 +21,8 @@ const createAdminSchema = z.object({
  * أو موافقة إضافية، لأن الإنشاء نفسه يتطلب صلاحية مدير قائم بالفعل.
  */
 export async function POST(request: Request) {
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   if (!isAdmin(session)) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/lib/auth/session";
+import { requireApiSession } from "@/lib/auth/api-session";
 import { approveOrganization, rejectOrganization } from "@/features/admin/services/admin.service";
 import { db } from "@/lib/db";
 import { admins } from "@/lib/db/schema";
@@ -15,7 +15,8 @@ export async function PATCH(
   { params }: { params: Promise<{ organizationId: string }> }
 ) {
   const { organizationId } = await params;
-  const session = await requireSession();
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
 
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== "object") {
