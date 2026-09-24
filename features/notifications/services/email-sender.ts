@@ -2,7 +2,7 @@ import { sendTransactionalEmail } from "@/lib/nylas";
 import { env } from "@/lib/env";
 
 const FROM_ADDRESS = {
-  name: "منصّة الفٌرص",
+  name: "منصّة فٌرص",
   email: env.NYLAS_FROM_EMAIL ?? `notifications@${env.NYLAS_SENDER_DOMAIN}`,
 };
 
